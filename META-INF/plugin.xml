@@ -1,0 +1,48 @@
+<idea-plugin version="2">
+	<name>Frame Switcher</name>
+	<id>FrameSwitcher</id>
+	<version>1.0 </version>
+  
+	<vendor url="http://code.google.com/p/eclipse-code-formatter-intellij-plugin/" email="vojta.krasa@gmail.com">Vojtech
+		Krasa
+	</vendor>
+  <description><![CDATA[
+      Open frame chooser dialog by pressing ctrl+shift+tab, but first remove this shortcut from original action in Settings | Keymap, or set your own shortcut.
+      
+      ]]></description>
+
+  <change-notes><![CDATA[
+      ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="107.105"/>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+	<depends>com.intellij.modules.lang</depends>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+	  <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frames"
+			  description="Switch frames">
+		  <add-to-group group-id="WindowMenu" anchor="first"/>
+		  <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl TAB"/>
+	  </action>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+</idea-plugin>
