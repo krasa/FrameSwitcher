@@ -1,9 +1,9 @@
-<idea-plugin version="2">
+<idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
 	<version>1.0 </version>
   
-	<vendor url="http://code.google.com/p/eclipse-code-formatter-intellij-plugin/" email="vojta.krasa@gmail.com">Vojtech
+	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
   <description><![CDATA[
@@ -35,10 +35,10 @@
 
   <actions>
     <!-- Add your actions here -->
-	  <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frames"
-			  description="Switch frames">
+	  <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
+			  description="Switch frame">
 		  <add-to-group group-id="WindowMenu" anchor="first"/>
-		  <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl TAB"/>
+		  <keyboard-shortcut keymap="$default" replace-all="true" first-keystroke="shift ctrl TAB"/>
 	  </action>
   </actions>
 
