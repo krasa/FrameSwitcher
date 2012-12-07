@@ -1,17 +1,22 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>1.0 </version>
+	<version>1.1</version>
   
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
   <description><![CDATA[
-      Open frame chooser dialog by pressing ctrl+shift+tab, but first remove this shortcut from original action in Settings | Keymap, or set your own shortcut.
+  	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
+  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.
       
       ]]></description>
 
   <change-notes><![CDATA[
+		  1.1 		  
+		 <br> - handling of minimized frames
+		 <br> - changed default shortcut to ALT + F2
+		 <br> - sorting by name
       ]]>
   </change-notes>
 
@@ -38,7 +43,7 @@
 	  <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
 			  description="Switch frame">
 		  <add-to-group group-id="WindowMenu" anchor="first"/>
-		  <keyboard-shortcut keymap="$default" replace-all="true" first-keystroke="shift ctrl TAB"/>
+		  <keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
 	  </action>
   </actions>
 
