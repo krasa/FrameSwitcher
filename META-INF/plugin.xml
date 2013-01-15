@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>1.1</version>
+	<version>1.2</version>
   
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -13,7 +13,9 @@
       ]]></description>
 
   <change-notes><![CDATA[
-		  1.1 		  
+		  1.2 		  
+		 <br> - sorting by name with ignored case
+		<br> <br> 1.1 		  
 		 <br> - handling of minimized frames
 		 <br> - changed default shortcut to ALT + F2
 		 <br> - sorting by name

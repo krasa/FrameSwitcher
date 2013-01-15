@@ -68,7 +68,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				if (project2 == null) {
 					return 1;
 				}
-				return project1.getName().compareTo(project2.getName());
+				return project1.getName().compareToIgnoreCase(project2.getName());
 			}
 		});
 		return list;
