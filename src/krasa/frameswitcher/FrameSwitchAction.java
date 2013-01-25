@@ -15,6 +15,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
@@ -78,4 +79,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	protected boolean isEnabled() {
 		return true;
 	}
+	protected JBPopupFactory.ActionSelectionAid getAidMethod() {
+	   return JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
+	 }
+	
 }
