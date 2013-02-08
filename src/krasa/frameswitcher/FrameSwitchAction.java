@@ -14,6 +14,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -28,7 +29,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		for (final IdeFrame frame : list) {
 			final Project project1 = frame.getProject();
 			if (project1 != null) {
-				AnAction action = new AnAction(project1.getName()) {
+				DumbAwareAction action = new DumbAwareAction(project1.getName()) {
 					@Override
 					public void actionPerformed(AnActionEvent e) {
 						JComponent component = frame.getComponent();

@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>1.3</version>
+	<version>1.4</version>
   
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -13,6 +13,9 @@
       ]]></description>
 
   <change-notes><![CDATA[
+		  1.4		  
+		 <br> - usable during indexing
+		 <br> <br> 
 		  1.3 		  
 		 <br> - used speed search in dialog
 		 <br> <br> 
