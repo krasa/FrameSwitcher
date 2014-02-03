@@ -41,7 +41,9 @@ public class FrameSwitcherGui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int leadSelectionIndex = recentProjectFiltersList.getSelectionModel().getLeadSelectionIndex();
-				listModel.remove(leadSelectionIndex);
+				if (leadSelectionIndex != -1) {
+					listModel.remove(leadSelectionIndex);
+				}
 			}
 		});
 		initModel(settings);
