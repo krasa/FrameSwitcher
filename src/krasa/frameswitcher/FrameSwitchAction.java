@@ -1,13 +1,6 @@
 package krasa.frameswitcher;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-
-import javax.swing.*;
-
+import com.intellij.ide.RecentProjectsManager;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -17,9 +10,15 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
@@ -39,17 +38,14 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						component.grabFocus();
 					}
 				};
-				if (project != null) {
-					VirtualFile projectFile = project.getProjectFile();
-					VirtualFile projectFile1 = project1.getProjectFile();
-					if (projectFile != null && projectFile1 != null) {
-						boolean enabled = !projectFile.getPath().equals(projectFile1.getPath());
-						action.getTemplatePresentation().setEnabled(enabled);
-					}
-				}
 				group.addAction(action);
 			}
 		}
+        AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+        if (recentProjectsActions != null && recentProjectsActions.length > 0) {
+            group.addSeparator("Recent");
+            group.addAll(recentProjectsActions);
+        }
 	}
 
 	private ArrayList<IdeFrame> getIdeFrames() {
@@ -81,7 +77,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return true;
 	}
 	protected JBPopupFactory.ActionSelectionAid getAidMethod() {
-	   return JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
+	   return JBPopupFactory.ActionSelectionAid.ALPHA_NUMBERING;
 	 }
 	
 }
