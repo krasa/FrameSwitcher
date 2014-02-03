@@ -2,20 +2,21 @@
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
 	<version>2.0</version>
-  
+
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
-  <description><![CDATA[
+	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
   	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.
       
       ]]></description>
 
-  <change-notes><![CDATA[
+	<change-notes><![CDATA[
           2.0
          <br/> - recent projects list added to the popup
-         <br/> - alphanumeric mnemonics
+         <br/> - settings for filtering recent projects
+         <br/> - settings for mnemonics
          <br/> - now current frame isn't disabled
          <br/><br/>
 		  1.4
@@ -32,36 +33,39 @@
 		 <br> - changed default shortcut to ALT + F2
 		 <br> - sorting by name
       ]]>
-  </change-notes>
+	</change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
+	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+	<idea-version since-build="122.694"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+		   on how to target different products -->
+	<!-- uncomment to enable plugin in all products
+	  <depends>com.intellij.modules.lang</depends>
+	  -->
 	<depends>com.intellij.modules.lang</depends>
 
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
+	<application-components>
+		<!-- Add your application components here -->
+		<component>
+			<implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
+		</component>
+	</application-components>
 
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
+	<project-components>
+		<!-- Add your project components here -->
+	</project-components>
 
-  <actions>
-    <!-- Add your actions here -->
-	  <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
-			  description="Switch frame">
-		  <add-to-group group-id="WindowMenu" anchor="first"/>
-		  <keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
-	  </action>
-  </actions>
+	<actions>
+		<!-- Add your actions here -->
+		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
+				description="Switch frame">
+			<add-to-group group-id="WindowMenu" anchor="first"/>
+			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
+		</action>
+	</actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
+	<extensions defaultExtensionNs="com.intellij">
+		<!-- Add your extensions here -->
+	</extensions>
 </idea-plugin>

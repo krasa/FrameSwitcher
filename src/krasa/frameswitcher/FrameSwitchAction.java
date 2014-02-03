@@ -1,6 +1,7 @@
 package krasa.frameswitcher;
 
 import com.intellij.ide.RecentProjectsManager;
+import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -29,6 +30,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			final Project project1 = frame.getProject();
 			if (project1 != null) {
 				DumbAwareAction action = new DumbAwareAction(project1.getName()) {
+
 					@Override
 					public void actionPerformed(AnActionEvent e) {
 						JComponent component = frame.getComponent();
@@ -41,11 +43,25 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				group.addAction(action);
 			}
 		}
-        AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
-        if (recentProjectsActions != null && recentProjectsActions.length > 0) {
-            group.addSeparator("Recent");
-            group.addAll(recentProjectsActions);
-        }
+		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+		if (recentProjectsActions != null) {
+			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
+
+			final int maxRecentProjectsAsInt = settings.getMaxRecentProjectsAsInt();
+			int i = 0;
+			for (AnAction recentProjectsAction : recentProjectsActions) {
+				if (i >= maxRecentProjectsAsInt) {
+					break;
+				}
+				if (settings.shouldShow((ReopenProjectAction) recentProjectsAction)) {
+					if (i == 0) {
+						group.addSeparator("Recent");
+					}
+					group.add(recentProjectsAction);
+					i++;
+				}
+			}
+		}
 	}
 
 	private ArrayList<IdeFrame> getIdeFrames() {
@@ -53,6 +69,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		ArrayList<IdeFrame> list = new ArrayList<IdeFrame>(allProjectFrames.length);
 		list.addAll(Arrays.asList(allProjectFrames));
 		Collections.sort(list, new Comparator<IdeFrame>() {
+
 			@Override
 			public int compare(IdeFrame o1, IdeFrame o2) {
 				Project project1 = o1.getProject();
@@ -76,8 +93,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	protected boolean isEnabled() {
 		return true;
 	}
+
 	protected JBPopupFactory.ActionSelectionAid getAidMethod() {
-	   return JBPopupFactory.ActionSelectionAid.ALPHA_NUMBERING;
-	 }
-	
+		return FrameSwitcherSettings.getInstance().getPopupSelectionAid();
+	}
+
 }
