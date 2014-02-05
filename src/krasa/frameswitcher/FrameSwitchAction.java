@@ -29,7 +29,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		for (final IdeFrame frame : list) {
 			final Project project1 = frame.getProject();
 			if (project1 != null) {
-				DumbAwareAction action = new DumbAwareAction(project1.getName()) {
+                Icon itemIcon = (project == project1) ? ourCurrentAction : ourNotCurrentAction;
+                DumbAwareAction action = new DumbAwareAction(project1.getName(), null, itemIcon) {
 
 					@Override
 					public void actionPerformed(AnActionEvent e) {
