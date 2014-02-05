@@ -1,6 +1,6 @@
 package krasa.frameswitcher;
 
-import com.intellij.ide.RecentProjectsManager;
+import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -44,7 +44,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				group.addAction(action);
 			}
 		}
-		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
 		if (recentProjectsActions != null) {
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
 
