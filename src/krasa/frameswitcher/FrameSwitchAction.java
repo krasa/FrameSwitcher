@@ -24,18 +24,18 @@ import java.util.Comparator;
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
 	@Override
-	protected void fillActions(final Project project, DefaultActionGroup group, DataContext dataContext) {
+	protected void fillActions(final Project currentProject, DefaultActionGroup group, DataContext dataContext) {
 		ArrayList<IdeFrame> list = getIdeFrames();
 		for (final IdeFrame frame : list) {
-			final Project project1 = frame.getProject();
-			if (project1 != null) {
-                Icon itemIcon = (project == project1) ? ourCurrentAction : ourNotCurrentAction;
-                DumbAwareAction action = new DumbAwareAction(project1.getName(), null, itemIcon) {
+			final Project project = frame.getProject();
+			if (project != null) {
+                Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
+                DumbAwareAction action = new DumbAwareAction(project.getName(), null, itemIcon) {
 
 					@Override
 					public void actionPerformed(AnActionEvent e) {
 						JComponent component = frame.getComponent();
-						JFrame frame1 = WindowManager.getInstance().getFrame(project1);
+						JFrame frame1 = WindowManager.getInstance().getFrame(project);
 						frame1.setVisible(true);
 						frame1.setState(Frame.NORMAL);
 						component.grabFocus();

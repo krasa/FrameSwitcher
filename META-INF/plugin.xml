@@ -8,15 +8,16 @@
 	</vendor>
 	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
-  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.
-      
+  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.         <br/><br/>
+  	
+      (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
 	<change-notes><![CDATA[
 	      2.1
 	     <br/> - current frame is marked in the list
          <br/><br/>
-          2.0
+          2.0 
          <br/> - recent projects list added to the popup
          <br/> - settings for filtering recent projects
          <br/> - settings for mnemonics
