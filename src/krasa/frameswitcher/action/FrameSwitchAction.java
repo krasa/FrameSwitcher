@@ -1,5 +1,6 @@
-package krasa.frameswitcher;
+package krasa.frameswitcher.action;
 
+import com.google.common.collect.Multimap;
 import com.intellij.ide.RecentProjectsManager;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
@@ -14,17 +15,25 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
+
+import krasa.frameswitcher.FrameSwitcherApplicationComponent;
+import krasa.frameswitcher.FrameSwitcherSettings;
+import krasa.frameswitcher.remote.domain.OpenProject;
+import krasa.frameswitcher.remote.RemoteCommunicator;
+import krasa.frameswitcher.remote.domain.RemoteProject;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
 	@Override
 	protected void fillActions(final Project project, DefaultActionGroup group, DataContext dataContext) {
+		final FrameSwitcherApplicationComponent applicationComponent = FrameSwitcherApplicationComponent.getInstance();
+		final RemoteCommunicator remoteCommunicator = applicationComponent.getRemoteCommunicator();
+		remoteCommunicator.ping();
+		
 		ArrayList<IdeFrame> list = getIdeFrames();
 		for (final IdeFrame frame : list) {
 			final Project project1 = frame.getProject();
@@ -42,6 +51,31 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					}
 				};
 				group.addAction(action);
+			}
+		}
+		applicationComponent.sweepRemoteInstance();
+		
+		Multimap<String, RemoteProject> remoteProjectsMap = applicationComponent.getRemoteProjectMultimap();
+
+		if (remoteProjectsMap.size() > 0) {
+			group.addSeparator("RemoteProjects");
+		}
+		for (final String uuid : remoteProjectsMap.keySet()) {
+
+			Collection<RemoteProject> remoteProjects = remoteProjectsMap.get(uuid);
+
+			for (final RemoteProject remoteProject : remoteProjects) {
+				final OpenProject openProject = new OpenProject(uuid, remoteProject);
+				group.add(new DumbAwareAction(remoteProject.getName()) {
+					@Override
+					public void actionPerformed(AnActionEvent anActionEvent) {
+						try {
+							applicationComponent.getRemoteCommunicator().openProject(openProject);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
 		}
 		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
@@ -65,7 +99,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-	private ArrayList<IdeFrame> getIdeFrames() {
+	public ArrayList<IdeFrame> getIdeFrames() {
 		IdeFrame[] allProjectFrames = WindowManager.getInstance().getAllProjectFrames();
 		ArrayList<IdeFrame> list = new ArrayList<IdeFrame>(allProjectFrames.length);
 		list.addAll(Arrays.asList(allProjectFrames));
