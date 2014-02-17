@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>2.1</version>
+	<version>2.1-fastcast</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -57,11 +57,14 @@
 
 	<project-components>
 		<!-- Add your project components here -->
+		<component>
+			<implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
+		</component>
 	</project-components>
 
 	<actions>
 		<!-- Add your actions here -->
-		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
+		<action id="FrameSwitchAction" class="krasa.frameswitcher.action.FrameSwitchAction" text="Switch frame"
 				description="Switch frame">
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
