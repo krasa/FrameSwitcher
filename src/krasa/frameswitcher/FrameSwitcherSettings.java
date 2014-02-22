@@ -2,7 +2,9 @@ package krasa.frameswitcher;
 
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import krasa.frameswitcher.networking.dto.RemoteProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,21 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FrameSwitcherSettings {
+	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
 	private String maxRecentProjects = "25";
+	private boolean remoting;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
 	}
 
+	public boolean shouldShow(RemoteProject recentProjectsAction) {
+		return shouldShow(recentProjectsAction.getProjectPath());
+	}
+
 	public boolean shouldShow(ReopenProjectAction action) {
+		return shouldShow(action.getProjectPath());
+	}
+
+	private boolean shouldShow(String projectPath) {
 		if (recentProjectPaths.size() == 0) {
 			return true;
 		}
 		try {
-			File file = new File(action.getProjectPath());
+			File file = new File(projectPath);
 			String canonicalPath = file.getCanonicalPath();
 			for (String recentProjectPath : recentProjectPaths) {
 				if (canonicalPath.startsWith(new File(recentProjectPath).getCanonicalPath())) {
@@ -32,7 +44,7 @@ public class FrameSwitcherSettings {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn(e);
 		}
 		return false;
 	}
@@ -64,5 +76,13 @@ public class FrameSwitcherSettings {
 
 	public void setMaxRecentProjects(final String maxRecentProjects) {
 		this.maxRecentProjects = maxRecentProjects;
+	}
+
+	public boolean isRemoting() {
+		return remoting;
+	}
+
+	public void setRemoting(final boolean remoting) {
+		this.remoting = remoting;
 	}
 }

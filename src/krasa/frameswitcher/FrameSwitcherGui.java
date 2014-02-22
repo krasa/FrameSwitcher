@@ -23,6 +23,7 @@ public class FrameSwitcherGui {
 	private JList recentProjectFiltersList;
 	private JButton addButton;
 	private JButton remove;
+	private JCheckBox remoting;
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
@@ -85,10 +86,6 @@ public class FrameSwitcherGui {
 		comboBoxModel.setSelectedItem(data.getPopupSelectionAid());
 	}
 
-	public void setData(FrameSwitcherSettings data) {
-		maxRecentProjects.setText(data.getMaxRecentProjects());
-	}
-
 	public FrameSwitcherSettings exportDisplayedSettings() {
 		getData(settings);
 		settings.setPopupSelectionAid(comboBoxModel.getSelectedItem());
@@ -104,18 +101,25 @@ public class FrameSwitcherGui {
 		return recentProjectPaths;
 	}
 
+
+	public void setData(FrameSwitcherSettings data) {
+		maxRecentProjects.setText(data.getMaxRecentProjects());
+		remoting.setSelected(data.isRemoting());
+	}
+
 	public void getData(FrameSwitcherSettings data) {
 		data.setMaxRecentProjects(maxRecentProjects.getText());
+		data.setRemoting(remoting.isSelected());
 	}
 
 	public boolean isModified(FrameSwitcherSettings data) {
+		//ALWAYS MUST BE HERE
 		if (isModifiedCustom(data)) {
 			return true;
 		}
-		if (maxRecentProjects.getText() != null ? !maxRecentProjects.getText().equals(data.getMaxRecentProjects())
-				: data.getMaxRecentProjects() != null) {
+		if (maxRecentProjects.getText() != null ? !maxRecentProjects.getText().equals(data.getMaxRecentProjects()) : data.getMaxRecentProjects() != null)
 			return true;
-		}
+		if (remoting.isSelected() != data.isRemoting()) return true;
 		return false;
 	}
 

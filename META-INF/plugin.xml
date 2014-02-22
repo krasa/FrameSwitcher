@@ -1,19 +1,23 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>2.2</version>
+	<version>3.0</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
 	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
-  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.         <br/><br/>
-  	
+  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.
+               <br/><br/>
+      
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.0
+	   	  <br/> - switching between multiple IDE instances
+	      <br/><br/>
 	      2.2
 	     <br/> - fixed compatibility with PhpStorm
          <br/><br/>
@@ -61,6 +65,9 @@
 
 	<project-components>
 		<!-- Add your project components here -->
+		<component>
+			<implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
+		</component>
 	</project-components>
 
 	<actions>
@@ -69,6 +76,11 @@
 				description="Switch frame">
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
+		</action>
+		<action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
+				text="FrameSwitcher Remoting Diagnostic Action"
+				description="FrameSwitcher Remoting Diagnostic Action">
+			<!--<add-to-group group-id="MainToolBar" anchor="last"/>-->
 		</action>
 	</actions>
 
