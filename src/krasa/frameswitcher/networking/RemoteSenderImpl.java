@@ -1,6 +1,6 @@
 package krasa.frameswitcher.networking;
 
-import com.intellij.ide.RecentProjectsManager;
+import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -42,7 +42,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	@java.lang.Override
 	public void sendInstanceStarted() {
 		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
-		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
 
 		LOG.info("sending InstanceStarted");
 		send(new Message(null, new InstanceStarted(uuid, recentProjectsActions, ideFrames)));
@@ -51,7 +51,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	@java.lang.Override
 	public void sendProjectsState() {
 		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
-		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
 		LOG.info("sending ProjectsState");
 		final Message msg = new Message(null, new ProjectsState(uuid, recentProjectsActions, ideFrames));
 		send(msg);

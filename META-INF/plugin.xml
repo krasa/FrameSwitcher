@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.0</version>
+	<version>3.1</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -15,6 +15,9 @@
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.1
+	   	  <br/> - focus fix after switch
+	      <br/><br/>
 	      3.0
 	   	  <br/> - switching between multiple IDE instances
 	      <br/><br/>

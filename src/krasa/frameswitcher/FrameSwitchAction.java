@@ -1,7 +1,7 @@
 package krasa.frameswitcher;
 
 import com.google.common.collect.Multimap;
-import com.intellij.ide.RecentProjectsManager;
+import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -13,6 +13,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import krasa.frameswitcher.networking.dto.RemoteProject;
@@ -56,6 +57,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						jFrame.setVisible(true);
 						jFrame.setState(Frame.NORMAL);
 						component.grabFocus();
+						IdeFocusManager.getGlobalInstance().requestFocus(component, true);
 					}
 				};
 				group.addAction(action);
@@ -88,7 +90,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void addRecent(DefaultActionGroup group) {
-		final AnAction[] recentProjectsActions = RecentProjectsManager.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
 		if (recentProjectsActions != null) {
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
 
