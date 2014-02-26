@@ -13,13 +13,11 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,12 +50,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 					@Override
 					public void actionPerformed(AnActionEvent e) {
-						JComponent component = frame.getComponent();
-						JFrame jFrame = WindowManager.getInstance().getFrame(project);
-						jFrame.setVisible(true);
-						jFrame.setState(Frame.NORMAL);
-						component.grabFocus();
-						IdeFocusManager.getGlobalInstance().requestFocus(component, true);
+						FocusUtils.requestFocus(project);
 					}
 				};
 				group.addAction(action);

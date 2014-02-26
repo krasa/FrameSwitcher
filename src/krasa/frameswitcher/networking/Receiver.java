@@ -3,9 +3,8 @@ package krasa.frameswitcher.networking;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
-import com.intellij.openapi.wm.WindowManager;
+import krasa.frameswitcher.FocusUtils;
 import krasa.frameswitcher.FrameSwitchAction;
 import krasa.frameswitcher.FrameSwitcherApplicationComponent;
 import krasa.frameswitcher.networking.dto.GeneralMessage;
@@ -20,8 +19,6 @@ import krasa.frameswitcher.networking.dto.ProjectsState;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,17 +87,11 @@ public class Receiver extends ReceiverAdapter {
 			for (final IdeFrame ideFrame : ideFrames) {
 				final Project project = ideFrame.getProject();
 				if (project != null && openProject.getProject().getProjectPath().equals(project.getBasePath())) {
-					final JComponent component = ideFrame.getComponent();
-					final JFrame jFrame = WindowManager.getInstance().getFrame(project);
 					ApplicationManager.getApplication().invokeLater(new Runnable() {
 
 						@Override
 						public void run() {
-							jFrame.setVisible(true);
-							jFrame.setState(Frame.NORMAL);
-							component.grabFocus();
-							component.requestFocus();
-							IdeFocusManager.getGlobalInstance().requestFocus(component, true);
+							FocusUtils.requestFocus(project);
 						}
 					});
 				}
