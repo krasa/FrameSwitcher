@@ -91,7 +91,7 @@ public class Receiver extends ReceiverAdapter {
 
 						@Override
 						public void run() {
-							FocusUtils.requestFocus(project);
+							FocusUtils.requestFocus(project, true);
 						}
 					});
 				}

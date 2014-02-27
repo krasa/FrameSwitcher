@@ -50,7 +50,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 					@Override
 					public void actionPerformed(AnActionEvent e) {
-						FocusUtils.requestFocus(project);
+						FocusUtils.requestFocus(project, false);
 					}
 				};
 				group.addAction(action);
