@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.1.2</version>
+	<version>3.1.4</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -19,7 +19,7 @@
 	   	  <br/> - focus fix after switch
 	      <br/><br/>
 	      3.0
-	   	  <br/> - switching between multiple IDE instances
+	   	  <br/> - switching between multiple IDE instances (disabled by default, see Settings)
 	      <br/><br/>
 	      2.2
 	     <br/> - fixed compatibility with PhpStorm

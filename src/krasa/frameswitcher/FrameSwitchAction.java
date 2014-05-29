@@ -1,5 +1,17 @@
 package krasa.frameswitcher;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.swing.*;
+
+import krasa.frameswitcher.networking.dto.RemoteProject;
+
 import com.google.common.collect.Multimap;
 import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
@@ -15,18 +27,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
-import krasa.frameswitcher.networking.dto.RemoteProject;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.UUID;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
+
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 
 	@Override
@@ -124,7 +127,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							group.addSeparator("Remote recent");
 						}
 						group.add(new ReopenProjectAction(remoteProject.getProjectPath(), remoteProject.getName(),
-								remoteProject.getName()));
+						  remoteProject.getName()));
 						i++;
 					}
 				}
