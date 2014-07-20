@@ -74,11 +74,15 @@
 	</project-components>
 
 	<actions>
-		<!-- Add your actions here -->
 		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
 				description="Switch frame">
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
+		</action>
+		<action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close projects"
+				description="Close projects">
+			<add-to-group group-id="WindowMenu" anchor="first"/>
+			<keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>
 		</action>
 		<action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
 				text="FrameSwitcher Remoting Diagnostic Action"
