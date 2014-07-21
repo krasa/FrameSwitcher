@@ -9,7 +9,7 @@
 	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
   	<br/>
-  	<br/>Open the dialog by pressing - ALT + F2
+  	<br/>Switch or reopen project - ALT + F2
   	<br/>Close projects - CTRL + ALT + F2
   	<br/>Or set your own shortcut in Settings | Keymap.
                <br/><br/>
@@ -81,12 +81,12 @@
 
 	<actions>
 		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
-				description="Switch frame">
+				description="Switch or reopen project">
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
 		</action>
 		<action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close projects"
-				description="Close projects">
+				description="Close projects - closes selected projects">
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>
 		</action>
