@@ -17,6 +17,7 @@ public class CloseProjectsForm {
 
 	public CloseProjectsForm(Project project) {
 		Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		for (Project openProject : openProjects) {
 			list.addItem(openProject, openProject.getName(), openProject != project);
 		}

@@ -1,20 +1,26 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.1.4</version>
+	<version>3.2</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
 	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
-  	Open the dialog by pressing ALT + F2, or set your own shortcut in Settings | Keymap.
+  	<br/>
+  	<br/>Open the dialog by pressing - ALT + F2
+  	<br/>Close projects - CTRL + ALT + F2
+  	<br/>Or set your own shortcut in Settings | Keymap.
                <br/><br/>
       
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.2
+	   	  <br/> - close projects action - closes selected projects
+	      <br/><br/>
 	      3.1
 	   	  <br/> - focus fix after switch
 	      <br/><br/>
