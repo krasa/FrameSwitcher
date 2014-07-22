@@ -1,20 +1,11 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.components.ExportableApplicationComponent;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import krasa.frameswitcher.networking.DummyRemoteSender;
-import krasa.frameswitcher.networking.Receiver;
-import krasa.frameswitcher.networking.RemoteInstancesState;
-import krasa.frameswitcher.networking.RemoteSender;
-import krasa.frameswitcher.networking.RemoteSenderImpl;
+import krasa.frameswitcher.networking.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,7 +71,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@NotNull
 	@Override
 	public String getPresentableName() {
-		return "FrameSwitcher";
+		return "Frame Switcher";
 	}
 
 	@NotNull

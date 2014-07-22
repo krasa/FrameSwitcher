@@ -12,6 +12,8 @@
   	<br/>Switch or reopen project - ALT + F2
   	<br/>Close projects - CTRL + ALT + F2
   	<br/>Or set your own shortcut in Settings | Keymap.
+   <br/>
+  	<br/>See Settings | Frame Switcher for options like using mnemonics instead of speed search.
                <br/><br/>
       
       (Big thanks to Eugene Mustaphin for contributions.)
