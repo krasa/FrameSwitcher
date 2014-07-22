@@ -24,6 +24,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	private FrameSwitcherGui gui;
 	private RemoteInstancesState remoteInstancesState = new RemoteInstancesState();
 	private RemoteSender remoteSender;
+	private ProjectFocusMonitor projectFocusMonitor;
 
 	public static FrameSwitcherApplicationComponent getInstance() {
 		return ServiceManager.getService(FrameSwitcherApplicationComponent.class);
@@ -32,6 +33,12 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	public FrameSwitcherApplicationComponent() {
 	}
 
+	public ProjectFocusMonitor getProjectFocusMonitor() {
+		if (projectFocusMonitor == null) {
+			projectFocusMonitor = new ProjectFocusMonitor();
+		}
+		return projectFocusMonitor;
+	}
 
 	public void initComponent() {
 		if (getState().isRemoting()) {

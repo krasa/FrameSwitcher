@@ -1,32 +1,26 @@
 package krasa.frameswitcher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.swing.*;
-
-import krasa.frameswitcher.networking.dto.RemoteProject;
-
 import com.google.common.collect.Multimap;
 import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.ListPopup;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.popup.list.ListPopupImpl;
+import krasa.frameswitcher.networking.dto.RemoteProject;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
@@ -44,21 +38,39 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void addFrames(Project currentProject, DefaultActionGroup group) {
-		ArrayList<IdeFrame> list = getIdeFrames();
-		for (final IdeFrame frame : list) {
-			final Project project = frame.getProject();
-			if (project != null) {
-				Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
-				DumbAwareAction action = new DumbAwareAction(project.getName(), null, itemIcon) {
+		WindowManager windowManager = WindowManager.getInstance();
+		ArrayList<IdeFrame> ideFrames = getIdeFrames();
 
-					@Override
-					public void actionPerformed(AnActionEvent e) {
-						FocusUtils.requestFocus(project, false);
-					}
-				};
-				group.addAction(action);
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
+		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
+		for (int i = projectsOrderedByFocus.length - 1; i >= 0; i--) {
+			Project project = projectsOrderedByFocus[i];
+			add(currentProject, group, project);
+
+			IdeFrame frame = (IdeFrame) windowManager.getFrame(project);
+			if (frame != null) {
+				ideFrames.remove(frame);
 			}
 		}
+
+		for (final IdeFrame frame : ideFrames) {
+			final Project project = frame.getProject();
+			if (project != null) {
+				add(currentProject, group, project);
+			}
+		}
+	}
+
+	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
+		Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
+		DumbAwareAction action = new DumbAwareAction(project.getName(), null, itemIcon) {
+
+			@Override
+			public void actionPerformed(AnActionEvent e) {
+				FocusUtils.requestFocus(project, false);
+			}
+		};
+		group.addAction(action);
 	}
 
 	private void addRemote(DefaultActionGroup group) {
@@ -127,7 +139,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							group.addSeparator("Remote recent");
 						}
 						group.add(new ReopenProjectAction(remoteProject.getProjectPath(), remoteProject.getName(),
-						  remoteProject.getName()));
+								remoteProject.getName()));
 						i++;
 					}
 				}
@@ -159,6 +171,70 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			}
 		});
 		return list;
+	}
+
+	@Override
+	protected void showPopup(AnActionEvent e, ListPopup p) {
+		final ListPopupImpl popup = (ListPopupImpl) p;
+		registerActions(popup);
+		super.showPopup(e, popup);
+	}
+
+	private void registerActions(final ListPopupImpl popup) {
+		final Ref<Boolean> invoked = Ref.create(false);
+		Shortcut[] frameSwitchActions = KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts("FrameSwitchAction");
+		if (frameSwitchActions == null) {
+			return;
+		}
+		for (Shortcut switchAction : frameSwitchActions) {
+			if (switchAction instanceof KeyboardShortcut) {
+				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) switchAction;
+				String[] split = keyboardShortcut.getFirstKeyStroke().toString().split(" ");
+				for (String s : split) {
+					if (s.equalsIgnoreCase("alt")
+							|| s.equalsIgnoreCase("ctrl")
+							|| s.equalsIgnoreCase("meta")
+							) {
+						if (s.equalsIgnoreCase("ctrl")) {
+							s = "control";
+						}
+						popup.registerAction(s + "Released", KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
+							public void actionPerformed(ActionEvent e) {
+								if (invoked.get()) {
+									popup.handleSelect(true);
+								}
+							}
+						});
+					}
+				}
+				popup.registerAction("invoke", keyboardShortcut.getFirstKeyStroke(), new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						invoked.set(true);
+						JList list = popup.getList();
+						int selectedIndex = list.getSelectedIndex();
+						int size = list.getModel().getSize();
+						if (selectedIndex + 1 < size) {
+							list.setSelectedIndex(selectedIndex + 1);
+						} else {
+							list.setSelectedIndex(0);
+						}
+					}
+				});
+				popup.registerAction("invokeWithShift", KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke()), new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						invoked.set(true);
+						JList list = popup.getList();
+						int selectedIndex = list.getSelectedIndex();
+						int size = list.getModel().getSize();
+						if (selectedIndex - 1 >= 0) {
+							list.setSelectedIndex(selectedIndex - 1);
+						} else {
+							list.setSelectedIndex(size - 1);
+						}
+					}
+				});
+			}
+		}
 	}
 
 	@Override
