@@ -3,9 +3,11 @@ package krasa.frameswitcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.CheckBoxList;
+import com.intellij.util.Function;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,8 +20,18 @@ public class CloseProjectsForm {
 	public CloseProjectsForm(Project project) {
 		Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		for (Project openProject : openProjects) {
-			list.addItem(openProject, openProject.getName(), openProject != project);
+		//IJ 12 compatibility
+		list.setItems(Arrays.asList(openProjects), new Function<Project, String>() {
+			@Override
+			public String fun(Project project) {
+				return project.getName();
+			}
+		});
+		for (int i = 0; i < openProjects.length; i++) {
+			Project openProject = openProjects[i];
+			if (openProject != project) {
+				list.setItemSelected(openProject, true);
+			}
 		}
 	}
 
@@ -35,7 +47,8 @@ public class CloseProjectsForm {
 			Object object = objects[i];
 			final JCheckBox cb = (JCheckBox) object;
 			if (cb.isSelected()) {
-				selected.add(list.getItemAt(i));
+				//IJ 12 compatibility
+				selected.add((Project) list.getItemAt(i));
 			}
 
 		}

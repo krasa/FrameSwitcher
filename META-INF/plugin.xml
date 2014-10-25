@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.2</version>
+	<version>3.3</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -20,6 +20,10 @@
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.3
+		  <br/> - Switch or reopen project action IJ 14 compatibility
+		  <br/> - Close projects action IJ 12 compatibility
+		  <br/><br/>
 	      3.2
 	   	  <br/> - close projects action - closes selected projects
 	      <br/><br/>
