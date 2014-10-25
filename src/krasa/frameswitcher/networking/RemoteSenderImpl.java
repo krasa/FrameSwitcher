@@ -1,20 +1,12 @@
 package krasa.frameswitcher.networking;
 
-import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.IdeFrame;
 import krasa.frameswitcher.FrameSwitchAction;
-import krasa.frameswitcher.networking.dto.InstanceClosed;
-import krasa.frameswitcher.networking.dto.InstanceStarted;
-import krasa.frameswitcher.networking.dto.OpenProject;
-import krasa.frameswitcher.networking.dto.Ping;
-import krasa.frameswitcher.networking.dto.PingResponse;
-import krasa.frameswitcher.networking.dto.ProjectClosed;
-import krasa.frameswitcher.networking.dto.ProjectOpened;
-import krasa.frameswitcher.networking.dto.ProjectsState;
-import krasa.frameswitcher.networking.dto.RemoteProject;
+import krasa.frameswitcher.FrameSwitcherUtils;
+import krasa.frameswitcher.networking.dto.*;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 
@@ -42,7 +34,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	@java.lang.Override
 	public void sendInstanceStarted() {
 		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
-		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = FrameSwitcherUtils.getRecentProjectsManagerBase().getRecentProjectsActions(false);
 
 		LOG.info("sending InstanceStarted");
 		send(new Message(null, new InstanceStarted(uuid, recentProjectsActions, ideFrames)));
@@ -51,7 +43,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	@java.lang.Override
 	public void sendProjectsState() {
 		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
-		final AnAction[] recentProjectsActions = RecentProjectsManagerBase.getInstance().getRecentProjectsActions(false);
+		final AnAction[] recentProjectsActions = FrameSwitcherUtils.getRecentProjectsManagerBase().getRecentProjectsActions(false);
 		LOG.info("sending ProjectsState");
 		final Message msg = new Message(null, new ProjectsState(uuid, recentProjectsActions, ideFrames));
 		send(msg);
@@ -98,7 +90,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	private void send(Message msg) {
 		try {
 			channel.send(msg);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.warn(e);
 		}
 	}

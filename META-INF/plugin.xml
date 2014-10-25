@@ -21,8 +21,7 @@
 
 	<change-notes><![CDATA[
 	      3.3
-		  <br/> - Switch or reopen project action IJ 14 compatibility
-		  <br/> - Close projects action IJ 12 compatibility
+		  <br/> - IJ 14 compatibility
 		  <br/><br/>
 	      3.2
 	   	  <br/> - close projects action - closes selected projects

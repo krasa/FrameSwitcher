@@ -52,7 +52,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 		UUID uuid = UUID.randomUUID();
 		try {
 			remoteSender = new RemoteSenderImpl(uuid, new Receiver(uuid, this));
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.warn(e);
 		}
 	}

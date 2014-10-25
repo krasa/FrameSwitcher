@@ -1,6 +1,5 @@
 package krasa.frameswitcher;
 
-import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
@@ -34,7 +33,8 @@ public class CloseProjectsAction extends DumbAwareAction {
 					ProjectUtil.closeAndDispose(checkProject);
 				}
 			}
-			RecentProjectsManagerBase.getInstance().updateLastProjectPath();
+			FrameSwitcherUtils.getRecentProjectsManagerBase().updateLastProjectPath();
 		}
 	}
+
 }
