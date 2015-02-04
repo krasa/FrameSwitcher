@@ -63,7 +63,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
 		Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
-		DumbAwareAction action = new DumbAwareAction(project.getName(), null, itemIcon) {
+		DumbAwareAction action = new DumbAwareAction(project.getName().replace("_","__"), null, itemIcon) {
 
 			@Override
 			public void actionPerformed(AnActionEvent e) {

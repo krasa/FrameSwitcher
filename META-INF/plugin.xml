@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.3</version>
+	<version>3.4.0</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -20,6 +20,9 @@
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.4
+		  <br/> - underscore not visible for opened projects
+		  <br/><br/>
 	      3.3
 		  <br/> - IJ 14 compatibility
 		  <br/><br/>
