@@ -15,11 +15,14 @@ import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
+import com.intellij.ui.popup.list.ListPopupModel;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
@@ -232,6 +235,25 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							list.setSelectedIndex(selectedIndex - 1);
 						} else {
 							list.setSelectedIndex(size - 1);
+						}
+					}
+				});
+				popup.registerAction("invokeWithDelete", KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						invoked.set(true);
+						JList list = popup.getList();
+						int selectedIndex = list.getSelectedIndex();
+						ListPopupModel model = (ListPopupModel) list.getModel();
+						PopupFactoryImpl.ActionItem selectedItem = (PopupFactoryImpl.ActionItem) model.get(selectedIndex);
+						if (selectedItem != null && selectedItem.getAction() instanceof ReopenProjectAction) {
+							ReopenProjectAction action = (ReopenProjectAction) selectedItem.getAction();
+							FrameSwitcherUtils.getRecentProjectsManagerBase().removePath(action.getProjectPath());
+							model.deleteItem(selectedItem);
+							if (selectedIndex == list.getModel().getSize() -1 ) { //is last
+								list.setSelectedIndex(selectedIndex - 1);
+							} else {
+								list.setSelectedIndex(selectedIndex);
+							}
 						}
 					}
 				});
