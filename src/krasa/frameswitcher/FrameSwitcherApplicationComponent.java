@@ -5,7 +5,9 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.*;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 		PersistentStateComponent<FrameSwitcherSettings>, ExportableApplicationComponent, Configurable {
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
 
 
 	private FrameSwitcherSettings settings;
@@ -93,6 +96,17 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@Override
 	public void loadState(FrameSwitcherSettings frameSwitcherSettings) {
 		this.settings = frameSwitcherSettings;
+		setMaxRecentProjectsToRegistry(frameSwitcherSettings);
+	}
+
+	private void setMaxRecentProjectsToRegistry(FrameSwitcherSettings state) {
+		if (!StringUtils.isBlank(state.getMaxRecentProjects())) {
+			LOG.info("changing " + IDE_MAX_RECENT_PROJECTS + " to " + state.getMaxRecentProjects());
+			Registry.get(IDE_MAX_RECENT_PROJECTS).setValue(state.getMaxRecentProjectsAsInt());
+		} else {
+			LOG.info("resetting " + IDE_MAX_RECENT_PROJECTS + " to default");
+			Registry.get(IDE_MAX_RECENT_PROJECTS).resetToDefault();
+		}
 	}
 
 	// Configurable---------------------------------

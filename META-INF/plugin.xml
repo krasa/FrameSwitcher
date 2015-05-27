@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.4.0</version>
+	<version>3.5.0</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -20,6 +20,9 @@
       ]]></description>
 
 	<change-notes><![CDATA[
+	      3.5
+		  <br/> - Delete key for deleting recent projects from history
+		  <br/> - Max recent projects settings changes Registry value of "ide.max.recent.projects"
 	      3.4
 		  <br/> - underscore not visible for opened projects
 		  <br/><br/>

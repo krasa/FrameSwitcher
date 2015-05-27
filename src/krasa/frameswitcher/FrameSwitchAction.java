@@ -249,7 +249,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							ReopenProjectAction action = (ReopenProjectAction) selectedItem.getAction();
 							FrameSwitcherUtils.getRecentProjectsManagerBase().removePath(action.getProjectPath());
 							model.deleteItem(selectedItem);
-							if (selectedIndex == list.getModel().getSize() -1 ) { //is last
+							if (selectedIndex == list.getModel().getSize()) { //is last
 								list.setSelectedIndex(selectedIndex - 1);
 							} else {
 								list.setSelectedIndex(selectedIndex);

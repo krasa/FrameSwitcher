@@ -16,7 +16,7 @@ public class FrameSwitcherSettings {
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
-	private String maxRecentProjects = "25";
+	private String maxRecentProjects = "50";
 	private boolean remoting;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
