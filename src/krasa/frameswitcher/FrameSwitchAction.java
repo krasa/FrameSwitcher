@@ -107,13 +107,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		if (recentProjectsActions != null) {
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
 
-			final int maxRecentProjectsAsInt = settings.getMaxRecentProjectsAsInt();
 			int i = 0;
 			for (AnAction action : recentProjectsActions) {
 				ReopenProjectAction recentProjectsAction = (ReopenProjectAction) action;
-				if (i >= maxRecentProjectsAsInt) {
-					break;
-				}
 				if (settings.shouldShow(recentProjectsAction)) {
 					if (i == 0) {
 						group.addSeparator("Recent");
@@ -131,13 +127,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		boolean addedSeparator = false;
 		if (remoteRecentProjects.size() > 0) {
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
-			final int maxRecentProjectsAsInt = settings.getMaxRecentProjectsAsInt() / entries.size();
 			for (UUID entry : entries.toArray(new UUID[entries.size()])) {
 				int i = 0;
 				for (RemoteProject remoteProject : remoteRecentProjects.get(entry)) {
-					if (i >= maxRecentProjectsAsInt) {
-						break;
-					}
 					if (settings.shouldShow(remoteProject)) {
 						if (!addedSeparator) {
 							addedSeparator = true;

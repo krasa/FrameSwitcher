@@ -4,7 +4,6 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 
@@ -112,8 +111,7 @@ public class FrameSwitcherGui {
 		try {
 			Integer.parseInt(maxRecentProjects.getText());
 		} catch (Exception e) {
-			Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).resetToDefault();
-			maxRecentProjects.setText(Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).asString());
+			maxRecentProjects.setText("");
 		}
 		data.setMaxRecentProjects(maxRecentProjects.getText());
 		data.setRemoting(remoting.isSelected());

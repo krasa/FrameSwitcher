@@ -6,18 +6,19 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.dto.RemoteProject;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameSwitcherSettings {
+public class FrameSwitcherSettings {	
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
-	private String maxRecentProjects = Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).asString();
+	private String maxRecentProjects = "";
 	private boolean remoting;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
@@ -63,10 +64,6 @@ public class FrameSwitcherSettings {
 		return maxRecentProjects;
 	}
 
-	public int getMaxRecentProjectsAsInt() {
-		return Integer.parseInt(maxRecentProjects);
-	}
-
 	public void setPopupSelectionAid(JBPopupFactory.ActionSelectionAid popupSelectionAid) {
 		this.popupSelectionAid = popupSelectionAid;
 	}
@@ -85,5 +82,25 @@ public class FrameSwitcherSettings {
 
 	public void setRemoting(final boolean remoting) {
 		this.remoting = remoting;
+	}
+
+	public void applyMaxRecentProjectsToRegistry() {
+		try {
+			if (!StringUtils.isBlank(maxRecentProjects)) {
+				LOG.info("Changing Registry " + FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS + " to " + maxRecentProjects);
+				Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).setValue(Integer.parseInt(maxRecentProjects));
+			}
+		} catch (Exception e) {
+			LOG.error(e);
+		}
+	}
+
+	public void applyOrResetMaxRecentProjectsToRegistry() {
+		if (!StringUtils.isBlank(maxRecentProjects)) {
+			applyMaxRecentProjectsToRegistry();
+		} else {
+			LOG.info("Changing Registry " + FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS + " to default");
+			Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).resetToDefault();
+		}
 	}
 }

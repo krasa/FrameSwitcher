@@ -5,9 +5,7 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.*;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,17 +94,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@Override
 	public void loadState(FrameSwitcherSettings frameSwitcherSettings) {
 		this.settings = frameSwitcherSettings;
-		setMaxRecentProjectsToRegistry(frameSwitcherSettings);
-	}
-
-	private void setMaxRecentProjectsToRegistry(FrameSwitcherSettings state) {
-		if (!StringUtils.isBlank(state.getMaxRecentProjects())) {
-			LOG.info("Changing Registry " + IDE_MAX_RECENT_PROJECTS + " to " + state.getMaxRecentProjects());
-			Registry.get(IDE_MAX_RECENT_PROJECTS).setValue(state.getMaxRecentProjectsAsInt());
-		} else {
-			LOG.info("Changing Registry, resetting " + IDE_MAX_RECENT_PROJECTS + " to default");
-			Registry.get(IDE_MAX_RECENT_PROJECTS).resetToDefault();
-		}
+		frameSwitcherSettings.applyMaxRecentProjectsToRegistry();
 	}
 
 	// Configurable---------------------------------
@@ -144,7 +132,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@Override
 	public void apply() throws ConfigurationException {
 		settings = gui.exportDisplayedSettings();
-		Registry.get(IDE_MAX_RECENT_PROJECTS).setValue(settings.getMaxRecentProjectsAsInt());
+		settings.applyOrResetMaxRecentProjectsToRegistry();
 
 		if (remoteSender instanceof DummyRemoteSender && settings.isRemoting()) {
 			initRemoting();
