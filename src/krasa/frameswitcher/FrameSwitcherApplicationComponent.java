@@ -101,10 +101,10 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 
 	private void setMaxRecentProjectsToRegistry(FrameSwitcherSettings state) {
 		if (!StringUtils.isBlank(state.getMaxRecentProjects())) {
-			LOG.info("changing " + IDE_MAX_RECENT_PROJECTS + " to " + state.getMaxRecentProjects());
+			LOG.info("Changing Registry " + IDE_MAX_RECENT_PROJECTS + " to " + state.getMaxRecentProjects());
 			Registry.get(IDE_MAX_RECENT_PROJECTS).setValue(state.getMaxRecentProjectsAsInt());
 		} else {
-			LOG.info("resetting " + IDE_MAX_RECENT_PROJECTS + " to default");
+			LOG.info("Changing Registry, resetting " + IDE_MAX_RECENT_PROJECTS + " to default");
 			Registry.get(IDE_MAX_RECENT_PROJECTS).resetToDefault();
 		}
 	}

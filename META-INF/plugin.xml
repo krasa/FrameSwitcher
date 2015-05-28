@@ -8,13 +8,23 @@
 	</vendor>
 	<description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
-  	<br/>
-  	<br/>Switch or reopen project - ALT + F2
-  	<br/>Close projects - CTRL + ALT + F2
+  	<ul>
+  		<li>
+  			Switch or reopen project - ALT + F2
+			<ul>
+				<li>  
+					- Delete key removes a recent project from history
+				</li>
+			</ul>
+		</li>
+  		<li>
+  			Close projects - CTRL + ALT + F2
+		</li>
+  	</ul>
   	<br/>Or set your own shortcut in Settings | Keymap.
-   <br/>
-  	<br/>See Settings | Frame Switcher for options like using mnemonics instead of speed search.
-               <br/><br/>
+    <br/>
+  	<br/>See File | Settings | Other Settings | FrameSwitcher for options like using mnemonics instead of speed search, or max recent projects size.
+	<br/><br/>
       
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
