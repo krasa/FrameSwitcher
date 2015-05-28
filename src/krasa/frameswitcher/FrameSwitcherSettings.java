@@ -4,6 +4,7 @@ import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class FrameSwitcherSettings {
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
-	private String maxRecentProjects = "50";
+	private String maxRecentProjects = Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).asString();
 	private boolean remoting;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {

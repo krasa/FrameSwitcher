@@ -144,6 +144,7 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@Override
 	public void apply() throws ConfigurationException {
 		settings = gui.exportDisplayedSettings();
+		Registry.get(IDE_MAX_RECENT_PROJECTS).setValue(settings.getMaxRecentProjectsAsInt());
 
 		if (remoteSender instanceof DummyRemoteSender && settings.isRemoting()) {
 			initRemoting();
