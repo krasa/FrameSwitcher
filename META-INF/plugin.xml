@@ -32,9 +32,11 @@
 	<change-notes><![CDATA[
 	      3.5.1
 		  <br/> - IntelliJ 2016 compatibility
+		  <br/><br/>
 	      3.5
 		  <br/> - Delete key for deleting recent projects from history
 		  <br/> - Max recent projects settings changes Registry value of "ide.max.recent.projects"
+		  <br/><br/>
 	      3.4
 		  <br/> - underscore not visible for opened projects
 		  <br/><br/>
