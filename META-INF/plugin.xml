@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.5.1</version>
+	<version>3.5.2</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -29,8 +29,8 @@
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
-	<change-notes><![CDATA[
-	      3.5.1
+    <change-notes><![CDATA[
+	      3.5.2
 		  <br/> - IntelliJ 2016 compatibility
 		  <br/><br/>
 	      3.5

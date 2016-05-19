@@ -1,7 +1,6 @@
 package krasa.frameswitcher;
 
 import com.intellij.ide.ReopenProjectAction;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.registry.Registry;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameSwitcherSettings {	
+public class FrameSwitcherSettings {
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
@@ -56,8 +55,7 @@ public class FrameSwitcherSettings {
 	}
 
 	public static FrameSwitcherSettings getInstance() {
-		FrameSwitcherApplicationComponent service = ServiceManager.getService(FrameSwitcherApplicationComponent.class);
-		return service.getState();
+		return FrameSwitcherApplicationComponent.getInstance().getState();
 	}
 
 	public String getMaxRecentProjects() {
