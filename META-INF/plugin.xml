@@ -32,6 +32,7 @@
     <change-notes><![CDATA[
 	      3.6.0
 		  <br/> - restored behaviour for default selected item in IntelliJ 2016.2+, configurable in settings
+          <br/><br/>
 	      3.5.2
 		  <br/> - IntelliJ 2016 compatibility
 		  <br/><br/>
