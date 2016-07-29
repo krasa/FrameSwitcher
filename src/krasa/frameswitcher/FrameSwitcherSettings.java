@@ -19,6 +19,7 @@ public class FrameSwitcherSettings {
 	private List<String> recentProjectPaths = new ArrayList<String>();
 	private String maxRecentProjects = "";
 	private boolean remoting;
+	private boolean defaultSelectionCurrentProject=true;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -59,6 +60,14 @@ public class FrameSwitcherSettings {
 	}
 
 	public String getMaxRecentProjects() {
+		try {
+			if (!StringUtils.isBlank(maxRecentProjects)) {
+				//noinspection ResultOfMethodCallIgnored
+				Integer.parseInt(maxRecentProjects);
+			}
+		} catch (Exception e) {
+			maxRecentProjects = "";
+		}
 		return maxRecentProjects;
 	}
 
@@ -72,6 +81,14 @@ public class FrameSwitcherSettings {
 
 	public void setMaxRecentProjects(final String maxRecentProjects) {
 		this.maxRecentProjects = maxRecentProjects;
+		try {
+			if (!StringUtils.isBlank(this.maxRecentProjects)) {
+				//noinspection ResultOfMethodCallIgnored
+				Integer.parseInt(this.maxRecentProjects);
+			}
+		} catch (Exception e) {
+			this.maxRecentProjects = "";
+		}
 	}
 
 	public boolean isRemoting() {
@@ -100,5 +117,13 @@ public class FrameSwitcherSettings {
 			LOG.info("Changing Registry " + FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS + " to default");
 			Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).resetToDefault();
 		}
+	}
+
+	public boolean isDefaultSelectionCurrentProject() {
+		return defaultSelectionCurrentProject;
+	}
+
+	public void setDefaultSelectionCurrentProject(final boolean defaultSelectionCurrentProject) {
+		this.defaultSelectionCurrentProject = defaultSelectionCurrentProject;
 	}
 }

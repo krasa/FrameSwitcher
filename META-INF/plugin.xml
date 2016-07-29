@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.5.2</version>
+	<version>3.6.0-162</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -10,7 +10,7 @@
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
   	<ul>
   		<li>
-  			Switch or reopen project - ALT + F2
+  			Switch or reopen project - ALT + F2 (repeat for selecting a next item)
 			<ul>
 				<li>  
 					- Delete key removes a recent project from history
@@ -23,13 +23,15 @@
   	</ul>
   	<br/>Or set your own shortcut in Settings | Keymap.
     <br/>
-  	<br/>See File | Settings | Other Settings | FrameSwitcher for options like using mnemonics instead of speed search, or max recent projects size.
+  	<br/>See File | Settings | Other Settings | FrameSwitcher for options like using mnemonics instead of speed search, max recent projects size and other...
 	<br/><br/>
       
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.6.0
+		  <br/> - restored behaviour for default selected item in IntelliJ 2016.2+, configurable in settings
 	      3.5.2
 		  <br/> - IntelliJ 2016 compatibility
 		  <br/><br/>
@@ -81,7 +83,7 @@
 	</change-notes>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="122.694"/>
+	<idea-version since-build="162.1121"/>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 		   on how to target different products -->

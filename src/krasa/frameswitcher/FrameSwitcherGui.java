@@ -24,6 +24,7 @@ public class FrameSwitcherGui {
 	private JButton addButton;
 	private JButton remove;
 	private JCheckBox remoting;
+	private JCheckBox defaultSelectionCurrentProject;
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
@@ -102,19 +103,26 @@ public class FrameSwitcherGui {
 	}
 
 
+	private boolean isModifiedCustom(FrameSwitcherSettings data) {
+		if (!Arrays.equals(listModel.toArray(), data.getRecentProjectPaths().toArray())) {
+			return true;
+		}
+		if (comboBoxModel.getSelectedItem() != data.getPopupSelectionAid()) {
+			return true;
+		}
+		return false;
+	}
+
 	public void setData(FrameSwitcherSettings data) {
 		maxRecentProjects.setText(data.getMaxRecentProjects());
 		remoting.setSelected(data.isRemoting());
+		defaultSelectionCurrentProject.setSelected(data.isDefaultSelectionCurrentProject());
 	}
 
 	public void getData(FrameSwitcherSettings data) {
-		try {
-			Integer.parseInt(maxRecentProjects.getText());
-		} catch (Exception e) {
-			maxRecentProjects.setText("");
-		}
 		data.setMaxRecentProjects(maxRecentProjects.getText());
 		data.setRemoting(remoting.isSelected());
+		data.setDefaultSelectionCurrentProject(defaultSelectionCurrentProject.isSelected());
 	}
 
 	public boolean isModified(FrameSwitcherSettings data) {
@@ -125,16 +133,7 @@ public class FrameSwitcherGui {
 		if (maxRecentProjects.getText() != null ? !maxRecentProjects.getText().equals(data.getMaxRecentProjects()) : data.getMaxRecentProjects() != null)
 			return true;
 		if (remoting.isSelected() != data.isRemoting()) return true;
-		return false;
-	}
-
-	private boolean isModifiedCustom(FrameSwitcherSettings data) {
-		if (!Arrays.equals(listModel.toArray(), data.getRecentProjectPaths().toArray())) {
-			return true;
-		}
-		if (comboBoxModel.getSelectedItem() != data.getPopupSelectionAid()) {
-			return true;
-		}
+		if (defaultSelectionCurrentProject.isSelected() != data.isDefaultSelectionCurrentProject()) return true;
 		return false;
 	}
 }
