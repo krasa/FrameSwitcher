@@ -88,6 +88,12 @@ public class FrameSwitcherGui {
 	}
 
 	public FrameSwitcherSettings exportDisplayedSettings() {
+		try {
+			//noinspection ResultOfMethodCallIgnored
+			Integer.parseInt(maxRecentProjects.getText());
+		} catch (Exception e) {
+			maxRecentProjects.setText("");
+		}
 		getData(settings);
 		settings.setPopupSelectionAid(comboBoxModel.getSelectedItem());
 		settings.setRecentProjectPaths(toListStrings(listModel.toArray()));
