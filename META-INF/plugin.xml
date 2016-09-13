@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-    <version>3.6.1-162</version>
+	<version>3.6.1-122</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -30,8 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
-	      3.6.0
-		  <br/> - restored behaviour for default selected item in IntelliJ 2016.2+, configurable in settings
+	      3.6.1
+		  <br/> - IJ 12-2016.1: configuration for having the current project in the list
+		  <br/> - IJ 2016.2+: configuration for default selected project
           <br/><br/>
 	      3.5.2
 		  <br/> - IntelliJ 2016 compatibility
@@ -84,7 +85,7 @@
 	</change-notes>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="162.1121"/>
+	<idea-version since-build="122.694"/>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 		   on how to target different products -->

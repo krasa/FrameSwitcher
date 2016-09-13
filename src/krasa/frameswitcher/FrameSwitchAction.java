@@ -12,7 +12,6 @@ import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
@@ -20,7 +19,6 @@ import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
 import krasa.frameswitcher.networking.dto.RemoteProject;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -42,34 +40,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		addRemoteRecent(group);
 	}
 
-	@Override
-	public void actionPerformed(@NotNull AnActionEvent e) {
-		Project project = e.getData(CommonDataKeys.PROJECT);
-		DefaultActionGroup group = new DefaultActionGroup();
-		fillActions(project, group, e.getDataContext());
-		showPopup(e, group);
-	}
-
-	private void showPopup(AnActionEvent e, DefaultActionGroup group) {
-		if (group.getChildrenCount() == 0) return;
-		JBPopupFactory.ActionSelectionAid aid = getAidMethod();
-		
-		
-		Condition<AnAction>  condition ;
-		if (FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
-			//noinspection unchecked
-			condition = Condition.FALSE;
-		} else {
-			condition = (a) -> a.getTemplatePresentation().getIcon() != ourCurrentAction;
-		} 
-		
-		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
-				getPopupTitle(e), group, e.getDataContext(), aid, true, null, -1,
-				condition, myActionPlace);
-		showPopup(e, popup);
-	}
-
- 
 	private void addFrames(Project currentProject, DefaultActionGroup group) {
 		WindowManager windowManager = WindowManager.getInstance();
 		ArrayList<IdeFrame> ideFrames = getIdeFrames();
@@ -95,8 +65,12 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
+		if (currentProject == project && !FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
+			return;
+		}
+		
 		Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
-		DumbAwareAction action = new DumbAwareAction(project.getName().replace("_","__"), null, itemIcon) {
+		DumbAwareAction action = new DumbAwareAction(project.getName().replace("_", "__"), null, itemIcon) {
 
 			@Override
 			public void actionPerformed(AnActionEvent e) {
