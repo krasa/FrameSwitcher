@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.6.1-122</version>
+	<version>3.7.0-122</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.7.0
+		  <br/> - fixed opening in current window (#11)
+          <br/><br/>
 	      3.6.1
 		  <br/> - IJ 12-2016.1: configuration for having the current project in the list
 		  <br/> - IJ 2016.2+: configuration for default selected project
