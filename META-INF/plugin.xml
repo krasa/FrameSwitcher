@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.7.0-162</version>
+    <version>3.8.0-162</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -10,10 +10,12 @@
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
   	<ul>
   		<li>
-  			Switch or reopen project - ALT + F2 (repeat for selecting a next item)
+  			Switch or reopen a project - ALT + F2 (repeat for selecting a next item)
 			<ul>
 				<li>  
-					- Delete key removes a recent project from history
+					- Shift+Enter - reopen a project in the current window
+					- Ctrl+Enter - reopen a project in a new window
+					- Delete - removes a recent project from the history
 				</li>
 			</ul>
 		</li>
@@ -30,6 +32,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.8.0
+		  <br/> - added Shift+Enter, Ctrl+Enter shortcuts (#13)
+          <br/><br/>
 	      3.7.0
 		  <br/> - fixed opening in current window (#11)
           <br/><br/>

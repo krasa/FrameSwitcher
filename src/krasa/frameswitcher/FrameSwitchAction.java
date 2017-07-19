@@ -1,6 +1,7 @@
 package krasa.frameswitcher;
 
 import com.google.common.collect.Multimap;
+import com.intellij.ide.GeneralSettings;
 import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
@@ -24,15 +25,18 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+	private Project currentProject;
 
 	@Override
 	protected void fillActions(final Project currentProject, DefaultActionGroup group, DataContext dataContext) {
+		this.currentProject = currentProject;
 		addFrames(currentProject, group);
 
 		addRemote(group);
@@ -234,6 +238,40 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						});
 					}
 				}
+				popup.registerAction("ReopenInSameWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						JList list = popup.getList();
+						PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
+						if (selectedValue.getAction() instanceof ReopenProjectAction) {
+							popup.closeOk(null);
+							int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+							try {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
+								ReopenProjectAction action = (ReopenProjectAction) selectedValue.getAction();
+								action.actionPerformed(new AnActionEvent(null, DataContext.EMPTY_CONTEXT, myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+							} finally {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+							}
+						}
+					}
+				});
+				popup.registerAction("ReopenInNewWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						JList list = popup.getList();
+						PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
+						if (selectedValue.getAction() instanceof ReopenProjectAction) {
+							popup.closeOk(null);
+							int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+							try {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
+								ReopenProjectAction action = (ReopenProjectAction) selectedValue.getAction();
+								action.actionPerformed(new AnActionEvent(null, DataContext.EMPTY_CONTEXT, myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+							} finally {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+							}
+						}
+					}
+				});
 				popup.registerAction("invoke", keyboardShortcut.getFirstKeyStroke(), new AbstractAction() {
 					public void actionPerformed(ActionEvent e) {
 						invoked.set(true);
