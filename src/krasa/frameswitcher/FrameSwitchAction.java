@@ -1,6 +1,7 @@
 package krasa.frameswitcher;
 
 import com.google.common.collect.Multimap;
+import com.intellij.ide.DataManager;
 import com.intellij.ide.GeneralSettings;
 import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.ide.ReopenProjectAction;
@@ -221,7 +222,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					try {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
 						ReopenProjectAction action = (ReopenProjectAction) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, DataContext.EMPTY_CONTEXT, myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
@@ -238,7 +239,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					try {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
 						ReopenProjectAction action = (ReopenProjectAction) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, DataContext.EMPTY_CONTEXT, myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
@@ -317,6 +318,15 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				});
 			}
 		}
+	}
+
+	private DataContext getDataContext(ListPopupImpl popup) {
+		DataContext dataContext = DataManager.getInstance().getDataContext(popup.getOwner());
+		Project project = dataContext.getData(CommonDataKeys.PROJECT);
+		if (project == null) {
+			throw new IllegalStateException("Project is null for " + popup.getOwner());
+		}
+		return dataContext;
 	}
 
 	@Override
