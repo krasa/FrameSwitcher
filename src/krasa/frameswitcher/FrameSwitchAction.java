@@ -32,11 +32,9 @@ import java.util.*;
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
-	private Project currentProject;
 
 	@Override
 	protected void fillActions(final Project currentProject, DefaultActionGroup group, DataContext dataContext) {
-		this.currentProject = currentProject;
 		addFrames(currentProject, group);
 
 		addRemote(group);
