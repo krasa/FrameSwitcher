@@ -37,7 +37,7 @@ import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
-	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+	private final static Logger LOG = Logger.getInstance(FrameSwitchAction.class);
 
 	@Override
 	protected void fillActions(final Project currentProject, DefaultActionGroup group, DataContext dataContext) {
@@ -365,27 +365,40 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 
 		private void requestFocus(ReopenRecentWrapper action) {
+			Project openedProject = null;
 			Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
-			for (Project openProject : openProjects) {
-				if (openProject instanceof ProjectImpl) {
-					ProjectImpl p = (ProjectImpl) openProject;
+			for (int i = openProjects.length - 1; i >= 0; i--) {
+				Project project = openProjects[i];
+				if (project instanceof ProjectImpl) {
+					ProjectImpl p = (ProjectImpl) project;
 					if (Objects.equals(p.getBasePath(), action.getProjectPath()) || Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
-						String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
-						try {
-							int ms = Integer.parseInt(requestFocusMs);
-							if (ms > 0) {
-//							FocusUtils.requestFocus(openProject, false);
-								SingleAlarm singleAlarm = new SingleAlarm(() -> {
-									FocusUtils.requestFocus(openProject, false);
-
-								}, ms, Alarm.ThreadToUse.SWING_THREAD, openProject);
-								singleAlarm.request();
-							}
-						} catch (NumberFormatException e) {
-						}
+						openedProject = project;
+						break;
 					}
 				}
 			}
+			if (openedProject != null) {
+				requestFocus(openedProject);
+			} else {
+				LOG.info("Unable to request focus for reopened project: " + action.getProjectPath());
+			}
+		}
+
+		private void requestFocus(Project openProject) {
+			String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
+			try {
+				int ms = Integer.parseInt(requestFocusMs);
+				if (ms > 0) {
+					SingleAlarm singleAlarm = new SingleAlarm(() -> {
+						LOG.info("Requesting focus for " + openProject);
+						FocusUtils.requestFocus(openProject, false);
+
+					}, ms, Alarm.ThreadToUse.SWING_THREAD, openProject);
+					singleAlarm.request();
+				}
+			} catch (NumberFormatException e) {
+			}
 		}
 	}
+
 }
