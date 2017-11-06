@@ -367,20 +367,22 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		private void requestFocus(ReopenRecentWrapper action) {
 			Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (Project openProject : openProjects) {
-				ProjectImpl p = (ProjectImpl) openProject;
-				if (Objects.equals(p.getBasePath(), action.getProjectPath()) || Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
-					String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
-					try {
-						int ms = Integer.parseInt(requestFocusMs);
-						if (ms > 0) {
+				if (openProject instanceof ProjectImpl) {
+					ProjectImpl p = (ProjectImpl) openProject;
+					if (Objects.equals(p.getBasePath(), action.getProjectPath()) || Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
+						String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
+						try {
+							int ms = Integer.parseInt(requestFocusMs);
+							if (ms > 0) {
 //							FocusUtils.requestFocus(openProject, false);
-							SingleAlarm singleAlarm = new SingleAlarm(() -> {
-								FocusUtils.requestFocus(openProject, false);
+								SingleAlarm singleAlarm = new SingleAlarm(() -> {
+									FocusUtils.requestFocus(openProject, false);
 
-							}, ms, Alarm.ThreadToUse.SWING_THREAD, openProject);
-							singleAlarm.request();
+								}, ms, Alarm.ThreadToUse.SWING_THREAD, openProject);
+								singleAlarm.request();
+							}
+						} catch (NumberFormatException e) {
 						}
-					} catch (NumberFormatException e) {
 					}
 				}
 			}
