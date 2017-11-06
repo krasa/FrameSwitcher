@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.9.0-162</version>
+    <version>3.10.0-162</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -30,7 +30,7 @@
       ]]></description>
 
     <change-notes><![CDATA[
-	      3.9.0
+	      3.10.0
 		  <br/> - Workaround for <a href=https://youtrack.jetbrains.com/issue/IDEA-167068>IDEA-167068</a> - grabbing focus after a project reopening (tested on Win 10, not bulletproof, can be customized in settings)
           <br/><br/>
 	      3.8.0

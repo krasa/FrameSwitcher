@@ -13,6 +13,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Condition;
@@ -366,7 +367,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		private void requestFocus(ReopenRecentWrapper action) {
 			Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (Project openProject : openProjects) {
-				if (Objects.equals(openProject.getProjectFilePath(), action.getProjectPath())) {
+				ProjectImpl p = (ProjectImpl) openProject;
+				if (Objects.equals(p.getBasePath(), action.getProjectPath()) || Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
 					String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
 					try {
 						int ms = Integer.parseInt(requestFocusMs);
