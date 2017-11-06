@@ -1,12 +1,11 @@
 package krasa.frameswitcher;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-
-import javax.swing.*;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.InputEvent;
 
 /**
  * @author Vojtech Krasa
@@ -15,7 +14,9 @@ public class FocusUtils {
 
 	public static void requestFocus(Project project, final boolean useRobot) {
 		JFrame frame = WindowManager.getInstance().getFrame(project);
-
+		if (frame == null) {
+			return;
+		}
 		// the only reliable way I found to bring it to the top
 		boolean aot = frame.isAlwaysOnTop();
 		frame.setAlwaysOnTop(true);
