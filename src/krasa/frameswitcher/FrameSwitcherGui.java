@@ -25,6 +25,7 @@ public class FrameSwitcherGui {
 	private JButton remove;
 	private JCheckBox remoting;
 	private JCheckBox defaultSelectionCurrentProject;
+	private JTextField requestFocusMs;
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
@@ -109,37 +110,37 @@ public class FrameSwitcherGui {
 	}
 
 
-	private boolean isModifiedCustom(FrameSwitcherSettings data) {
+	public boolean isModifiedCustom(FrameSwitcherSettings data) {
 		if (!Arrays.equals(listModel.toArray(), data.getRecentProjectPaths().toArray())) {
 			return true;
 		}
 		if (comboBoxModel.getSelectedItem() != data.getPopupSelectionAid()) {
 			return true;
 		}
-		return false;
+		return isModified(data);
 	}
 
 	public void setData(FrameSwitcherSettings data) {
 		maxRecentProjects.setText(data.getMaxRecentProjects());
 		remoting.setSelected(data.isRemoting());
 		defaultSelectionCurrentProject.setSelected(data.isDefaultSelectionCurrentProject());
+		requestFocusMs.setText(data.getRequestFocusMs());
 	}
 
 	public void getData(FrameSwitcherSettings data) {
 		data.setMaxRecentProjects(maxRecentProjects.getText());
 		data.setRemoting(remoting.isSelected());
 		data.setDefaultSelectionCurrentProject(defaultSelectionCurrentProject.isSelected());
+		data.setRequestFocusMs(requestFocusMs.getText());
 	}
 
 	public boolean isModified(FrameSwitcherSettings data) {
-		//ALWAYS MUST BE HERE
-		if (isModifiedCustom(data)) {
-			return true;
-		}
 		if (maxRecentProjects.getText() != null ? !maxRecentProjects.getText().equals(data.getMaxRecentProjects()) : data.getMaxRecentProjects() != null)
 			return true;
 		if (remoting.isSelected() != data.isRemoting()) return true;
 		if (defaultSelectionCurrentProject.isSelected() != data.isDefaultSelectionCurrentProject()) return true;
+		if (requestFocusMs.getText() != null ? !requestFocusMs.getText().equals(data.getRequestFocusMs()) : data.getRequestFocusMs() != null)
+			return true;
 		return false;
 	}
 }

@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-    <version>3.8.0-162</version>
+	<version>3.9.0-162</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -12,11 +12,9 @@
   		<li>
   			Switch or reopen a project - ALT + F2 (repeat for selecting a next item)
 			<ul>
-				<li>  
-					- Shift+Enter - reopen a project in the current window
-					- Ctrl+Enter - reopen a project in a new window
-					- Delete - removes a recent project from the history
-				</li>
+				<li>Shift+Enter - reopen a project in the current window.</li>
+				<li>Ctrl+Enter - reopen a project in a new window.</li>
+				<li>Delete - removes a recent project from the history.</li>
 			</ul>
 		</li>
   		<li>
@@ -32,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.9.0
+		  <br/> - Workaround for <a href=https://youtrack.jetbrains.com/issue/IDEA-167068>IDEA-167068</a> - grabbing focus after a project reopening (tested on Win 10, not bulletproof, can be customized in settings)
+          <br/><br/>
 	      3.8.0
 		  <br/> - added Shift+Enter, Ctrl+Enter shortcuts (#13)
           <br/><br/>

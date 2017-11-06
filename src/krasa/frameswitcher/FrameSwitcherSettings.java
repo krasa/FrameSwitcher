@@ -20,6 +20,7 @@ public class FrameSwitcherSettings {
 	private String maxRecentProjects = "";
 	private boolean remoting;
 	private boolean defaultSelectionCurrentProject=true;
+	private String requestFocusMs = "100";
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -125,5 +126,13 @@ public class FrameSwitcherSettings {
 
 	public void setDefaultSelectionCurrentProject(final boolean defaultSelectionCurrentProject) {
 		this.defaultSelectionCurrentProject = defaultSelectionCurrentProject;
+	}
+
+	public String getRequestFocusMs() {
+		return requestFocusMs;
+	}
+
+	public void setRequestFocusMs(final String requestFocusMs) {
+		this.requestFocusMs = requestFocusMs;
 	}
 }
