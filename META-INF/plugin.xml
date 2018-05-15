@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.11.0
+		  <br/> - Lost focus from editor when switching
+          <br/><br/>
 	      3.10.0
 		  <br/> - Workaround for <a href=https://youtrack.jetbrains.com/issue/IDEA-167068>IDEA-167068</a> - grabbing focus after a project reopening (tested on Win 10, not bulletproof, can be customized in settings)
           <br/><br/>

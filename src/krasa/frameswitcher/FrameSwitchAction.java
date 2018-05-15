@@ -27,7 +27,6 @@ import com.intellij.util.Alarm;
 import com.intellij.util.SingleAlarm;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.SystemIndependent;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -353,7 +352,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			this.recentProjectsAction = recentProjectsAction;
 		}
 
-		@SystemIndependent
 		public String getProjectPath() {
 			return recentProjectsAction.getProjectPath();
 		}

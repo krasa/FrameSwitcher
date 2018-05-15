@@ -1,7 +1,9 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.util.BitUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,12 +25,19 @@ public class FocusUtils {
 		frame.setAlwaysOnTop(aot);
 
 		int frameState = frame.getExtendedState();
-		if ((frameState & Frame.ICONIFIED) == Frame.ICONIFIED) {
+		if (BitUtil.isSet(frameState, Frame.ICONIFIED)) {
 			// restore the frame if it is minimized
 			frame.setExtendedState(frameState ^ Frame.ICONIFIED);
 		}
 		frame.toFront();
-		frame.requestFocus();
+
+		IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
+			Component mostRecentFocusOwner = frame.getMostRecentFocusOwner();
+			if (mostRecentFocusOwner != null) {
+				IdeFocusManager.getGlobalInstance().requestFocus(mostRecentFocusOwner, true);
+			}
+		});
+
 		if (useRobot && runningOnWindows7()) {
 			try {
 				// remember the last location of mouse
@@ -48,6 +57,7 @@ public class FocusUtils {
 				frame.setAlwaysOnTop(false);
 			}
 		}
+
 	}
 
 	public static boolean runningOnWindows7() {

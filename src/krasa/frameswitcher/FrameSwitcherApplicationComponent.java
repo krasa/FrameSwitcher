@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.UUID;
 
-@State(name = "FrameSwitcherSettings", storages = {@Storage(id = "FrameSwitcherSettings", file = "$APP_CONFIG$/FrameSwitcherSettings.xml")})
+@State(name = "FrameSwitcherSettings", storages = {@Storage(file = "$APP_CONFIG$/FrameSwitcherSettings.xml")})
 public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 		PersistentStateComponent<FrameSwitcherSettings>, ExportableApplicationComponent {
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
