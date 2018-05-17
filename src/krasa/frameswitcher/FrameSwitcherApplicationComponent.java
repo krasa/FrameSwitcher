@@ -1,18 +1,18 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
 import krasa.frameswitcher.networking.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.UUID;
 
 @State(name = "FrameSwitcherSettings", storages = {@Storage(file = "$APP_CONFIG$/FrameSwitcherSettings.xml")})
-public class FrameSwitcherApplicationComponent implements ApplicationComponent,
-		PersistentStateComponent<FrameSwitcherSettings>, ExportableApplicationComponent {
+public class FrameSwitcherApplicationComponent implements ApplicationComponent, PersistentStateComponent<FrameSwitcherSettings> {
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
 
@@ -63,18 +63,6 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent,
 	@NotNull
 	public String getComponentName() {
 		return "FrameSwitcherApplicationComponent";
-	}
-
-	@NotNull
-	@Override
-	public File[] getExportFiles() {
-		return new File[]{PathManager.getOptionsFile("FrameSwitcherSettings")};
-	}
-
-	@NotNull
-	@Override
-	public String getPresentableName() {
-		return "Frame Switcher";
 	}
 
 	@NotNull

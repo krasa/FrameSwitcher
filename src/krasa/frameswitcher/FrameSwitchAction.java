@@ -18,6 +18,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.popup.PopupFactoryImpl;
@@ -139,9 +140,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 	private void addRecent(DefaultActionGroup group) {
 		RecentProjectsManagerBase recentProjectsManagerBase = FrameSwitcherUtils.getRecentProjectsManagerBase();
-
-		final AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false);
+		AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false, false);
 		if (recentProjectsActions != null) {
+			recentProjectsActions = removeCurrentProjects(recentProjectsActions);
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
 
 			int i = 0;
@@ -156,6 +157,31 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				}
 			}
 		}
+	}
+
+	public static AnAction[] removeCurrentProjects(AnAction[] actions) {
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
+		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
+
+
+		if (projectsOrderedByFocus != null) {
+			return Arrays.stream(actions)
+				.filter(action -> {
+					return !(action instanceof ReopenProjectAction)
+						|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
+				})
+				.toArray(AnAction[]::new);
+		}
+		return actions;
+	}
+
+	private static boolean isOpen(Project[] project, ReopenProjectAction action) {
+		for (Project project1 : project) {
+			if (StringUtil.equals(action.getProjectPath(), project1.getBasePath()) || Objects.equals(project1.getProjectFilePath(), action.getProjectPath())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void addRemoteRecent(DefaultActionGroup group) {
@@ -283,7 +309,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					if (s.equalsIgnoreCase("alt")
 						|| s.equalsIgnoreCase("ctrl")
 						|| s.equalsIgnoreCase("meta")
-						) {
+					) {
 						if (s.equalsIgnoreCase("ctrl")) {
 							s = "control";
 						}
