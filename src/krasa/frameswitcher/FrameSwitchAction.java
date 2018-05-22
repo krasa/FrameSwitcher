@@ -315,7 +315,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						}
 						popup.registerAction(s + "Released", KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
 							public void actionPerformed(ActionEvent e) {
-								if (invoked.get()) {
+								if (invoked.get() || FrameSwitcherSettings.getInstance().isSelectImmediately()) {
 									popup.handleSelect(true);
 								}
 							}

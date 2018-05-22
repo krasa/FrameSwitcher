@@ -21,6 +21,7 @@ public class FrameSwitcherSettings {
 	private boolean remoting;
 	private boolean defaultSelectionCurrentProject=true;
 	private String requestFocusMs = "100";
+	private boolean selectImmediately = true;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -134,5 +135,13 @@ public class FrameSwitcherSettings {
 
 	public void setRequestFocusMs(final String requestFocusMs) {
 		this.requestFocusMs = requestFocusMs;
+	}
+
+	public boolean isSelectImmediately() {
+		return selectImmediately;
+	}
+
+	public void setSelectImmediately(boolean selectImmediately) {
+		this.selectImmediately = selectImmediately;
 	}
 }

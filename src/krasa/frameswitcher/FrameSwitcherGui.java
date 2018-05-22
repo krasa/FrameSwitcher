@@ -26,6 +26,7 @@ public class FrameSwitcherGui {
 	private JCheckBox remoting;
 	private JCheckBox defaultSelectionCurrentProject;
 	private JTextField requestFocusMs;
+	private JCheckBox selectImmediately;
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
@@ -125,6 +126,7 @@ public class FrameSwitcherGui {
 		remoting.setSelected(data.isRemoting());
 		defaultSelectionCurrentProject.setSelected(data.isDefaultSelectionCurrentProject());
 		requestFocusMs.setText(data.getRequestFocusMs());
+		selectImmediately.setSelected(data.isSelectImmediately());
 	}
 
 	public void getData(FrameSwitcherSettings data) {
@@ -132,6 +134,7 @@ public class FrameSwitcherGui {
 		data.setRemoting(remoting.isSelected());
 		data.setDefaultSelectionCurrentProject(defaultSelectionCurrentProject.isSelected());
 		data.setRequestFocusMs(requestFocusMs.getText());
+		data.setSelectImmediately(selectImmediately.isSelected());
 	}
 
 	public boolean isModified(FrameSwitcherSettings data) {
@@ -141,6 +144,7 @@ public class FrameSwitcherGui {
 		if (defaultSelectionCurrentProject.isSelected() != data.isDefaultSelectionCurrentProject()) return true;
 		if (requestFocusMs.getText() != null ? !requestFocusMs.getText().equals(data.getRequestFocusMs()) : data.getRequestFocusMs() != null)
 			return true;
+		if (selectImmediately.isSelected() != data.isSelectImmediately()) return true;
 		return false;
 	}
 }
