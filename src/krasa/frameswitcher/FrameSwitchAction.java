@@ -86,6 +86,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
 		for (int i = projectsOrderedByFocus.length - 1; i >= 0; i--) {
 			Project project = projectsOrderedByFocus[i];
+			if (project.isDisposed()) {
+				continue;
+			}
 			add(currentProject, group, project);
 
 			IdeFrame frame = (IdeFrame) windowManager.getFrame(project);
@@ -97,6 +100,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		for (final IdeFrame frame : ideFrames) {
 			final Project project = frame.getProject();
 			if (project != null) {
+				if (project.isDisposed()) {
+					continue;
+				}
 				add(currentProject, group, project);
 			}
 		}
@@ -414,6 +420,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				int ms = Integer.parseInt(requestFocusMs);
 				if (ms > 0) {
 					SingleAlarm singleAlarm = new SingleAlarm(() -> {
+						if (openProject.isDisposed()) {
+							return;
+						}
 						LOG.info("Requesting focus for " + openProject);
 						FocusUtils.requestFocus(openProject, false);
 
