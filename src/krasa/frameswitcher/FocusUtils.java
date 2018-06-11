@@ -1,6 +1,7 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.BitUtil;
@@ -14,15 +15,25 @@ import java.awt.event.InputEvent;
  */
 public class FocusUtils {
 
+
 	public static void requestFocus(Project project, final boolean useRobot) {
 		JFrame frame = WindowManager.getInstance().getFrame(project);
 		if (frame == null) {
 			return;
 		}
-		// the only reliable way I found to bring it to the top
-		boolean aot = frame.isAlwaysOnTop();
-		frame.setAlwaysOnTop(true);
-		frame.setAlwaysOnTop(aot);
+
+		boolean skip = false;
+		try {
+			skip = Registry.is("krasa.frameswitcher.skip.setAlwaysOnTop");
+		} catch (Exception e) {
+		}
+
+		if (!skip) {
+			// the only reliable way I found to bring it to the top
+			boolean aot = frame.isAlwaysOnTop();
+			frame.setAlwaysOnTop(true);
+			frame.setAlwaysOnTop(aot);
+		}
 
 		int frameState = frame.getExtendedState();
 		if (BitUtil.isSet(frameState, Frame.ICONIFIED)) {

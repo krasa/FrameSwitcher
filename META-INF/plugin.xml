@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.14.0-162</version>
+    <version>3.15.0-162</version>
 
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
@@ -30,6 +30,8 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.15.0
+		  <br/> - Workaround for frame leak in Intellij 
 	      3.14.0
 		  <br/> - Immediately select after releasing the shortcut - by default false
           <br/><br/>
