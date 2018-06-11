@@ -32,6 +32,9 @@ public class FocusUtils {
 		frame.toFront();
 
 		IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
+			if (project.isDisposed()) {
+				return;
+			}
 			Component mostRecentFocusOwner = frame.getMostRecentFocusOwner();
 			if (mostRecentFocusOwner != null) {
 				IdeFocusManager.getGlobalInstance().requestFocus(mostRecentFocusOwner, true);
