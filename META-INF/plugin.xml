@@ -1,12 +1,12 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
-	<name>Frame Switcher</name>
-	<id>FrameSwitcher</id>
-	<version>3.16.0-162</version>
+    <name>Frame Switcher</name>
+    <id>FrameSwitcher</id>
+    <version>3.16.0-162</version>
 
-	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
-		Krasa
-	</vendor>
-	<description><![CDATA[
+    <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
+        Krasa
+    </vendor>
+    <description><![CDATA[
   	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
   	<ul>
   		<li>
@@ -32,9 +32,11 @@
     <change-notes><![CDATA[
 	      3.16.0
 		  <br/> - Hopefully more reliable switching
-	      3.15.0
+	        <br/><br/>
+	       3.15.0
 		  <br/> - Workaround for frame leak in Intellij 
-	      3.14.0
+	      <br/><br/>
+			3.14.0
 		  <br/> - Immediately select after releasing the shortcut - by default false
           <br/><br/>
 	      3.13.0
@@ -107,52 +109,53 @@
 		 <br> - changed default shortcut to ALT + F2
 		 <br> - sorting by name
       ]]>
-	</change-notes>
+    </change-notes>
 
-	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="162.1121"/>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="162.1121"/>
 
-	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-		   on how to target different products -->
-	<!-- uncomment to enable plugin in all products
-	  <depends>com.intellij.modules.lang</depends>
-	  -->
-	<depends>com.intellij.modules.lang</depends>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+           on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+      <depends>com.intellij.modules.lang</depends>
+      -->
+    <depends>com.intellij.modules.lang</depends>
 
-	<application-components>
-		<!-- Add your application components here -->
-		<component>
-			<implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
-		</component>
-	</application-components>
+    <application-components>
+        <!-- Add your application components here -->
+        <component>
+            <implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
+        </component>
+    </application-components>
 
-	<project-components>
-		<!-- Add your project components here -->
-		<component>
-			<implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
-		</component>
-	</project-components>
+    <project-components>
+        <!-- Add your project components here -->
+        <component>
+            <implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
+        </component>
+    </project-components>
 
-	<actions>
-		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
-				description="Switch or reopen project">
-			<add-to-group group-id="WindowMenu" anchor="first"/>
-			<keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
-		</action>
-		<action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close projects"
-				description="Close projects - closes selected projects">
-			<add-to-group group-id="WindowMenu" anchor="first"/>
-			<keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>
-		</action>
-		<action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
-				text="FrameSwitcher Remoting Diagnostic Action"
-				description="FrameSwitcher Remoting Diagnostic Action">
-			<!--<add-to-group group-id="MainToolBar" anchor="last"/>-->
-		</action>
-	</actions>
+    <actions>
+        <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
+                description="Switch or reopen project">
+            <add-to-group group-id="WindowMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
+        </action>
+        <action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close projects"
+                description="Close projects - closes selected projects">
+            <add-to-group group-id="WindowMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>
+        </action>
+        <action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
+                text="FrameSwitcher Remoting Diagnostic Action"
+                description="FrameSwitcher Remoting Diagnostic Action">
+            <!--<add-to-group group-id="MainToolBar" anchor="last"/>-->
+        </action>
+    </actions>
 
-	<extensions defaultExtensionNs="com.intellij">
-		<applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher" displayName="Frame Switcher" />
-	
-	</extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"
+                                 displayName="Frame Switcher"/>
+
+    </extensions>
 </idea-plugin>
