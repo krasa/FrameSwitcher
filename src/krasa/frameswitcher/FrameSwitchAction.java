@@ -133,7 +133,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			Collection<RemoteProject> remoteProjects = remoteProjectMultimap.get(uuid);
 
 			for (final RemoteProject remoteProject: remoteProjects) {
-				group.add(new DumbAwareAction(remoteProject.getName()) {
+				group.add(new DumbAwareAction(remoteProject.getName().replace("_", "__")) {
 
 					@Override
 					public void actionPerformed(AnActionEvent anActionEvent) {
