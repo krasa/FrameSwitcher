@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.16.0-162</version>
+    <version>3.17.0-162</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[
+	      3.17.0
+		  <br/> - Fixed missing underscore
+	        <br/><br/>
 	      3.16.0
 		  <br/> - Hopefully more reliable switching
 	        <br/><br/>
