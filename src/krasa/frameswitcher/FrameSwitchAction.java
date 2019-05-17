@@ -380,7 +380,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		private final ReopenProjectAction recentProjectsAction;
 
 		public ReopenRecentWrapper(ReopenProjectAction recentProjectsAction) {
-			super(recentProjectsAction.getTemplatePresentation().getText());
+			super(recentProjectsAction.getTemplatePresentation().getText().replace("_", "__"));
 			this.recentProjectsAction = recentProjectsAction;
 		}
 
