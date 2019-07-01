@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-@State(name = "FrameSwitcherSettings", storages = {@Storage(file = "$APP_CONFIG$/FrameSwitcherSettings.xml")})
+@State(name = "FrameSwitcherSettings", storages = {@Storage( "FrameSwitcherSettings.xml")})
 public class FrameSwitcherApplicationComponent implements ApplicationComponent, PersistentStateComponent<FrameSwitcherSettings> {
 	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
@@ -49,7 +49,8 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent, 
 		try {
 			remoteSender = new RemoteSenderImpl(uuid, new Receiver(uuid, this));
 		} catch (Throwable e) {
-			LOG.warn(e);
+			remoteSender = new DummyRemoteSender();
+			LOG.error(e);
 		}
 	}
 

@@ -1,0 +1,5 @@
+.idea/$PRODUCT_WORKSPACE_FILE$
+.idea/.gitignore
+.idea/vcs.xml
+.idea/uiDesigner.xml
+out/

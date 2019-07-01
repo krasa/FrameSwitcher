@@ -123,7 +123,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private void addRemote(DefaultActionGroup group) {
 		final FrameSwitcherApplicationComponent applicationComponent = FrameSwitcherApplicationComponent.getInstance();
 		applicationComponent.getRemoteInstancesState().sweepRemoteInstance();
-		Multimap<UUID, RemoteProject> remoteProjectMultimap = FrameSwitcherApplicationComponent.getInstance().getRemoteInstancesState().getRemoteProjects();
+		Multimap<UUID, RemoteProject> remoteProjectMultimap = applicationComponent.getRemoteInstancesState().getRemoteProjects();
 		applicationComponent.getRemoteSender().pingRemote();
 		if (remoteProjectMultimap.size() > 0) {
 			group.addSeparator("RemoteProjects");
