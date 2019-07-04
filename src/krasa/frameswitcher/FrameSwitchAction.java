@@ -376,21 +376,15 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return FrameSwitcherSettings.getInstance().getPopupSelectionAid();
 	}
 
-	private static class ReopenRecentWrapper extends DumbAwareAction {
-		private final ReopenProjectAction recentProjectsAction;
+	private static class ReopenRecentWrapper extends ReopenProjectAction {
 
 		public ReopenRecentWrapper(ReopenProjectAction recentProjectsAction) {
-			super(recentProjectsAction.getTemplatePresentation().getText().replace("_", "__"));
-			this.recentProjectsAction = recentProjectsAction;
-		}
-
-		public String getProjectPath() {
-			return recentProjectsAction.getProjectPath();
+			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(), recentProjectsAction.getTemplatePresentation().getText());
 		}
 
 		@Override
 		public void actionPerformed(AnActionEvent anActionEvent) {
-			recentProjectsAction.actionPerformed(anActionEvent);
+			super.actionPerformed(anActionEvent);
 			SwingUtilities.invokeLater(() -> {
 				requestFocus(this);
 			});
