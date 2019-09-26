@@ -1,7 +1,7 @@
-<idea-plugin version="2" url="https://github.com/krasa/FrameSwitcher">
+<idea-plugin url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.19.0-182</version>
+    <version>3.20.0-193</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[  
+	      3.20.0
+		  <br/> - IJ 2019.3 compatibility
+	        <br/><br/>
 	      3.19.0
 		  <br/> - Reopening in transaction (<a href=https://youtrack.jetbrains.com/issue/IDEA-210479>IDEA-210479</a>)
 	        <br/><br/>
@@ -121,7 +124,7 @@
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="182.000"/>
+    <idea-version since-build="193.000"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
            on how to target different products -->
@@ -145,19 +148,19 @@
     </project-components>
 
     <actions>
-        <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch frame"
+        <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch Frame"
                 description="Switch or reopen project">
             <add-to-group group-id="WindowMenu" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>
         </action>
-        <action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close projects"
+        <action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close Projects"
                 description="Close projects - closes selected projects">
             <add-to-group group-id="WindowMenu" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>
         </action>
         <action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
                 text="FrameSwitcher Remoting Diagnostic Action"
-                description="FrameSwitcher Remoting Diagnostic Action">
+                description="FrameSwitcher remoting diagnostic action">
             <!--<add-to-group group-id="MainToolBar" anchor="last"/>-->
         </action>
     </actions>

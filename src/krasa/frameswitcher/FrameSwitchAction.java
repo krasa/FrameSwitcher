@@ -1,6 +1,7 @@
 package krasa.frameswitcher;
 
 import com.google.common.collect.Multimap;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.GeneralSettings;
 import com.intellij.ide.RecentProjectsManagerBase;
@@ -17,10 +18,13 @@ import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.openapi.wm.impl.IdeFrameImpl;
+import com.intellij.openapi.wm.impl.ProjectFrameHelper;
 import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
@@ -65,10 +69,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		Condition<AnAction> condition;
 		if (FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
-			//noinspection unchecked
-			condition = Condition.FALSE;
+			condition= Conditions.alwaysFalse();
 		} else {
-			condition = (a) -> a.getTemplatePresentation().getIcon() != ourCurrentAction;
+			condition = (a) -> a.getTemplatePresentation().getIcon() != AllIcons.Actions.Forward;
 		}
 
 		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
@@ -84,6 +87,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
+		Set<Project> addedProjectsSet = new HashSet<>();
+
 		for (int i = projectsOrderedByFocus.length - 1; i >= 0; i--) {
 			Project project = projectsOrderedByFocus[i];
 			if (project.isDisposed()) {
@@ -93,7 +98,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 			IdeFrame frame = (IdeFrame) windowManager.getFrame(project);
 			if (frame != null) {
-				ideFrames.remove(frame);
+				addedProjectsSet.add(project);
 			}
 		}
 
@@ -103,13 +108,16 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				if (project.isDisposed()) {
 					continue;
 				}
+				if (addedProjectsSet.contains(project)) {
+					continue;
+				}
 				add(currentProject, group, project);
 			}
 		}
 	}
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
-		Icon itemIcon = (currentProject == project) ? ourCurrentAction : ourNotCurrentAction;
+		Icon itemIcon = (currentProject == project) ? AllIcons.Actions.Forward : ourNotCurrentAction;
 		DumbAwareAction action = new DumbAwareAction(project.getName().replace("_", "__"), null, itemIcon) {
 
 			@Override
