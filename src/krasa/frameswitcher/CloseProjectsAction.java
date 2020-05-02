@@ -6,6 +6,7 @@ import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class CloseProjectsAction extends DumbAwareAction {
 				}
 			}
 			FrameSwitcherUtils.getRecentProjectsManagerBase().updateLastProjectPath();
+			WelcomeFrame.showIfNoProjectOpened();
 		}
 	}
 
