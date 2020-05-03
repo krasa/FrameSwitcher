@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.20.0-193</version>
+    <version>3.21.0-193</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
@@ -14,7 +14,7 @@
 			<ul>
 				<li>Shift+Enter - reopen a project in the current window.</li>
 				<li>Ctrl+Enter - reopen a project in a new window.</li>
-				<li>Delete - removes a recent project from the history.</li>
+				<li>Delete - closes project or removes a recent project from the history.</li>
 			</ul>
 		</li>
   		<li>
@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[  
+	      3.21.0
+		  <br/> - Closing opened projects by Del key in the switch popup
+	        <br/><br/>
 	      3.20.0
 		  <br/> - IJ 2019.3 compatibility
 	        <br/><br/>

@@ -38,7 +38,7 @@ public class FocusUtils {
 		int frameState = frame.getExtendedState();
 		if (BitUtil.isSet(frameState, Frame.ICONIFIED)) {
 			// restore the frame if it is minimized
-			frame.setExtendedState(frameState ^ Frame.ICONIFIED);
+			frame.setExtendedState(BitUtil.set(frameState, Frame.ICONIFIED, false));
 		}
 		frame.toFront();
 
@@ -73,7 +73,6 @@ public class FocusUtils {
 		}
 
 	}
-
 	public static boolean runningOnWindows7() {
 		String osName = System.getProperty("os.name");
 		String osVersion = System.getProperty("os.version");
