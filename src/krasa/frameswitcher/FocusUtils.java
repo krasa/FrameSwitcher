@@ -1,7 +1,6 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.BitUtil;
@@ -23,10 +22,6 @@ public class FocusUtils {
 		}
 
 		boolean skip = false;
-		try {
-			skip = Registry.is("krasa.frameswitcher.skip.setAlwaysOnTop");
-		} catch (Exception e) {
-		}
 
 		if (!skip) {
 			// the only reliable way I found to bring it to the top

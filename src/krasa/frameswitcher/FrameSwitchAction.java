@@ -30,6 +30,7 @@ import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
 import com.intellij.util.Alarm;
+import com.intellij.util.PathUtil;
 import com.intellij.util.SingleAlarm;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
@@ -184,9 +185,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return actions;
 	}
 
-	private static boolean isOpen(Project[] project, ReopenProjectAction action) {
-		for (Project project1 : project) {
-			if (StringUtil.equals(action.getProjectPath(), project1.getBasePath()) || Objects.equals(project1.getProjectFilePath(), action.getProjectPath())) {
+	private static boolean isOpen(Project[] openedProjects, ReopenProjectAction action) {
+		String projectPath = PathUtil.toSystemDependentName(action.getProjectPath());
+		for (Project openedProject : openedProjects) {
+			if (StringUtil.equals(projectPath, PathUtil.toSystemDependentName(openedProject.getBasePath())) || Objects.equals(PathUtil.toSystemDependentName(openedProject.getProjectFilePath()), projectPath)) {
 				return true;
 			}
 		}
