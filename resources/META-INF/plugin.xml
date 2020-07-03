@@ -24,6 +24,7 @@
   	<br/>Or set your own shortcut in Settings | Keymap.
     <br/>
   	<br/>See File | Settings | Other Settings | FrameSwitcher for options like using mnemonics instead of speed search, max recent projects size and other...
+  	<br/>You can also include the whole workspace in the settings, so that all projects gets added to the list.
 	<br/><br/>
 
       (Big thanks to Eugene Mustaphin for contributions.)
@@ -31,7 +32,7 @@
 
     <change-notes><![CDATA[  
 	      3.23.0
-		  <br/> - Added settings to include subfolders of your workspaces in the Switch frame popup.
+		  <br/> - Added: you can include the whole workspace in the settings, so that all projects gets added to the list.
 	        <br/><br/>
 	      3.22.0
 		  <br/> - Fixed duplicate items in 2019.3
