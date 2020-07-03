@@ -16,17 +16,24 @@ import java.util.List;
 
 public class FrameSwitcherGui {
 
-	private DefaultListModel listModel;
 	private JPanel root;
 	private JTextField maxRecentProjects;
 	private JComboBox popupAidComboBox;
+
 	private JList recentProjectFiltersList;
+	private DefaultListModel filterListModel;
 	private JButton addButton;
 	private JButton remove;
 	private JCheckBox remoting;
+
 	private JCheckBox defaultSelectionCurrentProject;
 	private JTextField requestFocusMs;
 	private JCheckBox selectImmediately;
+
+	private JButton addInclude;
+	private JButton removeInclude;
+	private JList includeProjectList;
+	private DefaultListModel includeListModel;
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
@@ -34,20 +41,21 @@ public class FrameSwitcherGui {
 	public FrameSwitcherGui(FrameSwitcherSettings settings) {
 		this.settings = settings;
 
-		addButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				browseForFile();
-			}
-		});
+		addButton.addActionListener(e -> browseForFile(FrameSwitcherGui.this.filterListModel));
 		remove.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int leadSelectionIndex = recentProjectFiltersList.getSelectionModel().getLeadSelectionIndex();
 				if (!recentProjectFiltersList.getSelectionModel().isSelectionEmpty()) {
-					listModel.remove(leadSelectionIndex);
+					filterListModel.remove(leadSelectionIndex);
 				}
+			}
+		});
+		addInclude.addActionListener(e -> browseForFile(FrameSwitcherGui.this.includeListModel));
+		removeInclude.addActionListener(e -> {
+			int leadSelectionIndex = includeProjectList.getSelectionModel().getLeadSelectionIndex();
+			if (!includeProjectList.getSelectionModel().isSelectionEmpty()) {
+				includeListModel.remove(leadSelectionIndex);
 			}
 		});
 		initModel(settings);
@@ -57,15 +65,24 @@ public class FrameSwitcherGui {
 		comboBoxModel = new EnumComboBoxModel<JBPopupFactory.ActionSelectionAid>(JBPopupFactory.ActionSelectionAid.class);
 		comboBoxModel.setSelectedItem(settings.getPopupSelectionAid());
 		popupAidComboBox.setModel(comboBoxModel);
-		listModel = new DefaultListModel();
+
+		filterListModel = new DefaultListModel();
 		for (String s : settings.getRecentProjectPaths()) {
-			listModel.addElement(s);
+			filterListModel.addElement(s);
 		}
-		recentProjectFiltersList.setModel(listModel);
+		recentProjectFiltersList.setModel(filterListModel);
 		recentProjectFiltersList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		includeListModel = new DefaultListModel();
+		for (String s : settings.getIncludeLocations()) {
+			includeListModel.addElement(s);
+		}
+		includeProjectList.setModel(includeListModel);
+		includeProjectList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
 	}
 
-	private void browseForFile() {
+	private void browseForFile(DefaultListModel listModel) {
 		final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createMultipleFoldersDescriptor();
 
 		descriptor.setTitle("Select parent folder");
@@ -98,7 +115,8 @@ public class FrameSwitcherGui {
 		}
 		getData(settings);
 		settings.setPopupSelectionAid(comboBoxModel.getSelectedItem());
-		settings.setRecentProjectPaths(toListStrings(listModel.toArray()));
+		settings.setRecentProjectPaths(toListStrings(filterListModel.toArray()));
+		settings.setIncludeLocations(toListStrings(includeListModel.toArray()));
 		return settings;
 	}
 
@@ -111,8 +129,11 @@ public class FrameSwitcherGui {
 	}
 
 
-	public boolean isModifiedCustom(FrameSwitcherSettings data) {
-		if (!Arrays.equals(listModel.toArray(), data.getRecentProjectPaths().toArray())) {
+	public boolean isModified_custom(FrameSwitcherSettings data) {
+		if (!Arrays.equals(filterListModel.toArray(), data.getRecentProjectPaths().toArray())) {
+			return true;
+		}
+		if (!Arrays.equals(includeListModel.toArray(), data.getIncludeLocations().toArray())) {
 			return true;
 		}
 		if (comboBoxModel.getSelectedItem() != data.getPopupSelectionAid()) {

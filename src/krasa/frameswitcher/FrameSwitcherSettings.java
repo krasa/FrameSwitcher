@@ -17,9 +17,10 @@ public class FrameSwitcherSettings {
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
+	private List<String> includeLocations = new ArrayList<String>();
 	private String maxRecentProjects = "";
 	private boolean remoting;
-	private boolean defaultSelectionCurrentProject=true;
+	private boolean defaultSelectionCurrentProject = true;
 	private String requestFocusMs = "100";
 	private boolean selectImmediately = false;
 
@@ -71,6 +72,14 @@ public class FrameSwitcherSettings {
 			maxRecentProjects = "";
 		}
 		return maxRecentProjects;
+	}
+
+	public List<String> getIncludeLocations() {
+		return includeLocations;
+	}
+
+	public void setIncludeLocations(List<String> includeLocations) {
+		this.includeLocations = includeLocations;
 	}
 
 	public void setPopupSelectionAid(JBPopupFactory.ActionSelectionAid popupSelectionAid) {

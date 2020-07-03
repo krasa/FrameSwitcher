@@ -21,6 +21,7 @@ import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
@@ -34,11 +35,13 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.SingleAlarm;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.SystemIndependent;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
@@ -55,6 +58,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		addRecent(group);
 
 		addRemoteRecent(group);
+
+		addIncluded(group);
 	}
 
 	@Override
@@ -137,13 +142,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			Collection<RemoteProject> remoteProjects = remoteProjectMultimap.get(uuid);
 
 			for (final RemoteProject remoteProject : remoteProjects) {
-				group.add(new DumbAwareAction(remoteProject.getName().replace("_", "__")) {
-
-					@Override
-					public void actionPerformed(AnActionEvent anActionEvent) {
-						FrameSwitcherApplicationComponent.getInstance().getRemoteSender().openProject(uuid, remoteProject);
-					}
-				});
+				group.add(new SwitchToRemoteProjectAction(remoteProject, uuid));
 			}
 		}
 	}
@@ -169,6 +168,49 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
+	private void addIncluded(DefaultActionGroup group) {
+		FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
+		List<String> includeLocations = settings.getIncludeLocations();
+		if (includeLocations.isEmpty()) {
+			return;
+		}
+
+		Set<String> paths = new HashSet<>();
+		AnAction[] childActionsOrStubs = group.getChildActionsOrStubs();
+		for (AnAction childActionsOrStub : childActionsOrStubs) {
+			if (childActionsOrStub instanceof ReopenRecentWrapper) {
+				paths.add(((ReopenRecentWrapper) childActionsOrStub).getProjectPath());
+			} else if (childActionsOrStub instanceof SwitchToRemoteProjectAction) {
+				paths.add(((SwitchToRemoteProjectAction) childActionsOrStub).getProjectPath());
+			} else if (childActionsOrStub instanceof SwitchFrameAction) {
+				paths.add(((SwitchFrameAction) childActionsOrStub).getBasePath());
+			}
+
+		}
+		group.addSeparator("Included");
+
+		for (String includeLocation : includeLocations) {
+			File parent = new File(includeLocation);
+			if (!parent.exists()) {
+				continue;
+			}
+			File[] files = parent.listFiles();
+			if (files == null) {
+				continue;
+			}
+			for (File file : files) {
+				if (file.isDirectory() && !file.getName().startsWith(".")) {
+					String s = FileUtil.toSystemIndependentName(file.getAbsolutePath());
+					if (paths.contains(s)) {
+						continue;
+					}
+					group.add(new ReopenRecentWrapper(s));
+				}
+			}
+		}
+	}
+
+
 	public static AnAction[] removeCurrentProjects(AnAction[] actions) {
 		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
@@ -176,7 +218,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		if (projectsOrderedByFocus != null) {
 			return Arrays.stream(actions)
-				.filter(action -> {
+					.filter(action -> {
 					return !(action instanceof ReopenProjectAction)
 						|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
 				})
@@ -420,6 +462,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(), recentProjectsAction.getTemplatePresentation().getText());
 		}
 
+		public ReopenRecentWrapper(String s) {
+			super(s, null, s);
+		}
+
 		@Override
 		public void actionPerformed(AnActionEvent anActionEvent) {
 			super.actionPerformed(anActionEvent);
@@ -484,7 +530,12 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 
 		public Project getProject() {
+
 			return project;
+		}
+
+		public @SystemIndependent String getBasePath() {
+			return project.getBasePath();
 		}
 
 		@Override
@@ -498,6 +549,27 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					FocusUtils.requestFocus(project, false);
 				});
 			});
+		}
+	}
+
+	private static class SwitchToRemoteProjectAction extends DumbAwareAction {
+
+		private final RemoteProject remoteProject;
+		private final UUID uuid;
+
+		public SwitchToRemoteProjectAction(RemoteProject remoteProject, UUID uuid) {
+			super(remoteProject.getName().replace("_", "__"));
+			this.remoteProject = remoteProject;
+			this.uuid = uuid;
+		}
+
+		public String getProjectPath() {
+			return FileUtil.toSystemIndependentName(remoteProject.getProjectPath());
+		}
+
+		@Override
+		public void actionPerformed(AnActionEvent anActionEvent) {
+			FrameSwitcherApplicationComponent.getInstance().getRemoteSender().openProject(uuid, remoteProject);
 		}
 	}
 }

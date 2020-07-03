@@ -38,7 +38,7 @@ public class MyConfigurable implements Configurable {
 
 	@Override
 	public boolean isModified() {
-		return gui.isModifiedCustom(getSettings());
+		return gui.isModified_custom(getSettings());
 	}
 
 	@Override

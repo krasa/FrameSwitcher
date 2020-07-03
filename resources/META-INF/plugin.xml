@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.22.0-193</version>
+    <version>3.23.0-193</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
@@ -30,6 +30,9 @@
       ]]></description>
 
     <change-notes><![CDATA[  
+	      3.23.0
+		  <br/> - Added settings to include subfolders of your workspaces in the Switch frame popup.
+	        <br/><br/>
 	      3.22.0
 		  <br/> - Fixed duplicate items in 2019.3
 	        <br/><br/>
