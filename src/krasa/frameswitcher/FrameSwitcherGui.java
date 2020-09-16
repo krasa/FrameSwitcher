@@ -29,6 +29,7 @@ public class FrameSwitcherGui {
 	private JCheckBox defaultSelectionCurrentProject;
 	private JTextField requestFocusMs;
 	private JCheckBox selectImmediately;
+	private JCheckBox loadProjectIcon;
 
 	private JButton addInclude;
 	private JButton removeInclude;
@@ -148,6 +149,7 @@ public class FrameSwitcherGui {
 		defaultSelectionCurrentProject.setSelected(data.isDefaultSelectionCurrentProject());
 		requestFocusMs.setText(data.getRequestFocusMs());
 		selectImmediately.setSelected(data.isSelectImmediately());
+		loadProjectIcon.setSelected(data.isLoadProjectIcon());
 	}
 
 	public void getData(FrameSwitcherSettings data) {
@@ -156,6 +158,7 @@ public class FrameSwitcherGui {
 		data.setDefaultSelectionCurrentProject(defaultSelectionCurrentProject.isSelected());
 		data.setRequestFocusMs(requestFocusMs.getText());
 		data.setSelectImmediately(selectImmediately.isSelected());
+		data.setLoadProjectIcon(loadProjectIcon.isSelected());
 	}
 
 	public boolean isModified(FrameSwitcherSettings data) {
@@ -166,6 +169,7 @@ public class FrameSwitcherGui {
 		if (requestFocusMs.getText() != null ? !requestFocusMs.getText().equals(data.getRequestFocusMs()) : data.getRequestFocusMs() != null)
 			return true;
 		if (selectImmediately.isSelected() != data.isSelectImmediately()) return true;
+		if (loadProjectIcon.isSelected() != data.isLoadProjectIcon()) return true;
 		return false;
 	}
 }

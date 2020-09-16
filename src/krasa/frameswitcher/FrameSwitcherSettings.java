@@ -23,6 +23,7 @@ public class FrameSwitcherSettings {
 	private boolean defaultSelectionCurrentProject = true;
 	private String requestFocusMs = "100";
 	private boolean selectImmediately = false;
+	private boolean loadProjectIcon = true;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -152,5 +153,13 @@ public class FrameSwitcherSettings {
 
 	public void setSelectImmediately(boolean selectImmediately) {
 		this.selectImmediately = selectImmediately;
+	}
+
+	public boolean isLoadProjectIcon() {
+		return loadProjectIcon;
+	}
+
+	public void setLoadProjectIcon(final boolean loadProjectIcon) {
+		this.loadProjectIcon = loadProjectIcon;
 	}
 }

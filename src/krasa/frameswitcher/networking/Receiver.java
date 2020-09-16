@@ -7,15 +7,7 @@ import com.intellij.openapi.wm.IdeFrame;
 import krasa.frameswitcher.FocusUtils;
 import krasa.frameswitcher.FrameSwitchAction;
 import krasa.frameswitcher.FrameSwitcherApplicationComponent;
-import krasa.frameswitcher.networking.dto.GeneralMessage;
-import krasa.frameswitcher.networking.dto.InstanceClosed;
-import krasa.frameswitcher.networking.dto.InstanceStarted;
-import krasa.frameswitcher.networking.dto.OpenProject;
-import krasa.frameswitcher.networking.dto.Ping;
-import krasa.frameswitcher.networking.dto.PingResponse;
-import krasa.frameswitcher.networking.dto.ProjectClosed;
-import krasa.frameswitcher.networking.dto.ProjectOpened;
-import krasa.frameswitcher.networking.dto.ProjectsState;
+import krasa.frameswitcher.networking.dto.*;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 
@@ -91,7 +83,7 @@ public class Receiver extends ReceiverAdapter {
 
 						@Override
 						public void run() {
-							FocusUtils.requestFocus(project, true);
+							FocusUtils.requestFocus(project, true, true);
 						}
 					});
 				}

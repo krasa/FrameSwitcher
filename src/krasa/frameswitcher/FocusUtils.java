@@ -1,13 +1,17 @@
 package krasa.frameswitcher;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.openapi.wm.impl.ProjectWindowAction;
+import com.intellij.testFramework.MapDataContext;
 import com.intellij.util.BitUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Vojtech Krasa
@@ -15,12 +19,25 @@ import java.awt.event.InputEvent;
 public class FocusUtils {
 
 
-	public static void requestFocus(Project project, final boolean useRobot) {
+	public static void requestFocus(Project project, final boolean useRobot, boolean custom) {
 		JFrame frame = WindowManager.getInstance().getFrame(project);
 		if (frame == null) {
 			return;
 		}
+		if (custom) {
+			requestFocusCustom(project, useRobot, frame);
+		} else {
+			final ProjectWindowAction windowAction = new ProjectWindowAction(project.getPresentableUrl(), project.getPresentableUrl(), null);
+			final ProjectWindowAction next = windowAction.getNext();
+			if (next != null) {
+				KeyEvent a = new KeyEvent(frame, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'a');
+				AnActionEvent frameSwitcher = AnActionEvent.createFromInputEvent(a, "FrameSwitcher", null, new MapDataContext());
+				next.setSelected(frameSwitcher, true);
+			}
+		}
+	}
 
+	public static void requestFocusCustom(Project project, boolean useRobot, JFrame frame) {
 		boolean skip = false;
 
 		if (!skip) {
@@ -66,8 +83,8 @@ public class FocusUtils {
 				frame.setAlwaysOnTop(false);
 			}
 		}
-
 	}
+
 	public static boolean runningOnWindows7() {
 		String osName = System.getProperty("os.name");
 		String osVersion = System.getProperty("os.version");
