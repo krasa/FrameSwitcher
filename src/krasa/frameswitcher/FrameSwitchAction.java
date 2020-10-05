@@ -38,7 +38,6 @@ import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.SystemIndependent;
-import org.jetbrains.annotations.SystemIndependent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -48,7 +47,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.File;
+import java.util.List;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
@@ -240,7 +239,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		if (projectsOrderedByFocus != null) {
 			return Arrays.stream(actions)
-					.filter(action -> {
+				.filter(action -> {
 					return !(action instanceof ReopenProjectAction)
 						|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
 				})
@@ -686,7 +685,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		public void actionPerformed(AnActionEvent anActionEvent) {
 			FrameSwitcherApplicationComponent.getInstance().getRemoteSender().openProject(uuid, remoteProject);
 		}
-	}     
+	}
+
 	protected boolean isCustom() {
 		return false;
 	}
