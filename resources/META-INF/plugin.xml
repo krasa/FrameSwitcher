@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.24.0-193</version>
+    <version>3.23.1-193</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
