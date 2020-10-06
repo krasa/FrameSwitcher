@@ -31,30 +31,26 @@ import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame;
 import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
-import com.intellij.util.*;
+import com.intellij.util.Alarm;
+import com.intellij.util.PathUtil;
+import com.intellij.util.SingleAlarm;
 import com.intellij.util.ui.EmptyIcon;
-import com.intellij.util.ui.JBImageIcon;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.SystemIndependent;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
 	private final static Logger LOG = Logger.getInstance(FrameSwitchAction.class);
-	private static Icon forward;
-	private static Icon empty;
+	public static Icon forward;
+	public static Icon empty;
 
 	static {
 		forward = AllIcons.Actions.Forward;
@@ -482,7 +478,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		public ReopenRecentWrapper(ReopenProjectAction recentProjectsAction) {
 			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(), recentProjectsAction.getTemplatePresentation().getText());
-			getTemplatePresentation().setIcon(resolveIcon(recentProjectsAction.getProjectPath(), loadProjectIcon));
+			getTemplatePresentation().setIcon(IconResolver.resolveIcon(recentProjectsAction.getProjectPath(), loadProjectIcon));
 		}
 
 		public ReopenRecentWrapper(String s) {
@@ -537,24 +533,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-	private static class RemoteProjectAction extends DumbAwareAction {
-
-		private final RemoteProject remoteProject;
-		private final UUID uuid;
-
-		public RemoteProjectAction(RemoteProject remoteProject, UUID uuid) {
-			super(remoteProject.getName().replace("_", "__"));
-			this.remoteProject = remoteProject;
-			this.uuid = uuid;
-			getTemplatePresentation().setIcon(resolveIcon(remoteProject.getProjectPath(), FrameSwitcherSettings.getInstance().isLoadProjectIcon()));
-		}
-
-		@Override
-		public void actionPerformed(AnActionEvent anActionEvent) {
-			FrameSwitcherApplicationComponent.getInstance().getRemoteSender().openProject(uuid, remoteProject);
-		}
-	}
-
 	private class SwitchFrameAction extends DumbAwareAction {
 
 		private final Project project;
@@ -565,7 +543,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			this.project = project;
 			this.itemIcon = itemIcon;
 			if (itemIcon == empty) {
-				getTemplatePresentation().setIcon(resolveIcon(project.getBasePath(), loadProjectIcon));
+				getTemplatePresentation().setIcon(IconResolver.resolveIcon(project.getBasePath(), loadProjectIcon));
 			}
 		}
 
@@ -588,71 +566,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-	private static Icon resolveIcon(@SystemIndependent String basepath, boolean loadProjectIcon) {
-		if (!loadProjectIcon) {
-			return null;
-		}
-		File base = new File(basepath);
-		if (!base.exists()) {
-			return null;
-		}
-		if (base.isFile()) {
-			base = base.getParentFile();
-		}
-		if (base.getName().startsWith(".")) {
-			base = base.getParentFile();
-		}
-		if (!base.exists()) {
-			return null;
-		}
-
-
-		Icon icon = null;
-		icon = getIcon(base, "icon.svg");
-		if (icon != null) {
-			return icon;
-		}
-		icon = getIcon(base, "icon.png");
-		if (icon != null) {
-			return icon;
-		}
-		icon = getIcon(base, "resources\\META-INF\\pluginIcon.svg");
-		if (icon != null) {
-			return icon;
-		}
-		icon = getIcon(base, "META-INF\\pluginIcon.svg");
-		if (icon != null) {
-			return icon;
-		}
-		return icon;
-	}
-
-	@Nullable
-	private static Icon getIcon(File base, String child) {
-		try {
-			Icon icon = null;
-			File file = new File(base, child);
-			if (file.exists()) {
-				icon = new JBImageIcon(loadImage(file));
-				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != empty.getIconHeight()) {
-					icon = IconUtil.scale(icon, null, (float) empty.getIconHeight() / icon.getIconHeight());
-				}
-			}
-			return icon;
-		} catch (Throwable e) {
-			LOG.debug(e);
-			return null;
-		}
-	}
-
-	static Image loadImage(File file) throws IOException {
-		if (file.getName().endsWith(".svg")) {
-			return SVGLoader.load(file.toURI().toURL(), 1.0f);
-		} else {
-			return ImageIO.read(file);
-		}
-	}
-
 	public void switchFrame(Project project) {
 		SwingUtilities.invokeLater(() -> {
 			IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
@@ -666,7 +579,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return "FrameSwitchAction";
 	}
 
-	private static class SwitchToRemoteProjectAction extends DumbAwareAction {
+	private class SwitchToRemoteProjectAction extends DumbAwareAction {
 
 		private final RemoteProject remoteProject;
 		private final UUID uuid;
@@ -675,6 +588,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			super(remoteProject.getName().replace("_", "__"));
 			this.remoteProject = remoteProject;
 			this.uuid = uuid;
+			getTemplatePresentation().setIcon(IconResolver.resolveIcon(remoteProject.getProjectPath(), loadProjectIcon));
 		}
 
 		public String getProjectPath() {
