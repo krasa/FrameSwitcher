@@ -78,6 +78,10 @@ public class IconResolver {
 				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
 					icon = IconUtil.scale(icon, null, (float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
 				}
+				if (icon.getIconHeight() > FrameSwitchAction.empty.getIconHeight()) {
+					LOG.error("Scaling failed, wrong icon size: " + file.getAbsolutePath() + " " + icon.getIconHeight() + "x" + icon.getIconWidth());
+					return null;
+				}
 			}
 			return icon;
 		} catch (Throwable e) {
