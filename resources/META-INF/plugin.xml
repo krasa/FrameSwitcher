@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
     <name>Frame Switcher</name>
     <id>FrameSwitcher</id>
-    <version>3.23.1-193</version>
+    <version>3.24.2-193</version>
 
     <vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
         Krasa
@@ -33,7 +33,7 @@
     <change-notes><![CDATA[  
 	      3.24.0
 		  <br/> - More reliable switching
-		  <br/> - Project icons - can be disabled in settings (looking for: icon.svg, icon.png, resources\META-INF\pluginIcon.svg, META-INF\pluginIcon.svg)
+		  <br/> - Project icons - can be disabled in settings (looking for: icon.svg, icon.png, src\main\resources\META-INF\pluginIcon.svg, resources\META-INF\pluginIcon.svg, META-INF\pluginIcon.svg)
 	        <br/><br/>
 	      3.23.0
 		  <br/> - Added: you can include the whole workspace in the settings, so that all projects gets added to the list.

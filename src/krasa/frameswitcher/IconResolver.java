@@ -49,6 +49,10 @@ public class IconResolver {
 			if (icon != null) {
 				return icon;
 			}
+			icon = getIcon(base, "src\\main\\resources\\META-INF\\pluginIcon.svg");
+			if (icon != null) {
+				return icon;
+			}
 			icon = getIcon(base, "META-INF\\pluginIcon.svg");
 			if (icon != null) {
 				return icon;
@@ -67,6 +71,10 @@ public class IconResolver {
 			File file = new File(base, child);
 			if (file.exists()) {
 				icon = new JBImageIcon(loadImage(file));
+				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
+					icon = IconUtil.scale(icon, null, (float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
+				}
+				//material-theme-jetbrains needs to be scaled 2x
 				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
 					icon = IconUtil.scale(icon, null, (float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
 				}
