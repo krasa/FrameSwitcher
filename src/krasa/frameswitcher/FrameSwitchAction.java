@@ -483,6 +483,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		public ReopenRecentWrapper(String s) {
 			super(s, null, s);
+			getTemplatePresentation().setIcon(IconResolver.resolveIcon(s, loadProjectIcon));
 		}
 
 		@Override
@@ -542,9 +543,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			super(project.getName().replace("_", "__"), null, itemIcon);
 			this.project = project;
 			this.itemIcon = itemIcon;
-			if (itemIcon == empty) {
+//			if (itemIcon == empty) {
 				getTemplatePresentation().setIcon(IconResolver.resolveIcon(project.getBasePath(), loadProjectIcon));
-			}
+//			}
 		}
 
 		public Icon getItemIcon() {
