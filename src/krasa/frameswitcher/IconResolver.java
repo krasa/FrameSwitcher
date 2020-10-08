@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.IconUtil;
 import com.intellij.util.SVGLoader;
 import com.intellij.util.ui.JBImageIcon;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.SystemIndependent;
 
@@ -37,7 +38,23 @@ public class IconResolver {
 
 
 			Icon icon = null;
-			icon = getIcon(base, "icon.svg");
+			icon = getIcon(base, ".idea/icon.png");
+			if (icon != null) {
+				return icon;
+			}
+			icon = getIcon(base, ".idea/icon.svg");
+			if (icon != null) {
+				return icon;
+			}
+			icon = getIcon(base, "src/main/resources/META-INF/pluginIcon.svg");
+			if (icon != null) {
+				return icon;
+			}
+			icon = getIcon(base, "resources/META-INF/pluginIcon.svg");
+			if (icon != null) {
+				return icon;
+			}
+			icon = getIcon(base, "META-INF/pluginIcon.svg");
 			if (icon != null) {
 				return icon;
 			}
@@ -45,15 +62,7 @@ public class IconResolver {
 			if (icon != null) {
 				return icon;
 			}
-			icon = getIcon(base, "resources\\META-INF\\pluginIcon.svg");
-			if (icon != null) {
-				return icon;
-			}
-			icon = getIcon(base, "src\\main\\resources\\META-INF\\pluginIcon.svg");
-			if (icon != null) {
-				return icon;
-			}
-			icon = getIcon(base, "META-INF\\pluginIcon.svg");
+			icon = getIcon(base, "icon.svg");
 			if (icon != null) {
 				return icon;
 			}
@@ -65,10 +74,20 @@ public class IconResolver {
 	}
 
 	@Nullable
-	public static Icon getIcon(File base, String child) {
+	public static Icon getIcon(File base, String subpath) {
 		try {
 			Icon icon = null;
-			File file = new File(base, child);
+			File file = null;
+			if (UIUtil.isUnderDarcula()) {
+				File darcula = new File(base, subpath.replace(".svg", "_dark.svg").replace(".png", "_dark.png"));
+				if (darcula.exists()) {
+					file = darcula;
+				}
+			}
+			if (file == null) {
+				file = new File(base, subpath);
+			}
+
 			if (file.exists()) {
 				icon = new JBImageIcon(loadImage(file));
 				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
