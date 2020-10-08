@@ -148,7 +148,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
-		group.addAction(new SwitchFrameAction(project, null, currentProject == project));
+		group.addAction(new SwitchFrameAction(project, currentProject == project));
 	}
 
 	private void addRemote(DefaultActionGroup group) {
@@ -544,8 +544,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		private final Project project;
 		private final boolean currentProject;
 
-		public SwitchFrameAction(Project project, Icon itemIcon, boolean currentProject) {
-			super(project.getName().replace("_", "__"), null, itemIcon);
+		public SwitchFrameAction(Project project, boolean currentProject) {
+			super(project.getName().replace("_", "__"));
 			this.project = project;
 			this.currentProject = currentProject;
 			if (loadProjectIcon) {
@@ -556,7 +556,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 
 		public Project getProject() {
-
 			return project;
 		}
 
