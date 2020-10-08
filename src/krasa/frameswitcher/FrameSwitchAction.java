@@ -92,11 +92,11 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		JBPopupFactory.ActionSelectionAid aid = getAidMethod();
 
 
-		Condition<AnAction> condition;
+		Condition<AnAction> preselectActionCondition;
 		if (FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
-			condition = Conditions.alwaysFalse();
+			preselectActionCondition = Conditions.alwaysFalse();
 		} else {
-			condition = (a) -> {
+			preselectActionCondition = (a) -> {
 				if (a instanceof SwitchFrameAction) {
 					return !((SwitchFrameAction) a).currentProject;
 				}
@@ -107,7 +107,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
 			getPopupTitle(e), group, e.getDataContext(), aid, true, null, -1,
-			condition, myActionPlace);
+			preselectActionCondition, myActionPlace);
 		showPopup(e, popup);
 	}
 
@@ -148,8 +148,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
-		Icon itemIcon = (currentProject == project) ? forward : empty;
-		group.addAction(new SwitchFrameAction(project, itemIcon, currentProject == project));
+		group.addAction(new SwitchFrameAction(project, null, currentProject == project));
 	}
 
 	private void addRemote(DefaultActionGroup group) {
@@ -385,7 +384,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							list.setSelectedIndex(selectedIndex);
 						}
 
-						if (action.getItemIcon() == AllIcons.Actions.Forward) {   //is actual
+						if (action.currentProject) {   //is actual
 							if (selectedIndex == list.getModel().getSize()) { //is last
 								selectedIndex--;
 							}
@@ -543,21 +542,17 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private class SwitchFrameAction extends DumbAwareAction {
 
 		private final Project project;
-		private Icon itemIcon;
 		private final boolean currentProject;
 
 		public SwitchFrameAction(Project project, Icon itemIcon, boolean currentProject) {
 			super(project.getName().replace("_", "__"), null, itemIcon);
 			this.project = project;
-			this.itemIcon = itemIcon;
 			this.currentProject = currentProject;
 			if (loadProjectIcon) {
 				getTemplatePresentation().setIcon(IconResolver.resolveIcon(project.getBasePath(), loadProjectIcon));
+			} else {
+				getTemplatePresentation().setIcon(currentProject ? forward : empty);
 			}
-		}
-
-		public Icon getItemIcon() {
-			return itemIcon;
 		}
 
 		public Project getProject() {
