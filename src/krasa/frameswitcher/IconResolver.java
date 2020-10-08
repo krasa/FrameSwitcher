@@ -42,10 +42,10 @@ public class IconResolver {
 			if (icon != null) {
 				return icon;
 			}
-			icon = getIcon(base, ".idea/icon.svg");
-			if (icon != null) {
-				return icon;
-			}
+//			icon = getIcon(base, ".idea/icon.svg");
+//			if (icon != null) {
+//				return icon;
+//			}
 			icon = getIcon(base, "src/main/resources/META-INF/pluginIcon.svg");
 			if (icon != null) {
 				return icon;

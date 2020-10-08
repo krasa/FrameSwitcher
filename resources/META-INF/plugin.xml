@@ -33,7 +33,7 @@
     <change-notes><![CDATA[  
 	      3.24.0
 		  <br/> - More reliable switching
-		  <br/> - Project icons - can be disabled in settings (looking for: .idea/icon.png(svg), src/main/resources/META-INF/pluginIcon.svg, resources/META-INF/pluginIcon.svg, META-INF/pluginIcon.svg, icon.png(svg))
+		  <br/> - Project icons - can be disabled in settings (looking for: .idea/icon.png, src/main/resources/META-INF/pluginIcon.svg, resources/META-INF/pluginIcon.svg, META-INF/pluginIcon.svg, icon.png, icon.svg)
 	        <br/><br/>
 	      3.23.0
 		  <br/> - Added: you can include the whole workspace in the settings, so that all projects gets added to the list.
