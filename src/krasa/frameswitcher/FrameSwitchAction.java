@@ -96,7 +96,13 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		if (FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
 			condition = Conditions.alwaysFalse();
 		} else {
-			condition = (a) -> a.getTemplatePresentation().getIcon() != forward;
+			condition = (a) -> {
+				if (a instanceof SwitchFrameAction) {
+					return !((SwitchFrameAction) a).currentProject;
+				}
+				return true;
+			};
+
 		}
 
 		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
@@ -143,7 +149,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 	private void add(Project currentProject, DefaultActionGroup group, final Project project) {
 		Icon itemIcon = (currentProject == project) ? forward : empty;
-		group.addAction(new SwitchFrameAction(project, itemIcon));
+		group.addAction(new SwitchFrameAction(project, itemIcon, currentProject == project));
 	}
 
 	private void addRemote(DefaultActionGroup group) {
@@ -538,11 +544,13 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		private final Project project;
 		private Icon itemIcon;
+		private final boolean currentProject;
 
-		public SwitchFrameAction(Project project, Icon itemIcon) {
+		public SwitchFrameAction(Project project, Icon itemIcon, boolean currentProject) {
 			super(project.getName().replace("_", "__"), null, itemIcon);
 			this.project = project;
 			this.itemIcon = itemIcon;
+			this.currentProject = currentProject;
 			if (loadProjectIcon) {
 				getTemplatePresentation().setIcon(IconResolver.resolveIcon(project.getBasePath(), loadProjectIcon));
 			}
