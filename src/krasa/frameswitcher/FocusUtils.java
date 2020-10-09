@@ -1,11 +1,11 @@
 package krasa.frameswitcher;
 
+import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.wm.impl.ProjectWindowAction;
-import com.intellij.testFramework.MapDataContext;
 import com.intellij.util.BitUtil;
 
 import javax.swing.*;
@@ -31,8 +31,8 @@ public class FocusUtils {
 			final ProjectWindowAction next = windowAction.getNext();
 			if (next != null) {
 				KeyEvent a = new KeyEvent(frame, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'a');
-				AnActionEvent frameSwitcher = AnActionEvent.createFromInputEvent(a, "FrameSwitcher", null, new MapDataContext());
-				next.setSelected(frameSwitcher, true);
+				AnActionEvent anActionEvent = AnActionEvent.createFromInputEvent(a, "FrameSwitcher", null, DataManager.getInstance().getDataContext());
+				next.setSelected(anActionEvent, true);
 			}
 		}
 	}
