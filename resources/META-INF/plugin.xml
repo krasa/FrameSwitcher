@@ -1,8 +1,10 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.25.0-203</version>
+	<version>3.25.0-211</version>
 
+	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+	<idea-version since-build="211"/>
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
@@ -142,8 +144,6 @@
       ]]>
 	</change-notes>
 
-	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="201.4515"/>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 		   on how to target different products -->
