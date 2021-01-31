@@ -415,6 +415,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		if (frameSwitchActions == null) {
 			return;
 		}
+		hackField(popup);
+
 		for (Shortcut switchAction : frameSwitchActions) {
 			if (switchAction instanceof KeyboardShortcut) {
 				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) switchAction;
@@ -429,7 +431,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						}
 						register(popup, KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
 							public void actionPerformed(ActionEvent e) {
-								hack(popup);
+								hackField(popup);
 								if (invoked.get() || FrameSwitcherSettings.getInstance().isSelectImmediately()) {
 									popup.handleSelect(true);
 								}
@@ -475,7 +477,11 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private void registerHack(ListPopupImpl popup, KeyStroke keyStroke) {
 		LOG.debug("registeringHACK ", keyStroke);
 		if (popup != null) {
-			popup.registerAction("Custom:" + keyStroke, keyStroke, hack(popup));
+			popup.registerAction("Custom:" + keyStroke, keyStroke, new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					hackField(popup);
+				}
+			});
 		}
 	}
 
@@ -486,16 +492,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-	@NotNull
-	private AbstractAction hack(ListPopupImpl popup) {
-		return new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				hackField(popup);
-			}
-		};
-	}
-
-	public void hackField(ListPopupImpl popup) {
+	private void hackField(ListPopupImpl popup) {
 		try {
 			LOG.debug("hacking WizardPopup#myKeyPressedReceived");
 			ReflectionUtil.setField(WizardPopup.class, popup, null, "myKeyPressedReceived", true);
