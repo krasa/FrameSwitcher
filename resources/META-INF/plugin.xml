@@ -34,6 +34,7 @@
 	<change-notes><![CDATA[  
 	      3.25.0
 		  <br/> - added: Reopen Projects action
+		  <br/> - added: Fixed for IntelliJ 2021.1
 	        <br/><br/>
 	      3.24.0
 		  <br/> - More reliable switching
