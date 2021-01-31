@@ -70,6 +70,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		addFrames(currentProject, group);
 
+		fillReopen(group);
+	}
+
+	public void fillReopen(DefaultActionGroup group) {
 		addRemote(group);
 
 		addRecent(group);
@@ -106,8 +110,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 
 		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
-			getPopupTitle(e), group, e.getDataContext(), aid, true, null, -1,
-			preselectActionCondition, myActionPlace);
+				getPopupTitle(e), group, e.getDataContext(), aid, true, null, -1,
+				preselectActionCondition, myActionPlace);
 		showPopup(e, popup);
 	}
 
@@ -240,11 +244,11 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		if (projectsOrderedByFocus != null) {
 			return Arrays.stream(actions)
-				.filter(action -> {
-					return !(action instanceof ReopenProjectAction)
-						|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
-				})
-				.toArray(AnAction[]::new);
+					.filter(action -> {
+						return !(action instanceof ReopenProjectAction)
+								|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
+					})
+					.toArray(AnAction[]::new);
 		}
 		return actions;
 	}
@@ -274,7 +278,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							group.addSeparator("Remote recent");
 						}
 						group.add(new ReopenRecentWrapper(new ReopenProjectAction(remoteProject.getProjectPath(), remoteProject.getName(),
-							remoteProject.getName())));
+								remoteProject.getName())));
 						i++;
 					}
 				}
@@ -415,8 +419,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				String[] split = keyboardShortcut.getFirstKeyStroke().toString().split(" ");
 				for (String s : split) {
 					if (s.equalsIgnoreCase("alt")
-						|| s.equalsIgnoreCase("ctrl")
-						|| s.equalsIgnoreCase("meta")
+							|| s.equalsIgnoreCase("ctrl")
+							|| s.equalsIgnoreCase("meta")
 					) {
 						if (s.equalsIgnoreCase("ctrl")) {
 							s = "control";
@@ -506,7 +510,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				Project project = openProjects[i];
 				if (project instanceof ProjectImpl) {
 					ProjectImpl p = (ProjectImpl) project;
-					if (Objects.equals(p.getBasePath(), action.getProjectPath()) || Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
+					if (java.util.Objects.equals(p.getBasePath(), action.getProjectPath()) || java.util.Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
 						openedProject = project;
 						break;
 					}

@@ -24,6 +24,7 @@ public class FocusUtils {
 		if (frame == null) {
 			return;
 		}
+
 		if (custom) {
 			requestFocusCustom(project, useRobot, frame);
 		} else {
