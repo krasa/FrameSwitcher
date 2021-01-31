@@ -411,15 +411,16 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				}
 			}
 		});
-		Shortcut[] frameSwitchActions = KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts(getId());
-		if (frameSwitchActions == null) {
+		Shortcut[] shortcuts = KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts(getId());
+		if (shortcuts == null) {
 			return;
 		}
+
 		hackField(popup);
 
-		for (Shortcut switchAction : frameSwitchActions) {
-			if (switchAction instanceof KeyboardShortcut) {
-				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) switchAction;
+		for (Shortcut shortcut : shortcuts) {
+			if (shortcut instanceof KeyboardShortcut) {
+				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) shortcut;
 				String[] split = keyboardShortcut.getFirstKeyStroke().toString().split(" ");
 				for (String s : split) {
 					if (s.equalsIgnoreCase("alt")
