@@ -75,9 +75,9 @@ public class IconResolver {
 
 	@Nullable
 	public static Icon getIcon(File base, String subpath) {
+		File file = null;
 		try {
 			Icon icon = null;
-			File file = null;
 			if (UIUtil.isUnderDarcula()) {
 				File darcula = new File(base, subpath.replace(".svg", "_dark.svg").replace(".png", "_dark.png"));
 				if (darcula.exists()) {
@@ -104,7 +104,7 @@ public class IconResolver {
 			}
 			return icon;
 		} catch (Throwable e) {
-			LOG.debug(e);
+			LOG.debug(String.valueOf(file), e);
 			return null;
 		}
 	}
