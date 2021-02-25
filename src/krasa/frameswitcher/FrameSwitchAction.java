@@ -29,12 +29,10 @@ import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame;
 import com.intellij.ui.popup.PopupFactoryImpl;
-import com.intellij.ui.popup.WizardPopup;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
 import com.intellij.util.Alarm;
 import com.intellij.util.PathUtil;
-import com.intellij.util.ReflectionUtil;
 import com.intellij.util.SingleAlarm;
 import com.intellij.util.ui.EmptyIcon;
 import krasa.frameswitcher.networking.dto.RemoteProject;
@@ -69,7 +67,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	@Override
 	protected void fillActions(final Project currentProject, DefaultActionGroup group, DataContext dataContext) {
 		loadProjectIcon = FrameSwitcherSettings.getInstance().isLoadProjectIcon();
-
 		addFrames(currentProject, group);
 
 		fillReopen(group);
@@ -416,8 +413,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			return;
 		}
 
-		hackField(popup);
-
 		for (Shortcut shortcut : shortcuts) {
 			if (shortcut instanceof KeyboardShortcut) {
 				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) shortcut;
@@ -432,14 +427,12 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						}
 						register(popup, KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
 							public void actionPerformed(ActionEvent e) {
-								hackField(popup);
 								if (invoked.get() || FrameSwitcherSettings.getInstance().isSelectImmediately()) {
 									popup.handleSelect(true);
 								}
 							}
 						});
 
-						registerHack(popup, KeyStroke.getKeyStroke(s.toLowerCase() + " released SHIFT"));
 					}
 				}
 				register(popup, keyboardShortcut.getFirstKeyStroke(), new AbstractAction() {
@@ -455,8 +448,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						}
 					}
 				});
-				registerHack(popup, KeyStroke.getKeyStroke(keyboardShortcut.getFirstKeyStroke().toString().replace("pressed", "released")));
-				registerHack(popup, KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke().toString().replace("pressed", "released")));
 				register(popup, KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke()), new AbstractAction() {
 					public void actionPerformed(ActionEvent e) {
 						invoked.set(true);
@@ -475,30 +466,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-	private void registerHack(ListPopupImpl popup, KeyStroke keyStroke) {
-		LOG.debug("registeringHACK ", keyStroke);
-		if (popup != null) {
-			popup.registerAction("Custom:" + keyStroke, keyStroke, new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					hackField(popup);
-				}
-			});
-		}
-	}
-
 	private void register(ListPopupImpl popup, KeyStroke keyStroke, AbstractAction action) {
 		LOG.debug("registering ", keyStroke);
 		if (keyStroke != null) {
 			popup.registerAction("Custom:" + keyStroke, keyStroke, action);
-		}
-	}
-
-	private void hackField(ListPopupImpl popup) {
-		try {
-			LOG.debug("hacking WizardPopup#myKeyPressedReceived");
-			ReflectionUtil.setField(WizardPopup.class, popup, null, "myKeyPressedReceived", true);
-		} catch (Throwable e) {
-			//good
 		}
 	}
 
