@@ -7,23 +7,27 @@ import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.apache.commons.lang.StringUtils;
 
+import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FrameSwitcherSettings {
-	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+	private static final Logger LOG = Logger.getInstance(FrameSwitcherSettings.class);
 
 	private JBPopupFactory.ActionSelectionAid popupSelectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
 	private List<String> recentProjectPaths = new ArrayList<String>();
 	private List<String> includeLocations = new ArrayList<String>();
 	private String maxRecentProjects = "";
-	private boolean remoting;
+	private String uuid ;
+	private boolean remoting = false;
 	private boolean defaultSelectionCurrentProject = true;
 	private String requestFocusMs = "100";
 	private boolean selectImmediately = false;
 	private boolean loadProjectIcon = true;
+	private int port=45588;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -31,6 +35,22 @@ public class FrameSwitcherSettings {
 
 	public boolean shouldShow(RemoteProject recentProjectsAction) {
 		return shouldShow(recentProjectsAction.getProjectPath());
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+	
+	 @Transient
+	public UUID getOrInitializeUuid() {
+		if (uuid == null) {
+			 uuid = UUID.randomUUID().toString();
+		}
+		return UUID.fromString(uuid);
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public boolean shouldShow(ReopenProjectAction action) {
@@ -60,7 +80,7 @@ public class FrameSwitcherSettings {
 	}
 
 	public static FrameSwitcherSettings getInstance() {
-		return FrameSwitcherApplicationComponent.getInstance().getState();
+		return FrameSwitcherApplicationService.getInstance().getState();
 	}
 
 	public String getMaxRecentProjects() {
@@ -114,8 +134,8 @@ public class FrameSwitcherSettings {
 	public void applyMaxRecentProjectsToRegistry() {
 		try {
 			if (!StringUtils.isBlank(maxRecentProjects)) {
-				LOG.info("Changing Registry " + FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS + " to " + maxRecentProjects);
-				Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).setValue(Integer.parseInt(maxRecentProjects));
+				LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to " + maxRecentProjects);
+				Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS).setValue(Integer.parseInt(maxRecentProjects));
 			}
 		} catch (Exception e) {
 			LOG.error(e);
@@ -126,8 +146,8 @@ public class FrameSwitcherSettings {
 		if (!StringUtils.isBlank(maxRecentProjects)) {
 			applyMaxRecentProjectsToRegistry();
 		} else {
-			LOG.info("Changing Registry " + FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS + " to default");
-			Registry.get(FrameSwitcherApplicationComponent.IDE_MAX_RECENT_PROJECTS).resetToDefault();
+			LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to default");
+			Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS).resetToDefault();
 		}
 	}
 
@@ -161,5 +181,13 @@ public class FrameSwitcherSettings {
 
 	public void setLoadProjectIcon(final boolean loadProjectIcon) {
 		this.loadProjectIcon = loadProjectIcon;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 }

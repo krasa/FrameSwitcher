@@ -3,29 +3,31 @@ package krasa.frameswitcher.networking;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import krasa.frameswitcher.FocusUtils;
 import krasa.frameswitcher.FrameSwitchAction;
-import krasa.frameswitcher.FrameSwitcherApplicationComponent;
+import krasa.frameswitcher.FrameSwitcherApplicationService;
 import krasa.frameswitcher.networking.dto.*;
 import org.jgroups.Message;
-import org.jgroups.ReceiverAdapter;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.UUID;
 
-public class Receiver extends ReceiverAdapter {
+public class Receiver implements org.jgroups.Receiver {
 
-	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+	private static final Logger LOG = Logger.getInstance(Receiver.class);
 
 	private UUID uuid;
-	private FrameSwitcherApplicationComponent applicationComponent;
-
-	public Receiver(UUID uuid, FrameSwitcherApplicationComponent applicationComponent) {
+	private FrameSwitcherApplicationService service;
+	
+	public Receiver(UUID uuid, FrameSwitcherApplicationService service) {
 		this.uuid = uuid;
-		this.applicationComponent = applicationComponent;
+		this.service = service;
 	}
 
+	@Override
 	public void receive(Message msg) {
 		Object object = msg.getObject();
 		if (object instanceof GeneralMessage) {
@@ -36,6 +38,13 @@ public class Receiver extends ReceiverAdapter {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Received: " + object);
 		}
+
+		ApplicationManager.getApplication().executeOnPooledThread( () -> {
+			respond(msg, object);
+		});
+	}
+
+	private void respond(Message msg, Object object) {
 		if (object instanceof InstanceStarted) {
 			instanceStarted((InstanceStarted) object);
 		} else if (object instanceof ProjectsState) {
@@ -45,32 +54,33 @@ public class Receiver extends ReceiverAdapter {
 		} else if (object instanceof PingResponse) {
 			pingResponse((PingResponse) object);
 		} else if (object instanceof ProjectOpened) {
-			applicationComponent.getRemoteInstancesState().projectOpened((ProjectOpened) object);
+			service.getRemoteInstancesState().projectOpened((ProjectOpened) object);
 		} else if (object instanceof ProjectClosed) {
-			applicationComponent.getRemoteInstancesState().projectClosed((ProjectClosed) object);
+			service.getRemoteInstancesState().projectClosed((ProjectClosed) object);
 		} else if (object instanceof InstanceClosed) {
-			applicationComponent.getRemoteInstancesState().instanceClosed((InstanceClosed) object);
+			service.getRemoteInstancesState().instanceClosed((InstanceClosed) object);
 		} else if (object instanceof OpenProject) {
 			openProject((OpenProject) object);
 		}
-
 	}
 
 	private void pingResponse(PingResponse object) {
-		applicationComponent.getRemoteInstancesState().processPingResponse(object);
+		service.getRemoteInstancesState().processPingResponse(object);
 	}
 
 	private void ping(Message msg) {
-		applicationComponent.getRemoteSender().sendPingResponse(msg);
+		service.getRemoteSender().sendPingResponse(msg);
 	}
 
 	private void instanceStarted(InstanceStarted instanceStarted) {
-		applicationComponent.getRemoteInstancesState().updateRemoteState(instanceStarted);
-		applicationComponent.getRemoteSender().sendProjectsState();
+		RemoteInstancesState remoteInstancesState = service.getRemoteInstancesState();
+		remoteInstancesState.updateRemoteState(instanceStarted);
+		service.getRemoteSender().sendProjectsState();
 	}
 
 	private void updateRemoteProjectsState(ProjectsState object) {
-		applicationComponent.getRemoteInstancesState().updateRemoteState(object);
+		RemoteInstancesState remoteInstancesState = service.getRemoteInstancesState();
+		remoteInstancesState.updateRemoteState(object);
 	}
 
 	private void openProject(OpenProject openProject) {
@@ -79,12 +89,10 @@ public class Receiver extends ReceiverAdapter {
 			for (final IdeFrame ideFrame : ideFrames) {
 				final Project project = ideFrame.getProject();
 				if (project != null && openProject.getProject().getProjectPath().equals(project.getBasePath())) {
-					ApplicationManager.getApplication().invokeLater(new Runnable() {
-
-						@Override
-						public void run() {
-							FocusUtils.requestFocus(project, true, true);
-						}
+					SwingUtilities.invokeLater(() -> {
+						IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
+							FocusUtils.requestFocus(project, false, true);
+						});
 					});
 				}
 			}

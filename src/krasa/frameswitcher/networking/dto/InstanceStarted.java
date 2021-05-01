@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class InstanceStarted extends ProjectsState {
-	public InstanceStarted(UUID uuid, AnAction[] recentProjectsActions, List<IdeFrame> ideFrames) {
-		super(uuid, recentProjectsActions, ideFrames);
+	public InstanceStarted(UUID uuid, AnAction[] recentProjectsActions, List<IdeFrame> ideFrames, String name) {
+		super(uuid, recentProjectsActions, ideFrames, name);
 	}
 }

@@ -2,4 +2,6 @@
 .idea/.gitignore
 .idea/vcs.xml
 .idea/uiDesigner.xml
+.idea/codestream.xml
+FrameSwitcher.ipr
 out/

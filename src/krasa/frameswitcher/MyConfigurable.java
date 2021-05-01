@@ -45,7 +45,7 @@ public class MyConfigurable implements Configurable {
 	public void apply() throws ConfigurationException {
 		FrameSwitcherSettings settings = gui.exportDisplayedSettings();
 
-		FrameSwitcherApplicationComponent component = FrameSwitcherApplicationComponent.getInstance();
+		FrameSwitcherApplicationService component = FrameSwitcherApplicationService.getInstance();
 		component.updateSettings(settings);
 	}
 
@@ -56,7 +56,7 @@ public class MyConfigurable implements Configurable {
 
 	@NotNull
 	private FrameSwitcherSettings getSettings() {
-		return FrameSwitcherApplicationComponent.getInstance().getState();
+		return FrameSwitcherApplicationService.getInstance().getState();
 	}
 
 	@Override

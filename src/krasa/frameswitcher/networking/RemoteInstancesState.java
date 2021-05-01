@@ -1,6 +1,7 @@
 package krasa.frameswitcher.networking;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.intellij.openapi.diagnostic.Logger;
 import krasa.frameswitcher.networking.dto.InstanceClosed;
@@ -19,14 +20,15 @@ import java.util.Set;
 import java.util.UUID;
 
 public class RemoteInstancesState {
+	private static final Logger LOG = Logger.getInstance(RemoteInstancesState.class);
 
-	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
 	public static final int MAX_KEEP_ALIVE_TIME = 10000;
 
 	public volatile Map<UUID, Date> forRemoval = new HashMap<UUID, Date>();
 	public volatile List<UUID> actualActiveInstances = new ArrayList<UUID>();
-	public volatile Multimap<UUID, RemoteProject> remoteProjects = ArrayListMultimap.<UUID, RemoteProject>create();
-	public volatile Multimap<UUID, RemoteProject> remoteRecentProjects = ArrayListMultimap.<UUID, RemoteProject>create();
+	public volatile Map<UUID,String> ideNames = new HashMap<>();
+	public volatile Multimap<UUID, RemoteProject> remoteProjects = HashMultimap.<UUID, RemoteProject>create();
+	public volatile Multimap<UUID, RemoteProject> remoteRecentProjects = HashMultimap.create();
 
 	public synchronized Multimap<UUID, RemoteProject> getRemoteRecentProjects() {
 		return ArrayListMultimap.create(remoteRecentProjects);
@@ -34,6 +36,10 @@ public class RemoteInstancesState {
 
 	public synchronized Multimap<UUID, RemoteProject> getRemoteProjects() {
 		return ArrayListMultimap.create(remoteProjects);
+	}
+
+	public Map<UUID, String> getIdeNames() {
+		return ideNames;
 	}
 
 	public synchronized void sweepRemoteInstance() {
@@ -70,6 +76,8 @@ public class RemoteInstancesState {
 	}
 
 	public synchronized void updateRemoteState(ProjectsState instanceStarted) {
+		ideNames.put(instanceStarted.getUuid(), instanceStarted.getName());
+		
 		remoteRecentProjects.removeAll(instanceStarted.getUuid());
 		remoteProjects.removeAll(instanceStarted.getUuid());
 
@@ -88,6 +96,7 @@ public class RemoteInstancesState {
 	}
 
 	public synchronized void instanceClosed(InstanceClosed object) {
+		ideNames.remove(object.getUuid());
 		remoteProjects.removeAll(object.getUuid());
 		remoteRecentProjects.removeAll(object.getUuid());
 	}

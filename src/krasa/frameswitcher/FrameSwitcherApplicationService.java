@@ -1,10 +1,8 @@
 package krasa.frameswitcher;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import krasa.frameswitcher.networking.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 @State(name = "FrameSwitcherSettings", storages = {@Storage( "FrameSwitcherSettings.xml")})
-public class FrameSwitcherApplicationComponent implements ApplicationComponent, PersistentStateComponent<FrameSwitcherSettings> {
-	private final Logger LOG = Logger.getInstance("#" + getClass().getCanonicalName());
+public class FrameSwitcherApplicationService implements  PersistentStateComponent<FrameSwitcherSettings>, Disposable {
+	
+	private static final Logger LOG = Logger.getInstance(FrameSwitcherApplicationService.class);
+	
 	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
 
 
@@ -21,12 +21,27 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent, 
 	private RemoteInstancesState remoteInstancesState = new RemoteInstancesState();
 	private RemoteSender remoteSender;
 	private ProjectFocusMonitor projectFocusMonitor;
-
-	public static FrameSwitcherApplicationComponent getInstance() {
-		return ApplicationManager.getApplication().getComponent(FrameSwitcherApplicationComponent.class);
+	boolean initialized;
+	public static FrameSwitcherApplicationService getInstance() {
+		FrameSwitcherApplicationService service = ServiceManager.getService(FrameSwitcherApplicationService.class);
+		if (!service.initialized) {
+			service.initComponent();
+		}
+		return service;
 	}
 
-	public FrameSwitcherApplicationComponent() {
+	public FrameSwitcherApplicationService() {
+	}
+
+	public void initComponent() {
+		long start = System.currentTimeMillis();
+		initialized = true;
+		if (getState().isRemoting()) {
+			initRemoting();
+		} else {
+			remoteSender = new DummyRemoteSender();
+		}
+		LOG.debug("initComponent done in ", System.currentTimeMillis() - start, "ms");
 	}
 
 	public ProjectFocusMonitor getProjectFocusMonitor() {
@@ -36,35 +51,16 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent, 
 		return projectFocusMonitor;
 	}
 
-	public void initComponent() {
-		if (getState().isRemoting()) {
-			initRemoting();
-		} else {
-			remoteSender = new DummyRemoteSender();
-		}
-	}
-
 	private void initRemoting() {
-		UUID uuid = UUID.randomUUID();
+		UUID uuid = getState().getOrInitializeUuid();
 		try {
-			remoteSender = new RemoteSenderImpl(uuid, new Receiver(uuid, this));
+			remoteSender = new RemoteSenderImpl(uuid, new Receiver(uuid,this),getState().getPort());
 		} catch (Throwable e) {
 			remoteSender = new DummyRemoteSender();
 			LOG.error(e);
 		}
 	}
 
-	public void disposeComponent() {
-		if (getRemoteSender() != null) {
-			getRemoteSender().close();
-		}
-	}
-
-
-	@NotNull
-	public String getComponentName() {
-		return "FrameSwitcherApplicationComponent";
-	}
 
 	@NotNull
 	@Override
@@ -101,4 +97,12 @@ public class FrameSwitcherApplicationComponent implements ApplicationComponent, 
 		return remoteSender;
 	}
 
+	@Override
+	public void dispose() {
+		long start = System.currentTimeMillis();
+		if (getRemoteSender() != null) {
+			getRemoteSender().close();
+		}
+		LOG.debug("disposeComponent done in ", System.currentTimeMillis() - start, "ms");
+	}
 }

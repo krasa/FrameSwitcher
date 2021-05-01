@@ -119,7 +119,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		WindowManager windowManager = WindowManager.getInstance();
 		ArrayList<IdeFrame> ideFrames = getIdeFrames();
 
-		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance().getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
 		Set<Project> addedProjectsSet = new HashSet<>();
 
@@ -155,17 +155,22 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void addRemote(DefaultActionGroup group) {
-		final FrameSwitcherApplicationComponent applicationComponent = FrameSwitcherApplicationComponent.getInstance();
+		final FrameSwitcherApplicationService applicationComponent = FrameSwitcherApplicationService.getInstance();
 		applicationComponent.getRemoteInstancesState().sweepRemoteInstance();
 		Multimap<UUID, RemoteProject> remoteProjectMultimap = applicationComponent.getRemoteInstancesState().getRemoteProjects();
+		Map<UUID, String> ideNames = applicationComponent.getRemoteInstancesState().getIdeNames();
+		
 		applicationComponent.getRemoteSender().pingRemote();
-		if (remoteProjectMultimap.size() > 0) {
-			group.addSeparator("RemoteProjects");
-		}
 		for (final UUID uuid : remoteProjectMultimap.keySet()) {
-
+			String ideName = ideNames.get(uuid);
 			Collection<RemoteProject> remoteProjects = remoteProjectMultimap.get(uuid);
-
+			if (!remoteProjects.isEmpty()) {
+				if (ideName != null) {
+					group.addSeparator(ideName);
+				} else {
+					group.addSeparator("Remote Projects");
+				} 
+			}
 			for (final RemoteProject remoteProject : remoteProjects) {
 				group.add(new SwitchToRemoteProjectAction(remoteProject, uuid));
 			}
@@ -237,7 +242,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 
 	public static AnAction[] removeCurrentProjects(AnAction[] actions) {
-		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationComponent.getInstance().getProjectFocusMonitor();
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance().getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
 
 
@@ -263,7 +268,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void addRemoteRecent(DefaultActionGroup group) {
-		Multimap<UUID, RemoteProject> remoteRecentProjects = FrameSwitcherApplicationComponent.getInstance().getRemoteInstancesState().getRemoteRecentProjects();
+		Multimap<UUID, RemoteProject> remoteRecentProjects = FrameSwitcherApplicationService.getInstance().getRemoteInstancesState().getRemoteRecentProjects();
 		Set<UUID> entries = remoteRecentProjects.keySet();
 		boolean addedSeparator = false;
 		if (remoteRecentProjects.size() > 0) {
@@ -322,6 +327,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private void registerActions(final ListPopupImpl popup) {
 		final Ref<Boolean> invoked = Ref.create(false);
 		popup.registerAction("ReopenInSameWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				JList list = popup.getList();
 				PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
@@ -339,6 +345,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			}
 		});
 		popup.registerAction("ReopenInNewWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), new AbstractAction() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				JList list = popup.getList();
 				PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
@@ -357,6 +364,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		});
 		popup.registerAction("invokeWithDelete", KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), new AbstractAction() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				invoked.set(true);
 				JList list = popup.getList();
@@ -426,6 +434,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 							s = "control";
 						}
 						register(popup, KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
+							@Override
 							public void actionPerformed(ActionEvent e) {
 								if (invoked.get() || FrameSwitcherSettings.getInstance().isSelectImmediately()) {
 									popup.handleSelect(true);
@@ -436,6 +445,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					}
 				}
 				register(popup, keyboardShortcut.getFirstKeyStroke(), new AbstractAction() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						invoked.set(true);
 						JList list = popup.getList();
@@ -449,6 +459,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					}
 				});
 				register(popup, KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke()), new AbstractAction() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						invoked.set(true);
 						JList list = popup.getList();
@@ -488,6 +499,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return true;
 	}
 
+	@Override
 	protected JBPopupFactory.ActionSelectionAid getAidMethod() {
 		return FrameSwitcherSettings.getInstance().getPopupSelectionAid();
 	}
@@ -533,7 +545,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 
 		private void requestFocus(Project openProject) {
-			String requestFocusMs = FrameSwitcherApplicationComponent.getInstance().getState().getRequestFocusMs();
+			String requestFocusMs = FrameSwitcherApplicationService.getInstance().getState().getRequestFocusMs();
 			try {
 				int ms = Integer.parseInt(requestFocusMs);
 				if (ms > 0) {
@@ -613,7 +625,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		@Override
 		public void actionPerformed(AnActionEvent anActionEvent) {
-			FrameSwitcherApplicationComponent.getInstance().getRemoteSender().openProject(uuid, remoteProject);
+			FrameSwitcherApplicationService.getInstance().getRemoteSender().openProject(uuid, remoteProject);
 		}
 	}
 

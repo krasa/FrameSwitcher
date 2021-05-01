@@ -1,15 +1,15 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.25.2-203</version>
+	<version>3.26.0-203</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="203"/>
+	<idea-version since-build="203.4204"/>
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
 	<description><![CDATA[
-  	Plugin for more convenient switching between projects/frames/windows than is alt-tab or Window menu.
+  	Plugin for more convenient switching between projects/frames/windows/IDEs than is alt-tab or Window menu.
   	<ul>
   		<li>
   			Switch or reopen a project - ALT + F2 (repeat for selecting a next item)
@@ -34,6 +34,9 @@
       ]]></description>
 
 	<change-notes><![CDATA[  
+	      3.26.0
+		  <br/> - Remote switching update
+	        <br/><br/>
 	      3.25.0
 		  <br/> - added: Reopen Projects action
 		  <br/> - added: Fixed for IntelliJ 2021.1
@@ -152,19 +155,6 @@
 	  -->
 	<depends>com.intellij.modules.lang</depends>
 
-	<application-components>
-		<!-- Add your application components here -->
-		<component>
-			<implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
-		</component>
-	</application-components>
-
-	<project-components>
-		<!-- Add your project components here -->
-		<component>
-			<implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
-		</component>
-	</project-components>
 
 	<actions>
 		<action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch Frame"
@@ -190,8 +180,12 @@
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">
+		<preloadingActivity implementation="krasa.frameswitcher.MyPreloadingActivity"/>
+		<applicationService serviceImplementation="krasa.frameswitcher.FrameSwitcherApplicationService"/>
+		<notificationGroup id="Frame Switcher plugin" displayType="BALLOON" isLogByDefault="true"/>
 		<applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"
 								 displayName="Frame Switcher"/>
 
+		<backgroundPostStartupActivity implementation="krasa.frameswitcher.ProjectStartupActivity"/>
 	</extensions>
 </idea-plugin>

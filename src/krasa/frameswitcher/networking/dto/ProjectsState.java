@@ -13,11 +13,12 @@ public class ProjectsState extends GeneralMessage {
 
 	private List<RemoteProject> recentRemoteProjects;
 	private List<RemoteProject> remoteProjects;
+	private String name;
 
-
-	public ProjectsState(UUID uuid, AnAction[] recentProjectsActions, List<IdeFrame> ideFrames) {
+	public ProjectsState(UUID uuid, AnAction[] recentProjectsActions, List<IdeFrame> ideFrames, String name) {
 		super(uuid);
 		recentRemoteProjects = new ArrayList<RemoteProject>(recentProjectsActions.length);
+		this.name = name;
 		for (AnAction action : recentProjectsActions) {
 			ReopenProjectAction reopenProjectAction = (ReopenProjectAction) action;
 			recentRemoteProjects.add(new RemoteProject(reopenProjectAction));
@@ -29,6 +30,10 @@ public class ProjectsState extends GeneralMessage {
 				remoteProjects.add(new RemoteProject(project));
 			}
 		}
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public List<RemoteProject> getRemoteProjects() {
