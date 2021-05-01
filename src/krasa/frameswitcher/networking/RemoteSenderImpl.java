@@ -16,6 +16,7 @@ import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolConfiguration;
 import org.jgroups.conf.ProtocolStackConfigurator;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -64,7 +65,8 @@ public class RemoteSenderImpl implements RemoteSender {
 	}
 
 	private String getName() {
-		return ApplicationInfo.getInstance().getFullApplicationName();
+		ApplicationInfo instance = ApplicationInfo.getInstance();
+		return instance.getFullApplicationName()+ " - "+instance.getBuild();
 	}
 
 	@Override
