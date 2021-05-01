@@ -51,7 +51,7 @@ public class RemoteSenderImpl implements RemoteSender {
 	public void sendInstanceStarted() {
 		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
 		final AnAction[] recentProjectsActions = FrameSwitcherUtils.getRecentProjectsManagerBase().getRecentProjectsActions(false);
-		LOG.info("sending InstanceStarted");
+		LOG.debug("sending InstanceStarted");
 		send(new ObjectMessage(null, new InstanceStarted(uuid, recentProjectsActions, ideFrames, getName())));
 	}
 
@@ -69,39 +69,39 @@ public class RemoteSenderImpl implements RemoteSender {
 
 	@Override
 	public void close() {
-		LOG.info("sending InstanceClosed");
+		LOG.debug("sending InstanceClosed");
 		send(new ObjectMessage(null, new InstanceClosed(uuid)));
 		channel.close();
 	}
 
 	@Override
 	public void pingRemote() {
-		LOG.info("sending Ping");
+		LOG.debug("sending Ping");
 		send(new ObjectMessage(null, new Ping(uuid)));
 	}
 
 	@Override
 	public void projectOpened(Project project) {
-		LOG.info("sending ProjectOpened");
+		LOG.debug("sending ProjectOpened");
 		send(new ObjectMessage(null, new ProjectOpened(project.getName(), project.getBasePath(), uuid)));
 	}
 
 	@Override
 	public void sendProjectClosed(Project project) {
-		LOG.info("sending ProjectClosed");
+		LOG.debug("sending ProjectClosed");
 		send(new ObjectMessage(null, new ProjectClosed(project.getName(), project.getBasePath(), uuid)));
 	}
 
 	@Override
 	public void openProject(UUID target, RemoteProject remoteProject) {
 		final OpenProject openProject = new OpenProject(uuid, target, remoteProject);
-		LOG.info("sending openProject");
+		LOG.debug("sending openProject");
 		send(new ObjectMessage(null, openProject));
 	}
 
 	@Override
 	public void sendPingResponse(Message msg) {
-		LOG.info("sending PingResponse");
+		LOG.debug("sending PingResponse");
 		send(new ObjectMessage(msg.getSrc(), new PingResponse(uuid)));
 	}
 
