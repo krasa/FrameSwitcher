@@ -7,6 +7,6 @@ import org.jetbrains.annotations.NotNull;
 public class MyPreloadingActivity extends PreloadingActivity {
 	@Override
 	public void preload(@NotNull ProgressIndicator progressIndicator) {
-		FrameSwitcherApplicationService.getInstance().initComponent();
+		FrameSwitcherApplicationService.getInstance(); //for initComponent()
 	}
 }

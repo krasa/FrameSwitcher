@@ -21,8 +21,8 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 
 	private FrameSwitcherSettings settings=new FrameSwitcherSettings();
 	private RemoteInstancesState remoteInstancesState = new RemoteInstancesState();
+	private ProjectFocusMonitor projectFocusMonitor=new ProjectFocusMonitor();
 	private RemoteSender remoteSender;
-	private ProjectFocusMonitor projectFocusMonitor;
 	boolean initialized;
 
 	public static FrameSwitcherApplicationService getInstance() {
@@ -43,7 +43,7 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 		LOG.debug("initComponent done in ", System.currentTimeMillis() - start, "ms");
 	}
 
-	private void initRemoting() {
+	private synchronized void initRemoting() {
 		if (this.settings.isRemoting()) {
 			if (!(remoteSender instanceof RemoteSenderImpl)) {
 				try {
@@ -69,9 +69,6 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 	}
 
 	public ProjectFocusMonitor getProjectFocusMonitor() {
-		if (projectFocusMonitor == null) {
-			projectFocusMonitor = new ProjectFocusMonitor();
-		}
 		return projectFocusMonitor;
 	}
 
