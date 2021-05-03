@@ -1,19 +1,21 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
 import krasa.frameswitcher.networking.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-@State(name = "FrameSwitcherSettings", storages = {@Storage( "FrameSwitcherSettings.xml")})
-public class FrameSwitcherApplicationService implements  PersistentStateComponent<FrameSwitcherSettings>, Disposable {
-	
+@State(name = "FrameSwitcherSettings", storages = {@Storage("FrameSwitcherSettings.xml")})
+public class FrameSwitcherApplicationService implements PersistentStateComponent<FrameSwitcherSettings>, Disposable {
+
 	private static final Logger LOG = Logger.getInstance(FrameSwitcherApplicationService.class);
-	
+
 	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
 
 
@@ -22,6 +24,7 @@ public class FrameSwitcherApplicationService implements  PersistentStateComponen
 	private RemoteSender remoteSender;
 	private ProjectFocusMonitor projectFocusMonitor;
 	boolean initialized;
+
 	public static FrameSwitcherApplicationService getInstance() {
 		FrameSwitcherApplicationService service = ServiceManager.getService(FrameSwitcherApplicationService.class);
 		if (!service.initialized) {
@@ -36,12 +39,33 @@ public class FrameSwitcherApplicationService implements  PersistentStateComponen
 	public void initComponent() {
 		long start = System.currentTimeMillis();
 		initialized = true;
-		if (getState().isRemoting()) {
-			initRemoting();
-		} else {
-			remoteSender = new DummyRemoteSender();
-		}
+		initRemoting();
 		LOG.debug("initComponent done in ", System.currentTimeMillis() - start, "ms");
+	}
+
+	private void initRemoting() {
+		if (this.settings.isRemoting()) {
+			if (!(remoteSender instanceof RemoteSenderImpl)) {
+				try {
+					UUID uuid = getState().getOrInitializeUuid();
+					remoteSender = new RemoteSenderImpl(this, uuid, new Receiver(uuid, this), getState().getPort());
+				} catch (Throwable e) {
+					remoteInstancesState = new RemoteInstancesState();
+					remoteSender = new DummyRemoteSender();
+					LOG.error(e);
+				}
+			}
+		} else {
+			if (remoteSender instanceof RemoteSenderImpl) {
+				remoteSender.dispose();
+			}
+
+			if (!(remoteSender instanceof DummyRemoteSender)) {
+				remoteInstancesState = new RemoteInstancesState();
+				remoteSender = new DummyRemoteSender();
+			}
+		}
+
 	}
 
 	public ProjectFocusMonitor getProjectFocusMonitor() {
@@ -49,16 +73,6 @@ public class FrameSwitcherApplicationService implements  PersistentStateComponen
 			projectFocusMonitor = new ProjectFocusMonitor();
 		}
 		return projectFocusMonitor;
-	}
-
-	private void initRemoting() {
-		UUID uuid = getState().getOrInitializeUuid();
-		try {
-			remoteSender = new RemoteSenderImpl(uuid, new Receiver(uuid,this),getState().getPort());
-		} catch (Throwable e) {
-			remoteSender = new DummyRemoteSender();
-			LOG.error(e);
-		}
 	}
 
 
@@ -80,13 +94,7 @@ public class FrameSwitcherApplicationService implements  PersistentStateComponen
 	public void updateSettings(FrameSwitcherSettings settings) {
 		this.settings = settings;
 		this.settings.applyOrResetMaxRecentProjectsToRegistry();
-		if (remoteSender instanceof DummyRemoteSender && this.settings.isRemoting()) {
-			initRemoting();
-		} else if (remoteSender instanceof RemoteSenderImpl && !this.settings.isRemoting()) {
-			remoteSender.close();
-			remoteInstancesState = new RemoteInstancesState();
-			remoteSender = new DummyRemoteSender();
-		}
+		initRemoting();
 	}
 
 	public RemoteInstancesState getRemoteInstancesState() {
@@ -101,7 +109,7 @@ public class FrameSwitcherApplicationService implements  PersistentStateComponen
 	public void dispose() {
 		long start = System.currentTimeMillis();
 		if (getRemoteSender() != null) {
-			getRemoteSender().close();
+			getRemoteSender().dispose();
 		}
 		LOG.debug("disposeComponent done in ", System.currentTimeMillis() - start, "ms");
 	}

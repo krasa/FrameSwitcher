@@ -17,12 +17,7 @@ public class ProjectsState extends GeneralMessage {
 
 	public ProjectsState(UUID uuid, AnAction[] recentProjectsActions, List<IdeFrame> ideFrames, String name) {
 		super(uuid);
-		recentRemoteProjects = new ArrayList<RemoteProject>(recentProjectsActions.length);
-		this.name = name;
-		for (AnAction action : recentProjectsActions) {
-			ReopenProjectAction reopenProjectAction = (ReopenProjectAction) action;
-			recentRemoteProjects.add(new RemoteProject(reopenProjectAction));
-		}
+
 		remoteProjects = new ArrayList<RemoteProject>(ideFrames.size());
 		for (IdeFrame ideFrame : ideFrames) {
 			Project project = ideFrame.getProject();
@@ -30,6 +25,16 @@ public class ProjectsState extends GeneralMessage {
 				remoteProjects.add(new RemoteProject(project));
 			}
 		}
+
+
+		recentRemoteProjects = new ArrayList<RemoteProject>(Math.min(recentProjectsActions.length, 20));
+		this.name = name;
+		for (int i = 0; i < recentProjectsActions.length && i < 20; i++) {
+			AnAction action = recentProjectsActions[i];
+			ReopenProjectAction reopenProjectAction = (ReopenProjectAction) action;
+			recentRemoteProjects.add(new RemoteProject(reopenProjectAction));
+		}
+
 	}
 
 	public String getName() {

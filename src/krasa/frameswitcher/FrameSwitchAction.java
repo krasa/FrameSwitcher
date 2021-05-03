@@ -1,6 +1,5 @@
 package krasa.frameswitcher;
 
-import com.google.common.collect.Multimap;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.GeneralSettings;
@@ -35,6 +34,8 @@ import com.intellij.util.Alarm;
 import com.intellij.util.PathUtil;
 import com.intellij.util.SingleAlarm;
 import com.intellij.util.ui.EmptyIcon;
+import krasa.frameswitcher.networking.RemoteIdeInstance;
+import krasa.frameswitcher.networking.RemoteInstancesState;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.SystemIndependent;
@@ -73,6 +74,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	public void fillReopen(DefaultActionGroup group) {
+		FrameSwitcherApplicationService service = FrameSwitcherApplicationService.getInstance();
+		service.getRemoteInstancesState().sweepRemoteInstance();
+		
 		addRemote(group);
 
 		addRecent(group);
@@ -80,6 +84,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		addRemoteRecent(group);
 
 		addIncluded(group);
+		
+		service.getRemoteSender().asyncSendRefresh();
+		service.getRemoteSender().asyncPing();
 	}
 
 	@Override
@@ -155,30 +162,55 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void addRemote(DefaultActionGroup group) {
-		final FrameSwitcherApplicationService applicationComponent = FrameSwitcherApplicationService.getInstance();
-		applicationComponent.getRemoteInstancesState().sweepRemoteInstance();
-		Multimap<UUID, RemoteProject> remoteProjectMultimap = applicationComponent.getRemoteInstancesState().getRemoteProjects();
-		Map<UUID, String> ideNames = applicationComponent.getRemoteInstancesState().getIdeNames();
-		
-		applicationComponent.getRemoteSender().pingRemote();
-		for (final UUID uuid : remoteProjectMultimap.keySet()) {
-			String ideName = ideNames.get(uuid);
-			Collection<RemoteProject> remoteProjects = remoteProjectMultimap.get(uuid);
-			if (!remoteProjects.isEmpty()) {
-				if (ideName != null) {
-					group.addSeparator(ideName);
-				} else {
-					group.addSeparator("Remote Projects");
-				} 
+		final FrameSwitcherApplicationService service = FrameSwitcherApplicationService.getInstance();
+		RemoteInstancesState remoteInstancesState = service.getRemoteInstancesState();
+
+		for (RemoteIdeInstance remoteIdeInstance : remoteInstancesState.getRemoteIdeInstances()) {
+			Collection<RemoteProject> remoteProjects = remoteIdeInstance.remoteProjects;
+			String ideName = remoteIdeInstance.ideName;
+
+			if (remoteProjects.isEmpty()) {
+				continue;
 			}
+
+			if (ideName != null) {
+				group.addSeparator(ideName);
+			} else {
+				group.addSeparator("Remote");
+			}
+
 			for (final RemoteProject remoteProject : remoteProjects) {
-				group.add(new SwitchToRemoteProjectAction(remoteProject, uuid));
+				group.add(new SwitchToRemoteProjectAction(remoteProject, remoteIdeInstance.uuid));
 			}
 		}
 	}
-
+	private void addRemoteRecent(DefaultActionGroup group) {
+			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
+			List<RemoteIdeInstance> remoteIdeInstances1 = FrameSwitcherApplicationService.getInstance().getRemoteInstancesState().getRemoteIdeInstances();
+			for (RemoteIdeInstance remoteIdeInstance : remoteIdeInstances1) {
+				Collection<RemoteProject> remoteRecentProjects = remoteIdeInstance.remoteRecentProjects;
+				String ideName = remoteIdeInstance.ideName;
+	
+	
+				if (remoteRecentProjects.isEmpty()) {
+					continue;
+				}
+	
+				if (ideName != null) {
+					group.addSeparator("Recent - " + ideName);
+				} else {
+					group.addSeparator("Recent");
+				}
+	
+				for (RemoteProject remoteProject : remoteRecentProjects) {
+					if (settings.shouldShow(remoteProject)) {
+						group.add(new SwitchToRemoteProjectAction(remoteProject, remoteIdeInstance.uuid));
+					}
+				}
+			}
+		}
 	private void addRecent(DefaultActionGroup group) {
-		RecentProjectsManagerBase recentProjectsManagerBase = FrameSwitcherUtils.getRecentProjectsManagerBase();
+		RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
 		AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false, false);
 		if (recentProjectsActions != null) {
 			recentProjectsActions = removeCurrentProjects(recentProjectsActions);
@@ -267,29 +299,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		return false;
 	}
 
-	private void addRemoteRecent(DefaultActionGroup group) {
-		Multimap<UUID, RemoteProject> remoteRecentProjects = FrameSwitcherApplicationService.getInstance().getRemoteInstancesState().getRemoteRecentProjects();
-		Set<UUID> entries = remoteRecentProjects.keySet();
-		boolean addedSeparator = false;
-		if (remoteRecentProjects.size() > 0) {
-			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
-			for (UUID entry : entries.toArray(new UUID[entries.size()])) {
-				int i = 0;
-				for (RemoteProject remoteProject : remoteRecentProjects.get(entry)) {
-					if (settings.shouldShow(remoteProject)) {
-						if (!addedSeparator) {
-							addedSeparator = true;
-							group.addSeparator("Remote recent");
-						}
-						group.add(new ReopenRecentWrapper(new ReopenProjectAction(remoteProject.getProjectPath(), remoteProject.getName(),
-								remoteProject.getName())));
-						i++;
-					}
-				}
-
-			}
-		}
-	}
+	
 
 	public ArrayList<IdeFrame> getIdeFrames() {
 		IdeFrame[] allProjectFrames = WindowManager.getInstance().getAllProjectFrames();
@@ -373,7 +383,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				PopupFactoryImpl.ActionItem selectedItem = (PopupFactoryImpl.ActionItem) model.get(selectedIndex);
 				if (selectedItem != null && selectedItem.getAction() instanceof ReopenRecentWrapper) {
 					ReopenRecentWrapper action = (ReopenRecentWrapper) selectedItem.getAction();
-					FrameSwitcherUtils.getRecentProjectsManagerBase().removePath(action.getProjectPath());
+					RecentProjectsManagerBase.getInstanceEx().removePath(action.getProjectPath());
 					model.deleteItem(selectedItem);
 					if (selectedIndex == list.getModel().getSize()) { //is last
 						list.setSelectedIndex(selectedIndex - 1);
@@ -386,7 +396,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					Project project = action.getProject();
 					if (!project.isDisposed()) {
 						ProjectUtil.closeAndDispose(project);
-						FrameSwitcherUtils.getRecentProjectsManagerBase().updateLastProjectPath();
+						RecentProjectsManagerBase.getInstanceEx().updateLastProjectPath();
 						WelcomeFrame.showIfNoProjectOpened();
 						model.deleteItem(selectedItem);
 						if (selectedIndex == list.getModel().getSize()) { //is last

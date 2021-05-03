@@ -35,7 +35,7 @@
 
 	<change-notes><![CDATA[  
 	      3.26.0
-		  <br/> - Remote switching update
+		  <br/> - Remote switching improvements
 	        <br/><br/>
 	      3.25.0
 		  <br/> - added: Reopen Projects action
@@ -186,6 +186,6 @@
 		<applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"
 								 displayName="Frame Switcher"/>
 
-		<backgroundPostStartupActivity implementation="krasa.frameswitcher.ProjectStartupActivity"/>
+		<postStartupActivity implementation="krasa.frameswitcher.ProjectStartupActivity"/>
 	</extensions>
 </idea-plugin>

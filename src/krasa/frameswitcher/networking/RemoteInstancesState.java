@@ -1,103 +1,86 @@
 package krasa.frameswitcher.networking;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.intellij.openapi.diagnostic.Logger;
-import krasa.frameswitcher.networking.dto.InstanceClosed;
-import krasa.frameswitcher.networking.dto.PingResponse;
-import krasa.frameswitcher.networking.dto.ProjectClosed;
-import krasa.frameswitcher.networking.dto.ProjectOpened;
-import krasa.frameswitcher.networking.dto.ProjectsState;
-import krasa.frameswitcher.networking.dto.RemoteProject;
+import krasa.frameswitcher.FrameSwitcherApplicationService;
+import krasa.frameswitcher.networking.dto.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class RemoteInstancesState {
 	private static final Logger LOG = Logger.getInstance(RemoteInstancesState.class);
 
-	public static final int MAX_KEEP_ALIVE_TIME = 10000;
+	public static final int TIMEOUT_millis = 10 * 1000;
+	                                           
+	volatile long  lastPingSend = 0;
+	public Map<UUID, RemoteIdeInstance> remoteIdeInstances = new HashMap<>();
 
-	public volatile Map<UUID, Date> forRemoval = new HashMap<UUID, Date>();
-	public volatile List<UUID> actualActiveInstances = new ArrayList<UUID>();
-	public volatile Map<UUID,String> ideNames = new HashMap<>();
-	public volatile Multimap<UUID, RemoteProject> remoteProjects = HashMultimap.<UUID, RemoteProject>create();
-	public volatile Multimap<UUID, RemoteProject> remoteRecentProjects = HashMultimap.create();
-
-	public synchronized Multimap<UUID, RemoteProject> getRemoteRecentProjects() {
-		return ArrayListMultimap.create(remoteRecentProjects);
-	}
-
-	public synchronized Multimap<UUID, RemoteProject> getRemoteProjects() {
-		return ArrayListMultimap.create(remoteProjects);
-	}
-
-	public Map<UUID, String> getIdeNames() {
-		return ideNames;
+	public synchronized List<RemoteIdeInstance> getRemoteIdeInstances() {
+		List<RemoteIdeInstance> list = new ArrayList<>(this.remoteIdeInstances.values());
+		list.sort(Comparator.comparing(o -> o.ideName));
+		return list;
 	}
 
 	public synchronized void sweepRemoteInstance() {
-		// just hope that all instances returned result in time
-		final Set<UUID> remoteProjectsKeys = remoteProjects.keySet();
-		for (UUID uuid : actualActiveInstances) {
-			if (!remoteProjectsKeys.contains(uuid)) {
-				// //TODO
-				LOG.warn("DESYNC");
-				return;
+		for (Iterator<Map.Entry<UUID, RemoteIdeInstance>> iterator = remoteIdeInstances.entrySet().iterator(); iterator.hasNext(); ) {
+			Map.Entry<UUID, RemoteIdeInstance> entry = iterator.next();
+			RemoteIdeInstance value = entry.getValue();
+			if (lastPingSend - value.lastResponse > TIMEOUT_millis) {
+				LOG.debug("Removing " + value);
+				iterator.remove();
 			}
 		}
-
-		final UUID[] remoteInstances = remoteProjectsKeys.toArray(new UUID[remoteProjectsKeys.size()]);
-		for (UUID remoteInstance : remoteInstances) {
-			if (!actualActiveInstances.contains(remoteInstance)) {
-				if (forRemoval.containsKey(remoteInstance)) {
-					if (new Date().getTime() - forRemoval.get(remoteInstance).getTime() > MAX_KEEP_ALIVE_TIME) {
-						remoteProjects.removeAll(remoteInstance);
-						remoteRecentProjects.removeAll(remoteInstance);
-						forRemoval.remove(remoteInstance);
-					}
-				} else {
-					forRemoval.put(remoteInstance, new Date());
-				}
-			}
-		}
-		actualActiveInstances.clear();
 	}
 
 	public synchronized void processPingResponse(PingResponse object) {
-		actualActiveInstances.add(object.getUuid());
-		forRemoval.remove(object.getUuid());
+		RemoteIdeInstance remoteIdeInstance = remoteIdeInstances.get(object.getUuid());
+		if (remoteIdeInstance != null) {
+			remoteIdeInstance.lastResponse = System.currentTimeMillis();
+		} else {
+			LOG.warn("DESYNC " + object);
+			FrameSwitcherApplicationService.getInstance().getRemoteSender().asyncSendRefresh();
+		}
 	}
 
 	public synchronized void updateRemoteState(ProjectsState instanceStarted) {
-		ideNames.put(instanceStarted.getUuid(), instanceStarted.getName());
-		
-		remoteRecentProjects.removeAll(instanceStarted.getUuid());
-		remoteProjects.removeAll(instanceStarted.getUuid());
+		RemoteIdeInstance remoteIdeInstance = getRemoteIdeInstance(instanceStarted);
 
-		remoteRecentProjects.putAll(instanceStarted.getUuid(), instanceStarted.getRecentRemoteProjects());
-		remoteProjects.putAll(instanceStarted.getUuid(), instanceStarted.getRemoteProjects());
+		remoteIdeInstance.remoteRecentProjects.clear();
+		remoteIdeInstance.remoteProjects.clear();
+
+		remoteIdeInstance.remoteRecentProjects.addAll(instanceStarted.getRecentRemoteProjects());
+		remoteIdeInstance.remoteProjects.addAll(instanceStarted.getRemoteProjects());
+		remoteIdeInstance.ideName = instanceStarted.getName();
+		remoteIdeInstance.lastResponse = System.currentTimeMillis();
 	}
 
 	public synchronized void projectClosed(ProjectClosed projectClosed) {
-		remoteProjects.remove(projectClosed.getUuid(), projectClosed.getRemoteProject());
-		remoteRecentProjects.put(projectClosed.getUuid(), projectClosed.getRemoteProject());
+		RemoteIdeInstance remoteIdeInstance = getRemoteIdeInstance(projectClosed);
+		remoteIdeInstance.remoteProjects.remove(projectClosed.getRemoteProject());
+		remoteIdeInstance.remoteRecentProjects.add(projectClosed.getRemoteProject());
+		remoteIdeInstance.lastResponse = System.currentTimeMillis();
 	}
 
 	public synchronized void projectOpened(ProjectOpened projectOpened) {
-		remoteProjects.put(projectOpened.getUuid(), projectOpened.getRemoteProject());
-		remoteRecentProjects.remove(projectOpened.getUuid(), projectOpened.getRemoteProject());
+		RemoteIdeInstance remoteIdeInstance = getRemoteIdeInstance(projectOpened);
+		remoteIdeInstance.remoteProjects.add(projectOpened.getRemoteProject());
+		remoteIdeInstance.remoteRecentProjects.remove(projectOpened.getRemoteProject());
+		remoteIdeInstance.lastResponse = System.currentTimeMillis();
+	}
+
+	private RemoteIdeInstance getRemoteIdeInstance(GeneralMessage message) {
+		RemoteIdeInstance remoteIdeInstance = remoteIdeInstances.get(message.getUuid());
+		if (remoteIdeInstance == null) {
+			remoteIdeInstance = new RemoteIdeInstance(message.getUuid());
+			remoteIdeInstances.put(remoteIdeInstance.uuid, remoteIdeInstance);
+		}
+		return remoteIdeInstance;
 	}
 
 	public synchronized void instanceClosed(InstanceClosed object) {
-		ideNames.remove(object.getUuid());
-		remoteProjects.removeAll(object.getUuid());
-		remoteRecentProjects.removeAll(object.getUuid());
+		remoteIdeInstances.remove(object.getUuid());
+	}
+
+	public synchronized void clear() {
+		remoteIdeInstances.clear();
 	}
 }

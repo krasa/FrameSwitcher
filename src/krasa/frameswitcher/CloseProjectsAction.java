@@ -30,7 +30,7 @@ public class CloseProjectsAction extends DumbAwareAction {
 		boolean isOk = builder.show() == DialogWrapper.OK_EXIT_CODE;
 		if (isOk) {
 			ProjectManagerEx projectManagerEx = ProjectManagerEx.getInstanceEx();
-			RecentProjectsManagerBase recentProjectsManagerBase = FrameSwitcherUtils.getRecentProjectsManagerBase();
+			RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
 			List<Project> checkProjects = form.getCheckProjects();
 			for (Project checkProject : checkProjects) {
 				if (!checkProject.isDisposed()) {

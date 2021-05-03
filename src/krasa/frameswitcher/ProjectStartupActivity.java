@@ -19,13 +19,13 @@ public class ProjectStartupActivity implements StartupActivity.Background {
 
 		long start = System.currentTimeMillis();
 		JFrame frame = WindowManager.getInstance().getFrame(project);
-
+		
 		WindowFocusGainedAdapter focusGainedAdapter = new WindowFocusGainedAdapter(project, frame, service.getProjectFocusMonitor());
 		frame.addWindowFocusListener(focusGainedAdapter);
 		focusGainedAdapter.windowGainedFocus(null);
 
 		if (service.getRemoteSender() != null) {
-			service.getRemoteSender().projectOpened(project);
+			service.getRemoteSender().asyncProjectOpened(project);
 		}
 		Disposer.register(project, new Disposable() {
 			@Override

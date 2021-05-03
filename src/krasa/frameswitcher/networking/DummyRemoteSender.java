@@ -21,17 +21,17 @@ public class DummyRemoteSender implements RemoteSender {
 	}
 
 	@Override
-	public void close() {
+	public void dispose() {
 
 	}
 
 	@Override
-	public void pingRemote() {
+	public void asyncPing() {
 
 	}
 
 	@Override
-	public void projectOpened(Project project) {
+	public void asyncProjectOpened(Project project) {
 
 	}
 
@@ -48,5 +48,10 @@ public class DummyRemoteSender implements RemoteSender {
 	@Override
 	public void sendPingResponse(Message msg) {
 
+	}
+
+	@Override
+	public void asyncSendRefresh() {
+		
 	}
 }

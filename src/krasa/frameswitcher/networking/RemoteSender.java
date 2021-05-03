@@ -14,15 +14,17 @@ public interface RemoteSender {
 
 	void sendProjectsState();
 
-	void close();
+	void dispose();
 
-	void pingRemote();
+	void asyncPing();
 
-	void projectOpened(Project project);
+	void asyncProjectOpened(Project project);
 
 	void sendProjectClosed(Project project);
 
 	void openProject(UUID target, RemoteProject remoteProject);
 
 	void sendPingResponse(Message msg);
+
+	void asyncSendRefresh();
 }
