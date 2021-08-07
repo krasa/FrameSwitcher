@@ -347,7 +347,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					try {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
 						ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction", getTemplatePresentation(), ActionManager.getInstance(), 0));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
@@ -365,7 +365,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					try {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
 						ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), myActionPlace, getTemplatePresentation(), ActionManager.getInstance(), 0));
+						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction", getTemplatePresentation(), ActionManager.getInstance(), 0));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
