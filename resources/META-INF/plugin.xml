@@ -1,10 +1,10 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.27.0-203</version>
+	<version>3.28.0-203</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="203.4204"/>
+	<idea-version since-build="212.3117"/>
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
@@ -14,8 +14,8 @@
   		<li>
   			Switch or reopen a project - ALT + F2 (repeat for selecting a next item)
 			<ul>
-				<li>Shift+Enter - reopen a project in the current window.</li>
-				<li>Ctrl+Enter - reopen a project in a new window.</li>
+				<li>Shift+Enter/LeftMouse - reopen a project in the current window.</li>
+				<li>Ctrl+Enter/LeftMouse - reopen a project in a new window.</li>
 				<li>Delete - closes project or removes a recent project from the history.</li>
 			</ul>
 		</li>
@@ -34,6 +34,11 @@
       ]]></description>
 
 	<change-notes><![CDATA[  
+	      3.28.0
+		  <br/> - Shift + Mouse Click - behaves like Shift+Enter
+		  <br/> - Ctrl + Mouse Click - behaves like Ctrl+Enter
+			<br/><br/>
+			3.26.0
 	      3.27.0
 		  <br/> - Fixed for IntelliJ 2021.2
 			<br/><br/>

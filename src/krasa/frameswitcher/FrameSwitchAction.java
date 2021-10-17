@@ -1,12 +1,11 @@
 package krasa.frameswitcher;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.DataManager;
-import com.intellij.ide.GeneralSettings;
-import com.intellij.ide.RecentProjectsManagerBase;
-import com.intellij.ide.ReopenProjectAction;
+import com.intellij.ide.*;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
+import com.intellij.ide.impl.OpenProjectTask;
 import com.intellij.ide.impl.ProjectUtil;
+import com.intellij.ide.lightEdit.LightEdit;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
@@ -41,10 +40,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.SystemIndependent;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.*;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
@@ -132,6 +137,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		for (int i = projectsOrderedByFocus.length - 1; i >= 0; i--) {
 			Project project = projectsOrderedByFocus[i];
+			if (project == null) {
+				continue;//TODO
+			}
 			if (project.isDisposed()) {
 				continue;
 			}
@@ -528,10 +536,52 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		@Override
 		public void actionPerformed(AnActionEvent anActionEvent) {
-			super.actionPerformed(anActionEvent);
+			AWTEvent trueCurrentEvent = IdeEventQueue.getInstance().getTrueCurrentEvent();
+			if (trueCurrentEvent instanceof MouseEvent) {
+				int modifiersEx = ((MouseEvent) trueCurrentEvent).getModifiersEx();
+				if (modifiersEx == KeyEvent.SHIFT_DOWN_MASK) {
+					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+					try {
+						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
+						_actionPerformed(anActionEvent, false);
+					} finally {
+						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+					}
+				} else if (modifiersEx == KeyEvent.CTRL_DOWN_MASK) {
+					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+					try {
+						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
+						_actionPerformed(anActionEvent, true);
+					} finally {
+						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+					}
+				}
+			} else {
+				super.actionPerformed(anActionEvent);
+			}
+
 			SwingUtilities.invokeLater(() -> {
 				requestFocus(this);
 			});
+		}
+
+		//from com.intellij.ide.ReopenProjectAction
+		public void _actionPerformed(@NotNull AnActionEvent e, boolean forceOpenInNewFrame) {
+			Path file = Paths.get(getProjectPath()).normalize();
+			if (!Files.exists(file)) {
+				super.actionPerformed(e);
+				return;
+			}
+
+			// force move focus to IdeFrame
+			IdeEventQueue.getInstance().getPopupManager().closeAllPopups();
+
+			Project project = e.getProject();
+
+			forceOpenInNewFrame = forceOpenInNewFrame
+					|| e.getPlace() == ActionPlaces.WELCOME_SCREEN
+					|| LightEdit.owns(project);
+			RecentProjectsManagerBase.getInstanceEx().openProject(file, OpenProjectTask.withProjectToClose(project, forceOpenInNewFrame).withRunConfigurators());
 		}
 
 		private void requestFocus(ReopenRecentWrapper action) {
