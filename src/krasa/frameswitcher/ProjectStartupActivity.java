@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class ProjectStartupActivity implements StartupActivity.Background {
+public class ProjectStartupActivity implements StartupActivity.Background, StartupActivity.DumbAware {
 	private static final Logger LOG = Logger.getInstance(ProjectStartupActivity.class);
 
 	@Override
@@ -19,7 +19,7 @@ public class ProjectStartupActivity implements StartupActivity.Background {
 
 		long start = System.currentTimeMillis();
 		JFrame frame = WindowManager.getInstance().getFrame(project);
-		
+
 		WindowFocusGainedAdapter focusGainedAdapter = new WindowFocusGainedAdapter(project, frame, service.getProjectFocusMonitor());
 		frame.addWindowFocusListener(focusGainedAdapter);
 		focusGainedAdapter.windowGainedFocus(null);
