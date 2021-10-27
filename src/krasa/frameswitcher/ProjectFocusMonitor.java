@@ -21,7 +21,7 @@ public class ProjectFocusMonitor {
 	}
 
 	public Project[] getProjectsOrderedByFocus() {
-		return projects.toArray(new Project[projects.size()]);
+		return projects.toArray(new Project[0]);
 	}
 
 }

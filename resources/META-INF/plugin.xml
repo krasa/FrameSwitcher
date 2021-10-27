@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.28.0-212</version>
+	<version>3.29.0-212</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
 	<idea-version since-build="212.3117"/>
@@ -34,6 +34,8 @@
       ]]></description>
 
 	<change-notes><![CDATA[  
+	      3.29.0
+		  <br/> - NPE fix
 	      3.28.0
 		  <br/> - Shift + Mouse Click - behaves like Shift+Enter
 		  <br/> - Ctrl + Mouse Click - behaves like Ctrl+Enter

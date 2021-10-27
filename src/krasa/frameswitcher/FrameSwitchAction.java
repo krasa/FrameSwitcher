@@ -295,6 +295,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private static boolean isOpen(Project[] openedProjects, ReopenProjectAction action) {
 		String projectPath = PathUtil.toSystemDependentName(action.getProjectPath());
 		for (Project openedProject : openedProjects) {
+			if (openedProject == null) {
+				continue;
+			}
 			if (StringUtil.equals(projectPath, PathUtil.toSystemDependentName(openedProject.getBasePath())) || Objects.equals(PathUtil.toSystemDependentName(openedProject.getProjectFilePath()), projectPath)) {
 				return true;
 			}
