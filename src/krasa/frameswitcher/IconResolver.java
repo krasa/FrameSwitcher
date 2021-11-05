@@ -1,18 +1,20 @@
 package krasa.frameswitcher;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.SystemIndependent;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.IconUtil;
 import com.intellij.util.SVGLoader;
 import com.intellij.util.ui.JBImageIcon;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.SystemIndependent;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 public class IconResolver {
 	private final static Logger LOG = Logger.getInstance(FrameSwitchAction.class);
@@ -36,16 +38,15 @@ public class IconResolver {
 				return null;
 			}
 
-
 			Icon icon = null;
 			icon = getIcon(base, ".idea/icon.png");
 			if (icon != null) {
 				return icon;
 			}
-//			icon = getIcon(base, ".idea/icon.svg");
-//			if (icon != null) {
-//				return icon;
-//			}
+			// icon = getIcon(base, ".idea/icon.svg");
+			// if (icon != null) {
+			// return icon;
+			// }
 			icon = getIcon(base, "src/main/resources/META-INF/pluginIcon.svg");
 			if (icon != null) {
 				return icon;
@@ -90,15 +91,20 @@ public class IconResolver {
 
 			if (file.exists()) {
 				icon = new JBImageIcon(loadImage(file));
-				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
-					icon = IconUtil.scale(icon, null, (float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
+				if (icon != null && icon.getIconHeight() > 1
+						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
+					icon = IconUtil.scale(icon, null,
+							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
 				}
-				//material-theme-jetbrains needs to be scaled 2x
-				if (icon != null && icon.getIconHeight() > 1 && icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
-					icon = IconUtil.scale(icon, null, (float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
+				// material-theme-jetbrains needs to be scaled 2x
+				if (icon != null && icon.getIconHeight() > 1
+						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
+					icon = IconUtil.scale(icon, null,
+							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
 				}
 				if (icon.getIconHeight() > FrameSwitchAction.empty.getIconHeight()) {
-					LOG.error("Scaling failed, wrong icon size: " + file.getAbsolutePath() + " " + icon.getIconHeight() + "x" + icon.getIconWidth());
+					LOG.error("Scaling failed, wrong icon size: " + file.getAbsolutePath() + " " + icon.getIconHeight()
+							+ "x" + icon.getIconWidth());
 					return null;
 				}
 			}
