@@ -21,13 +21,13 @@ public class FrameSwitcherSettings {
 	private List<String> recentProjectPaths = new ArrayList<String>();
 	private List<String> includeLocations = new ArrayList<String>();
 	private String maxRecentProjects = "";
-	private String uuid ;
+	private String uuid;
 	private boolean remoting = false;
 	private boolean defaultSelectionCurrentProject = true;
 	private String requestFocusMs = "100";
 	private boolean selectImmediately = false;
 	private boolean loadProjectIcon = true;
-	private int port=45588;
+	private int port = 45588;
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
@@ -40,11 +40,11 @@ public class FrameSwitcherSettings {
 	public String getUuid() {
 		return uuid;
 	}
-	
-	 @Transient
+
+	@Transient
 	public UUID getOrInitializeUuid() {
 		if (uuid == null) {
-			 uuid = UUID.randomUUID().toString();
+			uuid = UUID.randomUUID().toString();
 		}
 		return UUID.fromString(uuid);
 	}
@@ -86,7 +86,7 @@ public class FrameSwitcherSettings {
 	public String getMaxRecentProjects() {
 		try {
 			if (!StringUtils.isBlank(maxRecentProjects)) {
-				//noinspection ResultOfMethodCallIgnored
+				// noinspection ResultOfMethodCallIgnored
 				Integer.parseInt(maxRecentProjects);
 			}
 		} catch (Exception e) {
@@ -115,7 +115,7 @@ public class FrameSwitcherSettings {
 		this.maxRecentProjects = maxRecentProjects;
 		try {
 			if (!StringUtils.isBlank(this.maxRecentProjects)) {
-				//noinspection ResultOfMethodCallIgnored
+				// noinspection ResultOfMethodCallIgnored
 				Integer.parseInt(this.maxRecentProjects);
 			}
 		} catch (Exception e) {
@@ -134,20 +134,26 @@ public class FrameSwitcherSettings {
 	public void applyMaxRecentProjectsToRegistry() {
 		try {
 			if (!StringUtils.isBlank(maxRecentProjects)) {
-				LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to " + maxRecentProjects);
-				Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS).setValue(Integer.parseInt(maxRecentProjects));
+				LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to "
+						+ maxRecentProjects);
+				Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS)
+						.setValue(Integer.parseInt(maxRecentProjects));
 			}
-		} catch (Exception e) {
-			LOG.error(e);
+		} catch (Throwable e) {// Registry key ide.max.recent.projects is not defined
+			LOG.debug(e);
 		}
 	}
 
 	public void applyOrResetMaxRecentProjectsToRegistry() {
-		if (!StringUtils.isBlank(maxRecentProjects)) {
-			applyMaxRecentProjectsToRegistry();
-		} else {
-			LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to default");
-			Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS).resetToDefault();
+		try {
+			if (!StringUtils.isBlank(maxRecentProjects)) {
+				applyMaxRecentProjectsToRegistry();
+			} else {
+				LOG.info("Changing Registry " + FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS + " to default");
+				Registry.get(FrameSwitcherApplicationService.IDE_MAX_RECENT_PROJECTS).resetToDefault();
+			}
+		} catch (Throwable e) {// Registry key ide.max.recent.projects is not defined
+			LOG.debug(e);
 		}
 	}
 

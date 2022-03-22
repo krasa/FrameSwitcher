@@ -18,10 +18,9 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 
 	public static final String IDE_MAX_RECENT_PROJECTS = "ide.max.recent.projects";
 
-
-	private FrameSwitcherSettings settings=new FrameSwitcherSettings();
+	private FrameSwitcherSettings settings = new FrameSwitcherSettings();
 	private RemoteInstancesState remoteInstancesState = new RemoteInstancesState();
-	private ProjectFocusMonitor projectFocusMonitor=new ProjectFocusMonitor();
+	private ProjectFocusMonitor projectFocusMonitor = new ProjectFocusMonitor();
 	private RemoteSender remoteSender;
 	boolean initialized;
 
@@ -71,7 +70,6 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 	public ProjectFocusMonitor getProjectFocusMonitor() {
 		return projectFocusMonitor;
 	}
-
 
 	@NotNull
 	@Override

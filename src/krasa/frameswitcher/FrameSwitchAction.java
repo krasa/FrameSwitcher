@@ -76,7 +76,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	public void fillReopen(DefaultActionGroup group) {
 		FrameSwitcherApplicationService service = FrameSwitcherApplicationService.getInstance();
 		service.getRemoteInstancesState().sweepRemoteInstance();
-		
+
 		addRemote(group);
 
 		addRecent(group);
@@ -84,7 +84,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		addRemoteRecent(group);
 
 		addIncluded(group);
-		
+
 		service.getRemoteSender().asyncSendRefresh();
 		service.getRemoteSender().asyncPing();
 	}
@@ -98,9 +98,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	}
 
 	private void showPopup(AnActionEvent e, DefaultActionGroup group) {
-		if (group.getChildrenCount() == 0) return;
+		if (group.getChildrenCount() == 0)
+			return;
 		JBPopupFactory.ActionSelectionAid aid = getAidMethod();
-
 
 		Condition<AnAction> preselectActionCondition;
 		if (FrameSwitcherSettings.getInstance().isDefaultSelectionCurrentProject()) {
@@ -115,25 +115,24 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		}
 
-		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
-				getPopupTitle(e), group, e.getDataContext(), aid, true, null, -1,
-				preselectActionCondition, myActionPlace);
+		ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(getPopupTitle(e), group,
+				e.getDataContext(), aid, true, null, -1, preselectActionCondition, myActionPlace);
 		showPopup(e, popup);
 	}
-
 
 	private void addFrames(Project currentProject, DefaultActionGroup group) {
 		WindowManager windowManager = WindowManager.getInstance();
 		ArrayList<IdeFrame> ideFrames = getIdeFrames();
 
-		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance().getProjectFocusMonitor();
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance()
+				.getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
 		Set<Project> addedProjectsSet = new HashSet<>();
 
 		for (int i = projectsOrderedByFocus.length - 1; i >= 0; i--) {
 			Project project = projectsOrderedByFocus[i];
 			if (project == null) {
-				continue;//TODO
+				continue;// TODO
 			}
 			if (project.isDisposed()) {
 				continue;
@@ -187,31 +186,33 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			}
 		}
 	}
+
 	private void addRemoteRecent(DefaultActionGroup group) {
-			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
-			List<RemoteIdeInstance> remoteIdeInstances1 = FrameSwitcherApplicationService.getInstance().getRemoteInstancesState().getRemoteIdeInstances();
-			for (RemoteIdeInstance remoteIdeInstance : remoteIdeInstances1) {
-				Collection<RemoteProject> remoteRecentProjects = remoteIdeInstance.remoteRecentProjects;
-				String ideName = remoteIdeInstance.ideName;
-	
-	
-				if (remoteRecentProjects.isEmpty()) {
-					continue;
-				}
-	
-				if (ideName != null) {
-					group.addSeparator("Recent - " + ideName);
-				} else {
-					group.addSeparator("Recent");
-				}
-	
-				for (RemoteProject remoteProject : remoteRecentProjects) {
-					if (settings.shouldShow(remoteProject)) {
-						group.add(new SwitchToRemoteProjectAction(remoteProject, remoteIdeInstance.uuid));
-					}
+		FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
+		List<RemoteIdeInstance> remoteIdeInstances1 = FrameSwitcherApplicationService.getInstance()
+				.getRemoteInstancesState().getRemoteIdeInstances();
+		for (RemoteIdeInstance remoteIdeInstance : remoteIdeInstances1) {
+			Collection<RemoteProject> remoteRecentProjects = remoteIdeInstance.remoteRecentProjects;
+			String ideName = remoteIdeInstance.ideName;
+
+			if (remoteRecentProjects.isEmpty()) {
+				continue;
+			}
+
+			if (ideName != null) {
+				group.addSeparator("Recent - " + ideName);
+			} else {
+				group.addSeparator("Recent");
+			}
+
+			for (RemoteProject remoteProject : remoteRecentProjects) {
+				if (settings.shouldShow(remoteProject)) {
+					group.add(new SwitchToRemoteProjectAction(remoteProject, remoteIdeInstance.uuid));
 				}
 			}
 		}
+	}
+
 	private void addRecent(DefaultActionGroup group) {
 		RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
 		AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false, false);
@@ -275,19 +276,16 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		}
 	}
 
-
 	public static AnAction[] removeCurrentProjects(AnAction[] actions) {
-		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance().getProjectFocusMonitor();
+		ProjectFocusMonitor projectFocusMonitor = FrameSwitcherApplicationService.getInstance()
+				.getProjectFocusMonitor();
 		Project[] projectsOrderedByFocus = projectFocusMonitor.getProjectsOrderedByFocus();
 
-
 		if (projectsOrderedByFocus != null) {
-			return Arrays.stream(actions)
-					.filter(action -> {
-						return !(action instanceof ReopenProjectAction)
-								|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
-					})
-					.toArray(AnAction[]::new);
+			return Arrays.stream(actions).filter(action -> {
+				return !(action instanceof ReopenProjectAction)
+						|| !isOpen(projectsOrderedByFocus, (ReopenProjectAction) action);
+			}).toArray(AnAction[]::new);
 		}
 		return actions;
 	}
@@ -298,14 +296,13 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			if (openedProject == null) {
 				continue;
 			}
-			if (StringUtil.equals(projectPath, PathUtil.toSystemDependentName(openedProject.getBasePath())) || Objects.equals(PathUtil.toSystemDependentName(openedProject.getProjectFilePath()), projectPath)) {
+			if (StringUtil.equals(projectPath, PathUtil.toSystemDependentName(openedProject.getBasePath())) ||
+					Objects.equals(PathUtil.toSystemDependentName(openedProject.getProjectFilePath()), projectPath)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-	
 
 	public ArrayList<IdeFrame> getIdeFrames() {
 		IdeFrame[] allProjectFrames = WindowManager.getInstance().getAllProjectFrames();
@@ -339,46 +336,55 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		super.showPopup(e, popup);
 	}
 
-
 	private void registerActions(final ListPopupImpl popup) {
 		final Ref<Boolean> invoked = Ref.create(false);
-		popup.registerAction("ReopenInSameWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JList list = popup.getList();
-				PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
-				if (selectedValue.getAction() instanceof ReopenRecentWrapper) {
-					popup.closeOk(null);
-					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
-					try {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
-						ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction", getTemplatePresentation(), ActionManager.getInstance(), 0));
-					} finally {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+		popup.registerAction("ReopenInSameWindow",
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JList list = popup.getList();
+						PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list
+								.getSelectedValue();
+						if (selectedValue.getAction() instanceof ReopenRecentWrapper) {
+							popup.closeOk(null);
+							int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+							try {
+								GeneralSettings.getInstance()
+										.setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
+								ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
+								action.actionPerformed(
+										new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction",
+												getTemplatePresentation(), ActionManager.getInstance(), 0));
+							} finally {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+							}
+						}
 					}
-				}
-			}
-		});
-		popup.registerAction("ReopenInNewWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JList list = popup.getList();
-				PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list.getSelectedValue();
-				if (selectedValue.getAction() instanceof ReopenRecentWrapper) {
-					popup.closeOk(null);
-					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
-					try {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
-						ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
-						action.actionPerformed(new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction", getTemplatePresentation(), ActionManager.getInstance(), 0));
-					} finally {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+				});
+		popup.registerAction("ReopenInNewWindow", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK),
+				new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JList list = popup.getList();
+						PopupFactoryImpl.ActionItem selectedValue = (PopupFactoryImpl.ActionItem) list
+								.getSelectedValue();
+						if (selectedValue.getAction() instanceof ReopenRecentWrapper) {
+							popup.closeOk(null);
+							int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
+							try {
+								GeneralSettings.getInstance()
+										.setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
+								ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
+								action.actionPerformed(
+										new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction",
+												getTemplatePresentation(), ActionManager.getInstance(), 0));
+							} finally {
+								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+							}
+						}
 					}
-				}
-			}
 
-		});
+				});
 		popup.registerAction("invokeWithDelete", KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -391,7 +397,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					ReopenRecentWrapper action = (ReopenRecentWrapper) selectedItem.getAction();
 					RecentProjectsManagerBase.getInstanceEx().removePath(action.getProjectPath());
 					model.deleteItem(selectedItem);
-					if (selectedIndex == list.getModel().getSize()) { //is last
+					if (selectedIndex == list.getModel().getSize()) { // is last
 						list.setSelectedIndex(selectedIndex - 1);
 					} else {
 						list.setSelectedIndex(selectedIndex);
@@ -405,14 +411,14 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						RecentProjectsManagerBase.getInstanceEx().updateLastProjectPath();
 						WelcomeFrame.showIfNoProjectOpened();
 						model.deleteItem(selectedItem);
-						if (selectedIndex == list.getModel().getSize()) { //is last
+						if (selectedIndex == list.getModel().getSize()) { // is last
 							list.setSelectedIndex(selectedIndex - 1);
 						} else {
 							list.setSelectedIndex(selectedIndex);
 						}
 
-						if (action.currentProject) {   //is actual
-							if (selectedIndex == list.getModel().getSize()) { //is last
+						if (action.currentProject) { // is actual
+							if (selectedIndex == list.getModel().getSize()) { // is last
 								selectedIndex--;
 							}
 							if (selectedIndex >= 0) {
@@ -442,10 +448,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				KeyboardShortcut keyboardShortcut = (KeyboardShortcut) shortcut;
 				String[] split = keyboardShortcut.getFirstKeyStroke().toString().split(" ");
 				for (String s : split) {
-					if (s.equalsIgnoreCase("alt")
-							|| s.equalsIgnoreCase("ctrl")
-							|| s.equalsIgnoreCase("meta")
-					) {
+					if (s.equalsIgnoreCase("alt") || s.equalsIgnoreCase("ctrl") || s.equalsIgnoreCase("meta")) {
 						if (s.equalsIgnoreCase("ctrl")) {
 							s = "control";
 						}
@@ -474,20 +477,21 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						}
 					}
 				});
-				register(popup, KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke()), new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						invoked.set(true);
-						JList list = popup.getList();
-						int selectedIndex = list.getSelectedIndex();
-						int size = list.getModel().getSize();
-						if (selectedIndex - 1 >= 0) {
-							list.setSelectedIndex(selectedIndex - 1);
-						} else {
-							list.setSelectedIndex(size - 1);
-						}
-					}
-				});
+				register(popup, KeyStroke.getKeyStroke("shift " + keyboardShortcut.getFirstKeyStroke()),
+						new AbstractAction() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								invoked.set(true);
+								JList list = popup.getList();
+								int selectedIndex = list.getSelectedIndex();
+								int size = list.getModel().getSize();
+								if (selectedIndex - 1 >= 0) {
+									list.setSelectedIndex(selectedIndex - 1);
+								} else {
+									list.setSelectedIndex(size - 1);
+								}
+							}
+						});
 
 			}
 		}
@@ -499,7 +503,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			popup.registerAction("Custom:" + keyStroke, keyStroke, action);
 		}
 	}
-
 
 	private DataContext getDataContext(ListPopupImpl popup) {
 		DataContext dataContext = DataManager.getInstance().getDataContext(popup.getOwner());
@@ -523,8 +526,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private class ReopenRecentWrapper extends ReopenProjectAction {
 
 		public ReopenRecentWrapper(ReopenProjectAction recentProjectsAction) {
-			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(), recentProjectsAction.getTemplatePresentation().getText());
-			getTemplatePresentation().setIcon(IconResolver.resolveIcon(recentProjectsAction.getProjectPath(), loadProjectIcon));
+			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(),
+					recentProjectsAction.getTemplatePresentation().getText());
+			getTemplatePresentation()
+					.setIcon(IconResolver.resolveIcon(recentProjectsAction.getProjectPath(), loadProjectIcon));
 		}
 
 		public ReopenRecentWrapper(String s) {
@@ -540,8 +545,11 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				if (modifiersEx == KeyEvent.SHIFT_DOWN_MASK) {
 					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
 					try {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
-						super.actionPerformed(new AnActionEvent(null, anActionEvent.getDataContext(), "FrameSwitcher-OPEN_PROJECT_SAME_WINDOW", getTemplatePresentation(), ActionManager.getInstance(), 0));
+						GeneralSettings.getInstance()
+								.setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_SAME_WINDOW);
+						super.actionPerformed(new AnActionEvent(null, anActionEvent.getDataContext(),
+								"FrameSwitcher-OPEN_PROJECT_SAME_WINDOW", getTemplatePresentation(),
+								ActionManager.getInstance(), 0));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
@@ -549,7 +557,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
 					try {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
-						super.actionPerformed(new AnActionEvent(null, anActionEvent.getDataContext(), "FrameSwitcher-OPEN_PROJECT_NEW_WINDOW", getTemplatePresentation(), ActionManager.getInstance(), KeyEvent.CTRL_DOWN_MASK));
+						super.actionPerformed(new AnActionEvent(null, anActionEvent.getDataContext(),
+								"FrameSwitcher-OPEN_PROJECT_NEW_WINDOW", getTemplatePresentation(),
+								ActionManager.getInstance(), KeyEvent.CTRL_DOWN_MASK));
 					} finally {
 						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
 					}
@@ -572,7 +582,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				Project project = openProjects[i];
 				if (project instanceof ProjectImpl) {
 					ProjectImpl p = (ProjectImpl) project;
-					if (java.util.Objects.equals(p.getBasePath(), action.getProjectPath()) || java.util.Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
+					if (java.util.Objects.equals(p.getBasePath(), action.getProjectPath())
+							|| java.util.Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
 						openedProject = project;
 						break;
 					}
@@ -657,7 +668,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			super(remoteProject.getName().replace("_", "__"));
 			this.remoteProject = remoteProject;
 			this.uuid = uuid;
-			getTemplatePresentation().setIcon(IconResolver.resolveIcon(remoteProject.getProjectPath(), loadProjectIcon));
+			getTemplatePresentation()
+					.setIcon(IconResolver.resolveIcon(remoteProject.getProjectPath(), loadProjectIcon));
 		}
 
 		public String getProjectPath() {
