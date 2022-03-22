@@ -25,7 +25,6 @@ public class FrameSwitcherSettings {
 	private boolean remoting = false;
 	private boolean defaultSelectionCurrentProject = true;
 	private String requestFocusMs = "100";
-	private boolean selectImmediately = false;
 	private boolean loadProjectIcon = true;
 	private int port = 45588;
 
@@ -171,14 +170,6 @@ public class FrameSwitcherSettings {
 
 	public void setRequestFocusMs(final String requestFocusMs) {
 		this.requestFocusMs = requestFocusMs;
-	}
-
-	public boolean isSelectImmediately() {
-		return selectImmediately;
-	}
-
-	public void setSelectImmediately(boolean selectImmediately) {
-		this.selectImmediately = selectImmediately;
 	}
 
 	public boolean isLoadProjectIcon() {

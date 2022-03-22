@@ -452,15 +452,6 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						if (s.equalsIgnoreCase("ctrl")) {
 							s = "control";
 						}
-						register(popup, KeyStroke.getKeyStroke("released " + s.toUpperCase()), new AbstractAction() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (invoked.get() || FrameSwitcherSettings.getInstance().isSelectImmediately()) {
-									popup.handleSelect(true);
-								}
-							}
-						});
-
 					}
 				}
 				register(popup, keyboardShortcut.getFirstKeyStroke(), new AbstractAction() {
