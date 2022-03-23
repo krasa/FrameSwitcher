@@ -1,10 +1,10 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.30.0-220</version>
+	<version>3.30.0-212</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-	<idea-version since-build="220.0"/>
+	<idea-version since-build="212.3117"/>
 	<vendor url="https://github.com/krasa/FrameSwitcher" email="vojta.krasa@gmail.com">Vojtech
 		Krasa
 	</vendor>
@@ -35,7 +35,7 @@
 
 	<change-notes><![CDATA[  
 3.30.0
-<br/> - removed: Switch immidiatelly after releasing the shortcut
+<br/> - removed: Switch immidiatelly after releasing the shortcut - IntelliJ platform does no longer support it
 <br/><br/>
 3.29.0
 <br/> - NPE fix
