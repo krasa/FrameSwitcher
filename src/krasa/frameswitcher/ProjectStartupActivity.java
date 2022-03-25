@@ -32,6 +32,9 @@ public class ProjectStartupActivity implements StartupActivity.Background, Start
 			public void dispose() {
 				long start = System.currentTimeMillis();
 				FrameSwitcherApplicationService service = FrameSwitcherApplicationService.getInstance();
+				if (service == null) {
+					return;
+				}
 				if (service.getRemoteSender() != null) {
 					service.getRemoteSender().sendProjectClosed(project);
 				}

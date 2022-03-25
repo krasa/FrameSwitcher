@@ -26,7 +26,7 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 
 	public static FrameSwitcherApplicationService getInstance() {
 		FrameSwitcherApplicationService service = ServiceManager.getService(FrameSwitcherApplicationService.class);
-		if (!service.initialized) {
+		if (service != null && !service.initialized) { //DynamicPlugins.unloadPlugin causes null
 			service.initComponent();
 		}
 		return service;
