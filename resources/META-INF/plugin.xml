@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.30.0-212</version>
+	<version>3.31.0-212</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
 	<idea-version since-build="212.3117"/>
@@ -34,6 +34,9 @@
       ]]></description>
 
 	<change-notes><![CDATA[  
+3.31.0
+<br/> - Fixed switching after the second shortcut triggering
+<br/><br/>
 3.30.0
 <br/> - removed: Switch immidiatelly after releasing the shortcut - IntelliJ platform does no longer support it
 <br/><br/>
