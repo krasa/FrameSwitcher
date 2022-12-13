@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
-	<version>3.31.0-212</version>
+	<version>3.32.0-212</version>
 
 	<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
 	<idea-version since-build="212.3117"/>
@@ -33,7 +33,10 @@
       (Big thanks to Eugene Mustaphin for contributions.)
       ]]></description>
 
-	<change-notes><![CDATA[  
+	<change-notes><![CDATA[
+3.32.0
+<br/> - Small fix
+<br/><br/>
 3.31.0
 <br/> - Fixed switching after the second shortcut triggering
 <br/><br/>

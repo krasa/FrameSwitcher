@@ -21,7 +21,7 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 	private FrameSwitcherSettings settings = new FrameSwitcherSettings();
 	private RemoteInstancesState remoteInstancesState = new RemoteInstancesState();
 	private ProjectFocusMonitor projectFocusMonitor = new ProjectFocusMonitor();
-	private RemoteSender remoteSender;
+	private RemoteSender remoteSender = new DummyRemoteSender();
 	boolean initialized;
 
 	public static FrameSwitcherApplicationService getInstance() {
