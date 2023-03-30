@@ -1,7 +1,8 @@
-.idea/$PRODUCT_WORKSPACE_FILE$
-.idea/.gitignore
-.idea/vcs.xml
-.idea/uiDesigner.xml
-.idea/codestream.xml
-FrameSwitcher.ipr
-out/
+/.gradle
+**/build
+**/out
+*.iws
+*.ipr
+*.zip
+.shelf
+.idea
