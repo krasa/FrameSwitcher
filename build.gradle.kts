@@ -4,16 +4,15 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.0.0-212"
+version = "4.0.0-223"
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("212.3117")
+        sinceBuild.set("223.0")
         untilBuild.set("")
         changeNotes.set(
             buildString {
-                append("- Fixed console clear button").append("<br>")
-                append("- Supporting regex groups for highlighting")
+                append("- Compatibility with IJ 2022.3").append("<br>")
             }
         )
     }

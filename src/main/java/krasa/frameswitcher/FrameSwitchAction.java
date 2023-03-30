@@ -356,7 +356,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 										new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction",
 												getTemplatePresentation(), ActionManager.getInstance(), 0));
 							} finally {
-								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+								restoreOption(confirmOpenNewProject);
 							}
 						}
 					}
@@ -377,9 +377,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 								ReopenRecentWrapper action = (ReopenRecentWrapper) selectedValue.getAction();
 								action.actionPerformed(
 										new AnActionEvent(null, getDataContext(popup), "FrameSwitcher-ExtraPopupAction",
-												getTemplatePresentation(), ActionManager.getInstance(), 0));
+												getTemplatePresentation(), ActionManager.getInstance(), InputEvent.CTRL_MASK));
 							} finally {
-								GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+								restoreOption(confirmOpenNewProject);
 							}
 						}
 					}
@@ -551,7 +551,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 								"FrameSwitcher-OPEN_PROJECT_SAME_WINDOW", getTemplatePresentation(),
 								ActionManager.getInstance(), 0));
 					} finally {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+						restoreOption(confirmOpenNewProject);
 					}
 				} else if (modifiersEx == KeyEvent.CTRL_DOWN_MASK) {
 					int confirmOpenNewProject = GeneralSettings.getInstance().getConfirmOpenNewProject();
@@ -559,9 +559,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						GeneralSettings.getInstance().setConfirmOpenNewProject(GeneralSettings.OPEN_PROJECT_NEW_WINDOW);
 						super.actionPerformed(new AnActionEvent(null, anActionEvent.getDataContext(),
 								"FrameSwitcher-OPEN_PROJECT_NEW_WINDOW", getTemplatePresentation(),
-								ActionManager.getInstance(), KeyEvent.CTRL_DOWN_MASK));
+								ActionManager.getInstance(), InputEvent.CTRL_MASK));
 					} finally {
-						GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject);
+						restoreOption(confirmOpenNewProject);
 					}
 				} else {
 					super.actionPerformed(anActionEvent);
@@ -614,6 +614,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			} catch (NumberFormatException e) {
 			}
 		}
+	}
+
+	private static void restoreOption(int confirmOpenNewProject) {
+		SwingUtilities.invokeLater(() -> GeneralSettings.getInstance().setConfirmOpenNewProject(confirmOpenNewProject));
 	}
 
 	private class SwitchFrameAction extends DumbAwareAction {
