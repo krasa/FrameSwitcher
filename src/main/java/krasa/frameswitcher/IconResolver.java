@@ -67,6 +67,10 @@ public class IconResolver {
 			if (icon != null) {
 				return icon;
 			}
+			icon = getIcon(base, ".idea/icon.svg");
+			if (icon != null) {
+				return icon;
+			}
 			return icon;
 		} catch (Throwable e) {
 			LOG.debug(e);
