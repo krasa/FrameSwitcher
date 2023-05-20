@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.1.0-223"
+version = "4.1.1-223"
 
 tasks {
     patchPluginXml {
