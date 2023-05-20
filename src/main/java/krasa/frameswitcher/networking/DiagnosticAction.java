@@ -17,7 +17,7 @@ public class DiagnosticAction extends AnAction {
 			String content = remoteSender.getChannel().getProperties().replace(";", "\n");
 			
 			NotificationGroup group = NotificationGroupManager.getInstance().getNotificationGroup("Frame Switcher plugin");
-			Notification myNotification = group.createNotification("FrameSwitcher", content, NotificationType.INFORMATION, null);
+			Notification myNotification = group.createNotification("FrameSwitcher", content, NotificationType.INFORMATION);
 			Notifications.Bus.notify(myNotification, getEventProject(e));
 		}
 	}

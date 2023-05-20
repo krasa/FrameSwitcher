@@ -11,7 +11,6 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.util.Condition;
@@ -580,13 +579,10 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 			Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (int i = openProjects.length - 1; i >= 0; i--) {
 				Project project = openProjects[i];
-				if (project instanceof ProjectImpl) {
-					ProjectImpl p = (ProjectImpl) project;
-					if (java.util.Objects.equals(p.getBasePath(), action.getProjectPath())
-							|| java.util.Objects.equals(p.getProjectFilePath(), action.getProjectPath())) {
-						openedProject = project;
-						break;
-					}
+				if (java.util.Objects.equals(project.getBasePath(), action.getProjectPath())
+						|| java.util.Objects.equals(project.getProjectFilePath(), action.getProjectPath())) {
+					openedProject = project;
+					break;
 				}
 			}
 			if (openedProject != null) {

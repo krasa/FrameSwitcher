@@ -63,7 +63,7 @@
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<preloadingActivity implementation="krasa.frameswitcher.MyPreloadingActivity"/>
+		<postStartupActivity implementation="krasa.frameswitcher.MyPreloadingActivity"/>
 		<applicationService serviceImplementation="krasa.frameswitcher.FrameSwitcherApplicationService"/>
 		<notificationGroup id="Frame Switcher plugin" displayType="BALLOON" isLogByDefault="true"/>
 		<applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"

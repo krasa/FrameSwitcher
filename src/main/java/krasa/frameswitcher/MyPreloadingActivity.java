@@ -1,12 +1,13 @@
 package krasa.frameswitcher;
 
-import com.intellij.openapi.application.PreloadingActivity;
-import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupActivity;
 import org.jetbrains.annotations.NotNull;
 
-public class MyPreloadingActivity extends PreloadingActivity {
+public class MyPreloadingActivity implements StartupActivity.DumbAware {
+
 	@Override
-	public void preload(@NotNull ProgressIndicator progressIndicator) {
+	public void runActivity(@NotNull Project project) {
 		FrameSwitcherApplicationService.getInstance(); //for initComponent()
 	}
 }

@@ -37,34 +37,35 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 
 	public void initComponent() {
 		long start = System.currentTimeMillis();
-		initialized = true;
 		initRemoting();
 		LOG.debug("initComponent done in ", System.currentTimeMillis() - start, "ms");
 	}
 
 	private synchronized void initRemoting() {
-		if (this.settings.isRemoting()) {
-			if (!(remoteSender instanceof RemoteSenderImpl)) {
-				try {
-					UUID uuid = getState().getOrInitializeUuid();
-					remoteSender = new RemoteSenderImpl(this, uuid, new Receiver(uuid, this), getState().getPort());
-				} catch (Throwable e) {
+		if (!initialized) {
+			if (this.settings.isRemoting()) {
+				if (!(remoteSender instanceof RemoteSenderImpl)) {
+					try {
+						UUID uuid = getState().getOrInitializeUuid();
+						remoteSender = new RemoteSenderImpl(this, uuid, new Receiver(uuid, this), getState().getPort());
+					} catch (Throwable e) {
+						remoteInstancesState = new RemoteInstancesState();
+						remoteSender = new DummyRemoteSender();
+						LOG.error(e);
+					}
+				}
+			} else {
+				if (remoteSender instanceof RemoteSenderImpl) {
+					remoteSender.dispose();
+				}
+
+				if (!(remoteSender instanceof DummyRemoteSender)) {
 					remoteInstancesState = new RemoteInstancesState();
 					remoteSender = new DummyRemoteSender();
-					LOG.error(e);
 				}
 			}
-		} else {
-			if (remoteSender instanceof RemoteSenderImpl) {
-				remoteSender.dispose();
-			}
-
-			if (!(remoteSender instanceof DummyRemoteSender)) {
-				remoteInstancesState = new RemoteInstancesState();
-				remoteSender = new DummyRemoteSender();
-			}
+			initialized = true;
 		}
-
 	}
 
 	public ProjectFocusMonitor getProjectFocusMonitor() {
