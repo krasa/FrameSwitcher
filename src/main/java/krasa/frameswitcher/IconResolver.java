@@ -1,25 +1,46 @@
 package krasa.frameswitcher;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.util.ImageLoader;
+import com.intellij.util.ui.JBImageIcon;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.SystemIndependent;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.util.IconUtil;
-import com.intellij.util.SVGLoader;
-import com.intellij.util.ui.JBImageIcon;
-import com.intellij.util.ui.UIUtil;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class IconResolver {
 	private final static Logger LOG = Logger.getInstance(FrameSwitchAction.class);
+	static Set<String> brokenIcons = new HashSet<>();
+	static Map<String, Icon> cache = new HashMap<>();
 
 	public static Icon resolveIcon(@SystemIndependent String basepath, boolean loadProjectIcon) {
+		if (brokenIcons.contains(basepath)) {
+			return null;
+		}
+		Icon cachedIcon = cache.get(basepath);
+		if (cachedIcon != null) {
+			return cachedIcon;
+		}
+		long start = System.currentTimeMillis();
+		Icon icon = resolveIcon2(basepath, loadProjectIcon);
+		long end = System.currentTimeMillis();
+		if (end - start > 200) {
+			brokenIcons.add(basepath);
+			LOG.warn("Icon resolving took too long: " + (end - start) + "ms - " + basepath);
+		}
+		return icon;
+	}
+
+	@Nullable
+	private static Icon resolveIcon2(String basepath, boolean loadProjectIcon) {
 		try {
 			if (!loadProjectIcon) {
 				return null;
@@ -95,35 +116,42 @@ public class IconResolver {
 
 			if (file.exists()) {
 				icon = new JBImageIcon(loadImage(file));
-				if (icon != null && icon.getIconHeight() > 1
-						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
-					icon = IconUtil.scale(icon, null,
-							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
-				}
-				// material-theme-jetbrains needs to be scaled 2x
-				if (icon != null && icon.getIconHeight() > 1
-						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
-					icon = IconUtil.scale(icon, null,
-							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
-				}
-				if (icon.getIconHeight() > FrameSwitchAction.empty.getIconHeight()) {
-					LOG.error("Scaling failed, wrong icon size: " + file.getAbsolutePath() + " " + icon.getIconHeight()
+//				if (icon != null && icon.getIconHeight() > 1
+//						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
+//					icon = IconUtil.scale(icon, null,
+//							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
+//				}
+//				// material-theme-jetbrains needs to be scaled 2x
+//				if (icon != null && icon.getIconHeight() > 1
+//						&& icon.getIconHeight() != FrameSwitchAction.empty.getIconHeight()) {
+//					icon = IconUtil.scale(icon, null,
+//							(float) FrameSwitchAction.empty.getIconHeight() / icon.getIconHeight());
+//				}
+				if (icon.getIconHeight() > FrameSwitchAction.empty.getIconHeight()
+						|| icon.getIconWidth() > FrameSwitchAction.empty.getIconWidth()) {
+					brokenIcons.add(base.getAbsolutePath());
+					LOG.warn("Scaling failed, wrong icon size: " + file.getAbsolutePath() + " " + icon.getIconHeight()
 							+ "x" + icon.getIconWidth());
 					return null;
 				}
 			}
 			return icon;
 		} catch (Throwable e) {
-			LOG.debug(String.valueOf(file), e);
+			LOG.warn(String.valueOf(file), e);
 			return null;
 		}
 	}
 
 	public static Image loadImage(File file) throws IOException {
-		if (file.getName().endsWith(".svg")) {
-			return SVGLoader.load(file.toURI().toURL(), 1.0f);
-		} else {
-			return ImageIO.read(file);
+		Image image = ImageLoader.loadFromUrl(file.toURI().toURL());
+		if (image != null) {
+			image = ImageLoader.scaleImage(image, FrameSwitchAction.empty.getIconHeight(), FrameSwitchAction.empty.getIconHeight());
 		}
+		return image;
+//		if (file.getName().endsWith(".svg")) {
+//			return SVGLoader.load(file.toURI().toURL(), 1.0f);
+//		} else {
+//			return ImageIO.read(file);
+//		}
 	}
 }

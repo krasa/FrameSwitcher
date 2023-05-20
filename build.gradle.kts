@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.0.0-223"
+version = "4.1.0-223"
 
 tasks {
     patchPluginXml {
@@ -12,7 +12,7 @@ tasks {
         untilBuild.set("")
         changeNotes.set(
             buildString {
-                append("- Compatibility with IJ 2022.3").append("<br>")
+                append("- Optimized icon loading").append("<br>")
             }
         )
     }
@@ -23,6 +23,9 @@ tasks {
         targetCompatibility = "11"
     }
 
+  runIde {
+    jvmArgs("-Xmx1048m")
+  }
 
     signPlugin {
         certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
@@ -45,7 +48,7 @@ repositories {
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
 intellij {
-    version.set("2023.1")
+    version.set("LATEST-EAP-SNAPSHOT")
     type.set("IC") // Target IDE Platform
 
 }
