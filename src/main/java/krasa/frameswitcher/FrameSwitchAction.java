@@ -214,7 +214,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 	private void addRecent(DefaultActionGroup group) {
 		RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
-		AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false, false);
+		AnAction[] recentProjectsActions = recentProjectsManagerBase.getRecentProjectsActions(false);
 		if (recentProjectsActions != null) {
 			recentProjectsActions = removeCurrentProjects(recentProjectsActions);
 			FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();

@@ -4,15 +4,15 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.1.1-223"
+version = "4.1.1-232.7295"
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("223.0")
+        sinceBuild.set("232.7295.16")
         untilBuild.set("")
         changeNotes.set(
             buildString {
-                append("- Optimized icon loading").append("<br>")
+                append("- IntelliJ IDEA 2023.2 EAP compatibility").append("<br>")
             }
         )
     }
