@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.registry.Registry;
 import krasa.frameswitcher.networking.dto.RemoteProject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.beans.Transient;
 import java.io.File;

@@ -4,7 +4,11 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.1.1-232.7295"
+version = "4.2.0-232.7295"
+
+dependencies {
+    implementation("org.apache.commons:commons-lang3:3.13.0")
+}
 
 tasks {
     patchPluginXml {
@@ -12,7 +16,7 @@ tasks {
         untilBuild.set("")
         changeNotes.set(
             buildString {
-                append("- IntelliJ IDEA 2023.2 EAP compatibility").append("<br>")
+                append("- IntelliJ IDEA 2023.3 EAP compatibility").append("<br>")
             }
         )
     }
