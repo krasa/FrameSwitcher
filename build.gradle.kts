@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "FrameSwitcher"
-version = "4.2.0-232.7295"
+version = "4.3.0-232.7295"
 
 dependencies {
     implementation("org.apache.commons:commons-lang3:3.13.0")
@@ -16,7 +16,7 @@ tasks {
         untilBuild.set("")
         changeNotes.set(
             buildString {
-                append("- IntelliJ IDEA 2023.3 EAP compatibility").append("<br>")
+                append("- IntelliJ IDEA 2024.1 EAP compatibility").append("<br>")
             }
         )
     }
@@ -59,6 +59,7 @@ intellij {
 
 
 dependencies {
+    implementation("org.apache.commons:commons-lang3:3.14.0")
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:31.1-jre")
