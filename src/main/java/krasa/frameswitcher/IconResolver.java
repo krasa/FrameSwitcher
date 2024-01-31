@@ -1,9 +1,9 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.ui.JBColor;
 import com.intellij.util.ImageLoader;
 import com.intellij.util.ui.JBImageIcon;
-import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.SystemIndependent;
 
@@ -104,7 +104,7 @@ public class IconResolver {
 		File file = null;
 		try {
 			Icon icon = null;
-			if (UIUtil.isUnderDarcula()) {
+			if (!JBColor.isBright()) {
 				File darcula = new File(base, subpath.replace(".svg", "_dark.svg").replace(".png", "_dark.png"));
 				if (darcula.exists()) {
 					file = darcula;
