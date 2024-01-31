@@ -526,7 +526,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 
 		public ReopenRecentWrapper(ReopenProjectAction recentProjectsAction) {
 			super(recentProjectsAction.getProjectPath(), recentProjectsAction.getProjectName(),
-					recentProjectsAction.getProjectNameToDisplay());
+					recentProjectsAction.getProjectDisplayName());
 			getTemplatePresentation()
 					.setIcon(IconResolver.resolveIcon(recentProjectsAction.getProjectPath(), loadProjectIcon));
 		}
