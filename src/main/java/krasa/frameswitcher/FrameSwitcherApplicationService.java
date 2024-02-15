@@ -1,8 +1,8 @@
 package krasa.frameswitcher;
 
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
@@ -25,7 +25,7 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 	boolean initialized;
 
 	public static FrameSwitcherApplicationService getInstance() {
-		FrameSwitcherApplicationService service = ServiceManager.getService(FrameSwitcherApplicationService.class);
+		FrameSwitcherApplicationService service = ApplicationManager.getApplication().getService(FrameSwitcherApplicationService.class);
 		if (service != null && !service.initialized) { //DynamicPlugins.unloadPlugin causes null
 			service.initComponent();
 		}

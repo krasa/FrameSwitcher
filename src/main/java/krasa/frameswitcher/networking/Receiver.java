@@ -4,7 +4,6 @@ import com.intellij.ide.DataManager;
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -12,13 +11,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
 import krasa.frameswitcher.FocusUtils;
 import krasa.frameswitcher.FrameSwitchAction;
 import krasa.frameswitcher.FrameSwitcherApplicationService;
 import krasa.frameswitcher.networking.dto.*;
-import org.jetbrains.concurrency.Promise;
 import org.jgroups.Message;
 import org.jgroups.View;
 
@@ -124,7 +120,7 @@ public class Receiver implements org.jgroups.Receiver {
 					});
 				});
 			});
-		}, ModalityState.NON_MODAL);
+		}, ModalityState.nonModal());
 	}
 
 }

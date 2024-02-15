@@ -36,7 +36,7 @@ public class ReopenProjectsAction extends DumbAwareAction {
 					AnActionEvent frameSwitcherPlugin = new AnActionEvent(anActionEvent.getInputEvent(), DataContext.EMPTY_CONTEXT, "FrameSwitcherPlugin", getTemplatePresentation(), ActionManager.getInstance(), anActionEvent.getModifiers());
 					checkProject.actionPerformed(frameSwitcherPlugin);
 				};
-				ApplicationManager.getApplication().invokeLater(runnable, ModalityState.NON_MODAL);
+				ApplicationManager.getApplication().invokeLater(runnable, ModalityState.nonModal());
 			}
 		}
 	}

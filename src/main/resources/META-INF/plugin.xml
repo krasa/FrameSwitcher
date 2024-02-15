@@ -69,6 +69,6 @@
 		<applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"
 								 displayName="Frame Switcher"/>
 
-		<postStartupActivity implementation="krasa.frameswitcher.ProjectStartupActivity"/>
+		<backgroundPostStartupActivity implementation="krasa.frameswitcher.ProjectStartupActivity"/>
 	</extensions>
 </idea-plugin>

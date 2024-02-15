@@ -3,7 +3,6 @@ package krasa.frameswitcher;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.*;
 import com.intellij.ide.actions.QuickSwitchSchemeAction;
-import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
@@ -406,7 +405,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 					SwitchFrameAction action = (SwitchFrameAction) selectedItem.getAction();
 					Project project = action.getProject();
 					if (!project.isDisposed()) {
-						ProjectUtil.closeAndDispose(project);
+						ProjectManager.getInstance().closeAndDispose(project);
 						RecentProjectsManagerBase.getInstanceEx().updateLastProjectPath();
 						WelcomeFrame.showIfNoProjectOpened();
 						model.deleteItem(selectedItem);

@@ -2,19 +2,24 @@ package krasa.frameswitcher;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupActivity;
+import com.intellij.openapi.startup.ProjectActivity;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.WindowManager;
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ProjectStartupActivity implements StartupActivity.Background, StartupActivity.DumbAware {
+public class ProjectStartupActivity implements ProjectActivity, DumbAware {
 	private static final Logger LOG = Logger.getInstance(ProjectStartupActivity.class);
 
+	@Nullable
 	@Override
-	public void runActivity(@NotNull Project project) {
+	public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
 		FrameSwitcherApplicationService service = FrameSwitcherApplicationService.getInstance();
 
 		long start = System.currentTimeMillis();
@@ -49,5 +54,6 @@ public class ProjectStartupActivity implements StartupActivity.Background, Start
 			}
 		});
 		LOG.debug("projectOpened done in ", System.currentTimeMillis() - start, "ms");
+		return null;
 	}
 }

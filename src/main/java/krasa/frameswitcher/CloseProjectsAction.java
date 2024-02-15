@@ -4,7 +4,7 @@ import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame;
@@ -29,12 +29,12 @@ public class CloseProjectsAction extends DumbAwareAction {
 
 		boolean isOk = builder.show() == DialogWrapper.OK_EXIT_CODE;
 		if (isOk) {
-			ProjectManagerEx projectManagerEx = ProjectManagerEx.getInstanceEx();
+			ProjectManager projectManager = ProjectManager.getInstance();
 			RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
 			List<Project> checkProjects = form.getCheckProjects();
 			for (Project checkProject : checkProjects) {
 				if (!checkProject.isDisposed()) {
-					projectManagerEx.closeAndDispose(checkProject);
+					projectManager.closeAndDispose(checkProject);
 					recentProjectsManagerBase.updateLastProjectPath();
 				}
 			}
