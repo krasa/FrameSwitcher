@@ -1,5 +1,6 @@
 package krasa.frameswitcher;
 
+import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.Separator;
@@ -24,7 +25,14 @@ public class ReopenProjectsForm {
 			if (child instanceof Separator) {
 				continue;
 			}
-			list.addItem(child, child.getTemplatePresentation().getText(), false);
+			String text;
+			if (child instanceof ReopenProjectAction) {
+				text = ((ReopenProjectAction) child).getProjectDisplayName();
+			} else {
+				text = child.getTemplatePresentation().getText();
+			}
+
+			list.addItem(child, text, false);
 		}
 
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
