@@ -2,7 +2,10 @@ package krasa.frameswitcher;
 
 import com.intellij.openapi.project.Project;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * @author Vojtech Krasa
@@ -21,7 +24,9 @@ public class ProjectFocusMonitor {
 	}
 
 	public Project[] getProjectsOrderedByFocus() {
-		return projects.toArray(new Project[projects.size())]);
+		List<Project> sortedProjects = new ArrayList<>(projects);
+		Collections.reverse(sortedProjects); // Reverse to get the latest focused project first
+		return sortedProjects.toArray(new Project[0]);
 	}
 
 }
