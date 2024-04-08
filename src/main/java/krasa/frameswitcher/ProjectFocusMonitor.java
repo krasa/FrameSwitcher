@@ -11,16 +11,16 @@ public class ProjectFocusMonitor {
 
 	private LinkedHashSet<Project> projects = new LinkedHashSet<Project>();
 
-	public void focusGained(Project project) {
+	public synchronized void focusGained(Project project) {
 		projects.remove(project);
 		projects.add(project);
 	}
 
-	public void projectClosed(Project project) {
+	public synchronized void projectClosed(Project project) {
 		projects.remove(project);
 	}
 
-	public Project[] getProjectsOrderedByFocus() {
+	public synchronized Project[] getProjectsOrderedByFocus() {
 		return projects.toArray(new Project[0]);
 	}
 
