@@ -62,7 +62,7 @@ tasks {
         untilBuild = properties("pluginUntilBuild")
         changeNotes.set(
             buildString {
-                append("- IntelliJ IDEA 2024.1 EAP compatibility").append("<br>")
+                append("- IntelliJ IDEA 2024.1 compatibility").append("<br>")
             }
         )
     }
