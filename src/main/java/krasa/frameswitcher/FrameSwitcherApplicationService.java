@@ -87,6 +87,7 @@ public class FrameSwitcherApplicationService implements PersistentStateComponent
 	public void updateSettings(FrameSwitcherSettings settings) {
 		this.settings = settings;
 		this.settings.applyOrResetMaxRecentProjectsToRegistry();
+		initialized = false;
 		initRemoting();
 	}
 
