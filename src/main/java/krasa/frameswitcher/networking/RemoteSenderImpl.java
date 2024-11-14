@@ -6,8 +6,8 @@ import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import krasa.frameswitcher.FrameSwitchAction;
 import krasa.frameswitcher.FrameSwitcherApplicationService;
+import krasa.frameswitcher.Utils;
 import krasa.frameswitcher.networking.dto.*;
 import org.jetbrains.annotations.NotNull;
 import org.jgroups.ChannelListener;
@@ -41,6 +41,7 @@ public class RemoteSenderImpl implements RemoteSender {
 			if (protocolConfiguration.getProtocolName().equals("UDP")) {
 				Map<String, String> properties = protocolConfiguration.getProperties();
 				properties.put("mcast_port", String.valueOf(port));
+//				properties.put("bind_addr", "127.0.0.1");
 				break;
 			}
 		}
@@ -78,12 +79,12 @@ public class RemoteSenderImpl implements RemoteSender {
 	@Override
 	public void sendInstanceStarted() {
 		LOG.debug("sending InstanceStarted");
-		send(new ObjectMessage(null, new InstanceStarted(uuid, getRecentProjectsActions(), new FrameSwitchAction().getIdeFrames(), getName())));
+		send(new ObjectMessage(null, new InstanceStarted(uuid, getRecentProjectsActions(), Utils.getIdeFrames(), getName())));
 	}
 
 	@Override
 	public void sendProjectsState() {
-		send(new ObjectMessage(null, new ProjectsState(uuid, getRecentProjectsActions(), new FrameSwitchAction().getIdeFrames(), getName())));
+		send(new ObjectMessage(null, new ProjectsState(uuid, getRecentProjectsActions(), Utils.getIdeFrames(), getName())));
 	}
 	            
 	@NotNull

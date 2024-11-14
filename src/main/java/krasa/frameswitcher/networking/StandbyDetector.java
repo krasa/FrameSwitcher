@@ -48,7 +48,7 @@ public abstract class StandbyDetector {
 		final long timeStampGap = now - lastTimeStamp;
 		if (timeStampGap > this.timeoutMillis) {
 			try {
-				LOG.info("Standby detected");
+				LOG.debug("Standby detected");
 				standbyDetected();
 			} catch (final Throwable e) {
 				LOG.error(e);

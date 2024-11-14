@@ -12,8 +12,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import krasa.frameswitcher.FocusUtils;
-import krasa.frameswitcher.FrameSwitchAction;
 import krasa.frameswitcher.FrameSwitcherApplicationService;
+import krasa.frameswitcher.Utils;
 import krasa.frameswitcher.networking.dto.*;
 import org.jgroups.Message;
 import org.jgroups.View;
@@ -89,8 +89,8 @@ public class Receiver implements org.jgroups.Receiver {
 		}
 	}
 
-	private boolean requestFocus(RemoteProject openProjectProject) {
-		List<IdeFrame> ideFrames = new FrameSwitchAction().getIdeFrames();
+	private static boolean requestFocus(RemoteProject openProjectProject) {
+		List<IdeFrame> ideFrames = Utils.getIdeFrames();
 		for (final IdeFrame ideFrame : ideFrames) {
 			final Project project = ideFrame.getProject();
 

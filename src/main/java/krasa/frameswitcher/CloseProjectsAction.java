@@ -2,6 +2,7 @@ package krasa.frameswitcher;
 
 import com.intellij.ide.RecentProjectsManagerBase;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -32,13 +33,15 @@ public class CloseProjectsAction extends DumbAwareAction {
 			ProjectManager projectManager = ProjectManager.getInstance();
 			RecentProjectsManagerBase recentProjectsManagerBase = RecentProjectsManagerBase.getInstanceEx();
 			List<Project> checkProjects = form.getCheckProjects();
-			for (Project checkProject : checkProjects) {
-				if (!checkProject.isDisposed()) {
-					projectManager.closeAndDispose(checkProject);
-					recentProjectsManagerBase.updateLastProjectPath();
+			WriteAction.run(() -> {
+				for (Project checkProject : checkProjects) {
+					if (!checkProject.isDisposed()) {
+						projectManager.closeAndDispose(checkProject);
+						recentProjectsManagerBase.updateLastProjectPath();
+					}
 				}
-			}
-			WelcomeFrame.showIfNoProjectOpened();
+				WelcomeFrame.showIfNoProjectOpened();
+			});
 		}
 	}
 
