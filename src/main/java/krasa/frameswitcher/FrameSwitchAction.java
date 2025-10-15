@@ -40,8 +40,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAware {
 
@@ -191,7 +191,7 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 		String currentBranchName = null;
 		if (project.getBasePath() != null) {
 
-			currentBranchName = projectsManagerBase.getCurrentBranch(project.getBasePath(),true);
+//			currentBranchName = projectsManagerBase.getCurrentBranch(project.getBasePath(),true);
 		}
 		SwitchFrameAction action = new SwitchFrameAction(project, currentProject == project, currentBranchName);
 		group.addAction(action);
