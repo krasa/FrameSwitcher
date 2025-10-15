@@ -3,10 +3,11 @@ package krasa.frameswitcher;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.WindowManager;
-import com.intellij.openapi.wm.impl.ProjectWindowAction;
 import com.intellij.util.BitUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,12 +29,36 @@ public class FocusUtils {
 		if (custom) {
 			requestFocusCustom(project, useRobot, frame);
 		} else {
-			final ProjectWindowAction windowAction = new ProjectWindowAction(project.getPresentableUrl(), project.getPresentableUrl(), null);
-			final ProjectWindowAction next = windowAction.getNext();
-			if (next != null) {
-				KeyEvent a = new KeyEvent(frame, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'a');
-				AnActionEvent anActionEvent = AnActionEvent.createFromInputEvent(a, "FrameSwitcher", null, SimpleDataContext.getProjectContext(project));
-				next.setSelected(anActionEvent, true);
+			KeyEvent a = new KeyEvent(frame, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'a');
+			AnActionEvent anActionEvent = AnActionEvent.createFromInputEvent(a, "FrameSwitcher", null, SimpleDataContext.getProjectContext(project));
+			setSelected(project, anActionEvent, true);
+		}
+	}
+
+	/**
+	 * copy of:
+	 *
+	 * @see com.intellij.openapi.wm.impl.ProjectWindowAction#setSelected(com.intellij.openapi.actionSystem.AnActionEvent, boolean)
+	 */
+	public static void setSelected(Project project, @NotNull AnActionEvent e, boolean selected) {
+		if (project != null) {
+			JFrame projectFrame = WindowManager.getInstance().getFrame(project);
+			if (projectFrame != null) {
+				int frameState = projectFrame.getExtendedState();
+				if (!SystemInfo.isMac || !BitUtil.isSet(projectFrame.getExtendedState(), 1) || !(e.getInputEvent() instanceof KeyEvent)) {
+					if (BitUtil.isSet(frameState, 1)) {
+						projectFrame.setExtendedState(BitUtil.set(frameState, 1, false));
+					}
+
+					projectFrame.toFront();
+					IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
+						Component mostRecentFocusOwner = projectFrame.getMostRecentFocusOwner();
+						if (mostRecentFocusOwner != null) {
+							IdeFocusManager.getGlobalInstance().requestFocus(mostRecentFocusOwner, true);
+						}
+
+					});
+				}
 			}
 		}
 	}
