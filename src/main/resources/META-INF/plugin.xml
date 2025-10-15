@@ -1,4 +1,4 @@
-<idea-plugin version="2">
+<idea-plugin url="https://github.com/krasa/FrameSwitcher">
 	<name>Frame Switcher</name>
 	<id>FrameSwitcher</id>
 

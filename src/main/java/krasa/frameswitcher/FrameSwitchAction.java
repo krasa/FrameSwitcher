@@ -190,7 +190,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 	private void add(Project currentProject, DefaultActionGroup group, final Project project, RecentProjectsManagerBase projectsManagerBase) {
 		String currentBranchName = null;
 		if (project.getBasePath() != null) {
-			currentBranchName = projectsManagerBase.getCurrentBranchName(project.getBasePath());
+
+			currentBranchName = projectsManagerBase.getCurrentBranch(project.getBasePath(),true);
 		}
 		SwitchFrameAction action = new SwitchFrameAction(project, currentProject == project, currentBranchName);
 		group.addAction(action);
