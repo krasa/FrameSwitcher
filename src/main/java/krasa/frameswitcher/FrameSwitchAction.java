@@ -21,6 +21,9 @@ import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame;
+import com.intellij.ide.bookmark.BookmarkType;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
+import com.intellij.ui.popup.ActionPopupStep;
 import com.intellij.ui.popup.PopupFactoryImpl;
 import com.intellij.ui.popup.list.ListPopupImpl;
 import com.intellij.ui.popup.list.ListPopupModel;
@@ -419,6 +422,9 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				}
 			}
 		});
+		registerSlotAssignmentKeys(popup);
+		registerClearSlotKey(popup);
+
 		Shortcut[] shortcuts = KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts(getId());
 		if (shortcuts == null) {
 			return;
@@ -475,6 +481,79 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 						});
 
 			}
+		}
+	}
+
+	private static String selectedPath(ListPopupImpl popup) {
+		Object selected = popup.getList().getSelectedValue();
+		if (!(selected instanceof PopupFactoryImpl.ActionItem item)
+				|| !(item.getAction() instanceof MySwitchAction switchAction)) {
+			return null;
+		}
+		String path = switchAction.getProjectPath();
+		return (path == null || path.isEmpty()) ? null : path;
+	}
+
+	private void refreshSlotBadges(ListPopupImpl popup) {
+		Object step = popup.getListStep();
+		if (step instanceof ActionPopupStep) {
+			((ActionPopupStep) step).updateStepItems(popup.getList());
+		}
+	}
+
+	private static void setSlotBadge(Presentation presentation, Integer slot) {
+		presentation.putClientProperty(ActionUtil.SECONDARY_ICON,
+				slot != null ? BookmarkType.get(Character.forDigit(slot, 10)).getIcon() : null);
+	}
+
+	private void bindPopupShortcut(ListPopupImpl popup, String actionId, String namePrefix,
+	                               KeyStroke fallback, AbstractAction handler) {
+		boolean registeredAny = false;
+		for (Shortcut shortcut : KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts(actionId)) {
+			if (shortcut instanceof KeyboardShortcut keyboard) {
+				KeyStroke ks = keyboard.getFirstKeyStroke();
+				if (ks != null) {
+					popup.registerAction(namePrefix + "-" + ks, ks, handler);
+					registeredAny = true;
+				}
+			}
+		}
+		if (!registeredAny) {
+			popup.registerAction(namePrefix + "-default", fallback, handler);
+		}
+	}
+
+	private void registerClearSlotKey(final ListPopupImpl popup) {
+		bindPopupShortcut(popup, ClearFrameSlotAction.ID, "FrameSwitcher-ClearSlot",
+				KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK),
+				new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						String path = selectedPath(popup);
+						if (path == null) return;
+						FrameSwitcherSettings settings = FrameSwitcherSettings.getInstance();
+						Integer existing = settings.getSlotForPath(path);
+						if (existing == null) return;
+						settings.clearSlot(existing);
+						refreshSlotBadges(popup);
+					}
+				});
+	}
+
+	private void registerSlotAssignmentKeys(final ListPopupImpl popup) {
+		for (int i = 1; i <= FrameSwitcherSettings.SLOT_COUNT; i++) {
+			final int slot = i;
+			bindPopupShortcut(popup, AssignFrameSlotAction.idFor(slot), "FrameSwitcher-AssignSlot" + slot,
+					KeyStroke.getKeyStroke(KeyEvent.VK_0 + slot, InputEvent.CTRL_DOWN_MASK),
+					new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String path = selectedPath(popup);
+							if (path == null) return;
+							AssignFrameSlotAction.toggle(slot, path);
+							refreshSlotBadges(popup);
+						}
+					});
 		}
 	}
 
@@ -547,6 +626,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				text = text + " [" + getBranchName() + "]";
 			}
 			e.getPresentation().setText(text);
+			Integer slot = FrameSwitcherSettings.getInstance().getSlotForPath(getProjectPath());
+			setSlotBadge(e.getPresentation(), slot);
 		}
 
 		@Override
@@ -656,6 +737,8 @@ public class FrameSwitchAction extends QuickSwitchSchemeAction implements DumbAw
 				text = text + " [" + currentBranchName + "]";
 			}
 			e.getPresentation().setText(text);
+			Integer slot = FrameSwitcherSettings.getInstance().getSlotForPath(project.getBasePath());
+			setSlotBadge(e.getPresentation(), slot);
 		}
 
 		@Override

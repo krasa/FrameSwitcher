@@ -55,6 +55,29 @@
 			<add-to-group group-id="WindowMenu" anchor="first"/>
 			<keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F3"/>
 		</action>
+		<group id="krasa.frameswitcher.FrameSlots" text="Frame Slots" popup="true">
+			<add-to-group group-id="WindowMenu" anchor="first"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot1" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot1" text="Switch to Frame Slot 1" description="Jump to the frame assigned to slot 1"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot2" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot2" text="Switch to Frame Slot 2" description="Jump to the frame assigned to slot 2"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot3" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot3" text="Switch to Frame Slot 3" description="Jump to the frame assigned to slot 3"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot4" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot4" text="Switch to Frame Slot 4" description="Jump to the frame assigned to slot 4"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot5" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot5" text="Switch to Frame Slot 5" description="Jump to the frame assigned to slot 5"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot6" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot6" text="Switch to Frame Slot 6" description="Jump to the frame assigned to slot 6"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot7" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot7" text="Switch to Frame Slot 7" description="Jump to the frame assigned to slot 7"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot8" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot8" text="Switch to Frame Slot 8" description="Jump to the frame assigned to slot 8"/>
+			<action id="krasa.frameswitcher.SwitchToFrameSlot9" class="krasa.frameswitcher.SwitchToFrameSlotAction$Slot9" text="Switch to Frame Slot 9" description="Jump to the frame assigned to slot 9"/>
+			<separator/>
+			<action id="krasa.frameswitcher.AssignFrameSlot1" class="krasa.frameswitcher.AssignFrameSlotAction$Slot1" text="Assign Current Frame to Slot 1" description="Toggle the current project's assignment to frame slot 1. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot2" class="krasa.frameswitcher.AssignFrameSlotAction$Slot2" text="Assign Current Frame to Slot 2" description="Toggle the current project's assignment to frame slot 2. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot3" class="krasa.frameswitcher.AssignFrameSlotAction$Slot3" text="Assign Current Frame to Slot 3" description="Toggle the current project's assignment to frame slot 3. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot4" class="krasa.frameswitcher.AssignFrameSlotAction$Slot4" text="Assign Current Frame to Slot 4" description="Toggle the current project's assignment to frame slot 4. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot5" class="krasa.frameswitcher.AssignFrameSlotAction$Slot5" text="Assign Current Frame to Slot 5" description="Toggle the current project's assignment to frame slot 5. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot6" class="krasa.frameswitcher.AssignFrameSlotAction$Slot6" text="Assign Current Frame to Slot 6" description="Toggle the current project's assignment to frame slot 6. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot7" class="krasa.frameswitcher.AssignFrameSlotAction$Slot7" text="Assign Current Frame to Slot 7" description="Toggle the current project's assignment to frame slot 7. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot8" class="krasa.frameswitcher.AssignFrameSlotAction$Slot8" text="Assign Current Frame to Slot 8" description="Toggle the current project's assignment to frame slot 8. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.AssignFrameSlot9" class="krasa.frameswitcher.AssignFrameSlotAction$Slot9" text="Assign Current Frame to Slot 9" description="Toggle the current project's assignment to frame slot 9. Also fires inside the FrameSwitcher popup against the highlighted item."/>
+			<action id="krasa.frameswitcher.ClearFrameSlot" class="krasa.frameswitcher.ClearFrameSlotAction" text="Clear Frame Slot Assignment" description="Clear whichever slot the current project (or highlighted popup item) occupies. Bound to Ctrl+N inside the FrameSwitcher popup."/>
+		</group>
 		<action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
 				text="FrameSwitcher Remoting Diagnostic Action"
 				description="FrameSwitcher remoting diagnostic action">

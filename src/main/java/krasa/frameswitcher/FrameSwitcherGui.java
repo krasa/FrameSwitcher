@@ -1,18 +1,28 @@
 package krasa.frameswitcher;
 
+import com.intellij.openapi.actionSystem.KeyboardShortcut;
+import com.intellij.openapi.actionSystem.Shortcut;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.keymap.KeymapUtil;
+import com.intellij.openapi.keymap.ex.KeymapManagerEx;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FrameSwitcherGui {
 
@@ -37,6 +47,9 @@ public class FrameSwitcherGui {
 
 	private FrameSwitcherSettings settings;
 	private EnumComboBoxModel<JBPopupFactory.ActionSelectionAid> comboBoxModel;
+
+	private SlotsTableModel slotsTableModel;
+	private JPanel wrapper;
 
 	public FrameSwitcherGui(FrameSwitcherSettings settings) {
 		this.settings = settings;
@@ -97,13 +110,141 @@ public class FrameSwitcherGui {
 	}
 
 	public JPanel getRoot() {
-		return root;
+		if (wrapper == null) {
+			wrapper = new JPanel(new BorderLayout());
+			wrapper.add(root, BorderLayout.NORTH);
+			wrapper.add(buildSlotsPanel(), BorderLayout.CENTER);
+		}
+		return wrapper;
+	}
+
+	private JPanel buildSlotsPanel() {
+		JPanel panel = new JPanel(new BorderLayout(5, 5));
+		panel.setBorder(BorderFactory.createTitledBorder("Frame Slots"));
+
+		JLabel help = new JLabel("<html>Open the Frame Switcher popup with Alt+F2, highlight a frame, then press<br/>" +
+				"<b>Ctrl+1</b>…<b>Ctrl+9</b> to toggle its slot assignment (these defaults apply only inside the popup).<br/>" +
+				"To trigger <i>Switch to Frame Slot N</i> globally, bind it in Settings | Keymap under <i>Frame Slots</i>.</html>");
+		panel.add(help, BorderLayout.NORTH);
+
+		slotsTableModel = new SlotsTableModel(settings.getSlotToProjectPath());
+		JTable table = new JTable(slotsTableModel);
+		table.setRowHeight(table.getRowHeight() + 4);
+		setColumnWidth(table, 0, 50, 50);
+		setColumnWidth(table, 2, 140, 180);
+		setColumnWidth(table, 3, 140, 180);
+		JScrollPane scroll = new JScrollPane(table);
+		scroll.setPreferredSize(new Dimension(600, 200));
+		panel.add(scroll, BorderLayout.CENTER);
+
+		JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JButton clear = new JButton("Clear selected");
+		clear.addActionListener(e -> {
+			int row = table.getSelectedRow();
+			if (row >= 0) {
+				slotsTableModel.clearRow(row);
+			}
+		});
+		JButton clearAll = new JButton("Clear all");
+		clearAll.addActionListener(e -> slotsTableModel.clearAll());
+		JButton openKeymap = new JButton("Configure shortcuts...");
+		openKeymap.addActionListener(e ->
+				ShowSettingsUtil.getInstance().showSettingsDialog(null, "preferences.keymap"));
+		buttons.add(clear);
+		buttons.add(clearAll);
+		buttons.add(openKeymap);
+		panel.add(buttons, BorderLayout.SOUTH);
+
+		return panel;
+	}
+
+	private static void setColumnWidth(JTable table, int idx, int preferred, int max) {
+		TableColumn col = table.getColumnModel().getColumn(idx);
+		col.setPreferredWidth(preferred);
+		col.setMaxWidth(max);
+	}
+
+	private static class SlotsTableModel extends AbstractTableModel {
+		private static final String[] COLS = {"Slot", "Project path", "Switch shortcut", "Assign shortcut"};
+		private final Map<Integer, String> data = new LinkedHashMap<>();
+
+		SlotsTableModel(Map<Integer, String> initial) {
+			reset(initial);
+		}
+
+		void reset(Map<Integer, String> source) {
+			data.clear();
+			source.forEach((slot, path) -> {
+				if (path != null && !path.isEmpty()) data.put(slot, path);
+			});
+			fireTableDataChanged();
+		}
+
+		Map<Integer, String> snapshot() {
+			return new LinkedHashMap<>(data);
+		}
+
+		void clearRow(int row) {
+			data.remove(row + 1);
+			fireTableRowsUpdated(row, row);
+		}
+
+		void clearAll() {
+			data.clear();
+			fireTableDataChanged();
+		}
+
+		@Override public int getRowCount() { return FrameSwitcherSettings.SLOT_COUNT; }
+		@Override public int getColumnCount() { return COLS.length; }
+		@Override public String getColumnName(int c) { return COLS[c]; }
+		@Override public boolean isCellEditable(int r, int c) { return c == 1; }
+
+		@Override
+		public Object getValueAt(int row, int col) {
+			int slot = row + 1;
+			switch (col) {
+				case 0: return slot;
+				case 1: return data.getOrDefault(slot, "");
+				case 2: return shortcutFor(SwitchToFrameSlotAction.idFor(slot), null);
+				case 3: return shortcutFor(AssignFrameSlotAction.idFor(slot), "Ctrl+" + slot + " (default)");
+				default: return null;
+			}
+		}
+
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+			if (col == 1) {
+				String trimmed = value == null ? "" : value.toString().trim();
+				if (trimmed.isEmpty()) {
+					data.remove(row + 1);
+				} else {
+					data.put(row + 1, trimmed);
+				}
+				fireTableCellUpdated(row, col);
+			}
+		}
+
+		private static String shortcutFor(String actionId, String fallback) {
+			Shortcut[] shortcuts = KeymapManagerEx.getInstanceEx().getActiveKeymap().getShortcuts(actionId);
+			if (shortcuts.length == 0) {
+				return fallback != null ? fallback : "(unbound)";
+			}
+			for (Shortcut s : shortcuts) {
+				if (s instanceof KeyboardShortcut) {
+					return KeymapUtil.getShortcutText(s);
+				}
+			}
+			return KeymapUtil.getShortcutText(shortcuts[0]);
+		}
 	}
 
 	public void importFrom(FrameSwitcherSettings data) {
 		initModel(data);
 		setData(data);
 		comboBoxModel.setSelectedItem(data.getPopupSelectionAid());
+		if (slotsTableModel != null) {
+			slotsTableModel.reset(data.getSlotToProjectPath());
+		}
 	}
 
 	public FrameSwitcherSettings exportDisplayedSettings() {
@@ -117,6 +258,9 @@ public class FrameSwitcherGui {
 		settings.setPopupSelectionAid(comboBoxModel.getSelectedItem());
 		settings.setRecentProjectPaths(toListStrings(filterListModel.toArray()));
 		settings.setIncludeLocations(toListStrings(includeListModel.toArray()));
+		if (slotsTableModel != null) {
+			settings.setSlotToProjectPath(slotsTableModel.snapshot());
+		}
 		return settings;
 	}
 
@@ -137,6 +281,9 @@ public class FrameSwitcherGui {
 			return true;
 		}
 		if (comboBoxModel.getSelectedItem() != data.getPopupSelectionAid()) {
+			return true;
+		}
+		if (slotsTableModel != null && !slotsTableModel.snapshot().equals(data.getSlotToProjectPath())) {
 			return true;
 		}
 		return isModified(data);

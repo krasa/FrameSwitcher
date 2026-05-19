@@ -4,6 +4,7 @@ import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.registry.Registry;
+import com.intellij.util.xmlb.annotations.MapAnnotation;
 import krasa.frameswitcher.networking.dto.RemoteProject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +12,9 @@ import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class FrameSwitcherSettings {
@@ -27,6 +30,44 @@ public class FrameSwitcherSettings {
 	private String requestFocusMs = "100";
 	private boolean loadProjectIcon = true;
 	private int port = 45588;
+	public static final int SLOT_COUNT = 9;
+	@MapAnnotation(surroundWithTag = false, entryTagName = "slot", keyAttributeName = "n", valueAttributeName = "path")
+	private Map<Integer, String> slotToProjectPath = new LinkedHashMap<>();
+
+	public Map<Integer, String> getSlotToProjectPath() {
+		return slotToProjectPath;
+	}
+
+	public void setSlotToProjectPath(Map<Integer, String> slotToProjectPath) {
+		this.slotToProjectPath = slotToProjectPath;
+	}
+
+	public String getSlotPath(int slot) {
+		return slotToProjectPath.get(slot);
+	}
+
+	public void assignSlot(int slot, String projectPath) {
+		if (projectPath == null || projectPath.isEmpty()) {
+			slotToProjectPath.remove(slot);
+		} else {
+			slotToProjectPath.entrySet().removeIf(e -> projectPath.equals(e.getValue()));
+			slotToProjectPath.put(slot, projectPath);
+		}
+	}
+
+	public void clearSlot(int slot) {
+		slotToProjectPath.remove(slot);
+	}
+
+	public Integer getSlotForPath(String projectPath) {
+		if (projectPath == null) return null;
+		for (Map.Entry<Integer, String> e : slotToProjectPath.entrySet()) {
+			if (projectPath.equals(e.getValue())) {
+				return e.getKey();
+			}
+		}
+		return null;
+	}
 
 	public JBPopupFactory.ActionSelectionAid getPopupSelectionAid() {
 		return popupSelectionAid;
