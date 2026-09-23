@@ -14,6 +14,7 @@
 				<li>Shift+Enter/LeftMouse - reopen a project in the current window.</li>
 				<li>Ctrl+Enter/LeftMouse - reopen a project in a new window.</li>
 				<li>Delete - closes project or removes a recent project from the history.</li>
+				<li>Ctrl+1...9 on a highlighted project to assign a slot (bind a shortcut for 'Switch to Frame Slot N' in Keymap)</li>
 			</ul>
 		</li>
   		<li>

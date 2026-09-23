@@ -32,6 +32,8 @@ plugins {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
+//https://plugins.jetbrains.com/docs/intellij/uild-number-ranges.html#earlier-versions
+
 // Set the JVM language level used to build the project.
 //kotlin {
 //    jvmToolchain(21)
@@ -40,17 +42,17 @@ version = providers.gradleProperty("pluginVersion").get()
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
     }
 //    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-//        kotlinOptions.jvmTarget = "17"
+//        kotlinOptions.jvmTarget = "21"
 //    }
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
