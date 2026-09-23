@@ -2,12 +2,13 @@ package krasa.frameswitcher;
 
 import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.Shortcut;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
-import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.keymap.impl.ui.EditKeymapsDialog;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
@@ -18,11 +19,8 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class FrameSwitcherGui {
 
@@ -122,7 +120,7 @@ public class FrameSwitcherGui {
 		JPanel panel = new JPanel(new BorderLayout(5, 5));
 		panel.setBorder(BorderFactory.createTitledBorder("Frame Slots"));
 
-		JLabel help = new JLabel("<html>Open the Frame Switcher popup with Alt+F2, highlight a frame, then press<br/>" +
+		JLabel help = new JLabel("<html>Open the Frame Switcher popup (Alt+F2), highlight a frame, then press<br/>" +
 				"<b>Ctrl+1</b>…<b>Ctrl+9</b> to toggle its slot assignment (these defaults apply only inside the popup).<br/>" +
 				"To trigger <i>Switch to Frame Slot N</i> globally, bind it in Settings | Keymap under <i>Frame Slots</i>.</html>");
 		panel.add(help, BorderLayout.NORTH);
@@ -148,8 +146,10 @@ public class FrameSwitcherGui {
 		JButton clearAll = new JButton("Clear all");
 		clearAll.addActionListener(e -> slotsTableModel.clearAll());
 		JButton openKeymap = new JButton("Configure shortcuts...");
-		openKeymap.addActionListener(e ->
-				ShowSettingsUtil.getInstance().showSettingsDialog(null, "preferences.keymap"));
+		openKeymap.addActionListener(e -> {
+			EditKeymapsDialog dialog = new EditKeymapsDialog(null, "krasa.frameswitcher.SwitchToFrameSlot1");
+			ApplicationManager.getApplication().invokeLater(dialog::show);
+		});
 		buttons.add(clear);
 		buttons.add(clearAll);
 		buttons.add(openKeymap);
